@@ -1,0 +1,142 @@
+package com.mybarber.api.domain.repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.mybarber.api.domain.entity.Agendamento;
+import com.mybarber.api.domain.entity.Relatorio;
+import com.mybarber.api.domain.rowmapper.AgendamentoMapper;
+import org.springframework.asm.Type;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+
+
+@Repository
+public class AgendamentoDAOImpl implements AgendamentoDAO{
+
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+	
+	String salvar = """
+			INSERT INTO agendamento( datahorainicio, datahoratermino, observacao, status, valor, id_cliente, id_barbeiro, id_barbearia,nome_cliente)
+			VALUES (?, ?, ?, ?, ?,?,?,?,?)
+			""";
+	
+	String listarPorBarbeiro = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
+			"c.id id_cliente," + 
+			"a.nome_cliente" + 
+			" from agendamento a" + 
+			" left join cliente c on a.id_cliente = c.id "
+			+ " inner join funcionario f on a.id_barbeiro = f.id" + 
+			" where f.id = ?";
+	
+	String buscarPorId = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
+			"c.id id_cliente," + 
+			"a.nome_cliente" + 
+			" from agendamento a" + 
+			" left join cliente c on a.id_cliente = c.id" + 
+			" inner join funcionario f on a.id_barbeiro = f.id" + 
+			" where a.id = ?";
+	
+	String editar = "UPDATE agendamento SET id=?, datahorainicio=?, datahoratermino=?, observacao=?, status=?, valor=?, id_cliente=?,id_barbeiro=?, id_barbearia=? where id = ?";
+	
+	String alterarStatus = "update agendamento set status = ? where id = ?";
+	
+	String buscarPorData = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
+			"c.id id_cliente," + 
+			"a.nome_cliente" + 
+			" from agendamento a" + 
+			" left join cliente c on a.id_cliente = c.id" + 
+			" inner join funcionario f on a.id_barbeiro = f.id" + 
+			" where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status NOT IN('CANCELADO') and a.id_barbeiro = ?";
+	
+	String somaValorMensal = "select sum(valor) valor, extract (month from datahorainicio) datahorainicio from agendamento where extract (year from datahorainicio)= ? and status='CONCLUIDO' and id_barbearia=? group by extract(month from datahorainicio)";
+	
+
+	@Override
+	public void salvar(Agendamento agendamento) {
+		
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		
+		jdbcTemplate.update(new PreparedStatementCreator() {
+
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				PreparedStatement ps = con.prepareStatement(salvar, new String[] { "id" });
+				
+				ps.setObject(1, agendamento.getDataHorarioInicio());
+				ps.setObject(2, agendamento.getDataHorarioFim());
+				ps.setString(3, agendamento.getObservacao());
+				ps.setString(4, agendamento.getStatus().getDescricao());
+				ps.setDouble(5, agendamento.getValor());
+				if(agendamento.getCliente().getId() != 0) {
+					ps.setInt(6, agendamento.getCliente().getId());
+				}else {
+					ps.setNull(6, Type.INT);
+				}
+				
+				ps.setInt(7, agendamento.getFuncionario().getId());
+				ps.setInt(8, agendamento.getBarbearia().getId());
+				ps.setString(9, agendamento.getCliente().getNome());
+				return ps;
+			}
+		}, keyHolder);
+		
+		int idAgendamento = keyHolder.getKey().intValue();
+		agendamento.setId(idAgendamento);
+	}
+
+	@Override
+	public List<Agendamento> listarPorBarbeiro(int idBarbeiro) {
+		
+		return jdbcTemplate.query(listarPorBarbeiro,new Object[] { idBarbeiro }, new AgendamentoMapper()) ;
+		
+	}
+
+	@Override
+	public Agendamento buscarPorId(int idAgendamento) {
+		
+		return jdbcTemplate.queryForObject(buscarPorId, new Object[] { idAgendamento }, new AgendamentoMapper() );
+	}
+
+	
+	
+	@Override
+	public void editar(Agendamento agendamento) {
+		
+		jdbcTemplate.update(editar,agendamento.getId(),agendamento.getDataHorarioInicio(),agendamento.getDataHorarioFim(),
+				agendamento.getObservacao(),agendamento.getStatus().getDescricao(),agendamento.getValor(),
+				agendamento.getCliente().getId(),agendamento.getFuncionario().getId(),agendamento.getBarbearia().getId(),agendamento.getId());
+		
+	}
+
+	@Override
+	public void alterarStatus(Agendamento agendamento) {
+		
+		jdbcTemplate.update(alterarStatus,agendamento.getStatus().getDescricao(),agendamento.getId());
+		
+	}
+
+	@Override
+	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro){
+		
+		return jdbcTemplate.query(buscarPorData,new Object[] {data.toString(),idBarbeiro}, new AgendamentoMapper());
+		
+	}
+	
+	@Override
+	public List<Relatorio>somaValorMensal(int idBarbearia, LocalDate data){
+		return jdbcTemplate.query(somaValorMensal, new Object[] { data.getYear(),idBarbearia}, (rs, rowNum)-> new Relatorio(rs.getDouble("valor"), rs.getInt("datahorainicio")));
+				
+	}
+	
+	
+}

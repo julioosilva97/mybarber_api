@@ -1,0 +1,173 @@
+package com.mybarber.api.domain.service;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mybarber.api.domain.entity.Barbearia;
+import com.mybarber.api.domain.entity.Funcionario;
+import com.mybarber.api.domain.entity.TokenDeVerificacao;
+import com.mybarber.api.domain.entity.Usuario;
+import com.mybarber.api.domain.repository.BarbeariaDAO;
+import com.mybarber.api.domain.repository.EnderecoDAO;
+import com.mybarber.api.domain.repository.FuncionarioDAO;
+import com.mybarber.api.domain.repository.HorarioAtendimentoDAO;
+import com.mybarber.api.domain.repository.PerfilDAO;
+import com.mybarber.api.domain.repository.TokenDeVerificacaoDAO;
+import com.mybarber.api.domain.repository.UsuarioDAO;
+import com.mybarber.api.domain.repository.UsuarioPerfilDAO;
+import com.mybarber.api.domain.util.Cargo;
+import com.mybarber.api.domain.util.EnviarEmail;
+
+@Service
+@Transactional
+public class FuncionarioServiceImpl implements FuncionarioService {
+
+	@Autowired
+	EnderecoDAO daoEndereco;
+
+	@Autowired
+	FuncionarioDAO daoFuncionario;
+
+	@Autowired
+	UsuarioDAO daoUsuario;
+	
+	@Autowired
+	UsuarioPerfilDAO daoUsuarioPerfil;
+	
+	@Autowired
+	BarbeariaDAO daoBarbearia;
+	
+	@Autowired
+	PerfilDAO daoPerfil;
+	
+	@Autowired
+	HorarioAtendimentoDAO horarioAtendimentoDAO;
+	
+	@Autowired
+	TokenDeVerificacaoService tokenService;
+	
+	@Autowired
+	private EnviarEmail enviarEmail;
+	
+	@Override
+	@Transactional
+	public void salvar(Funcionario funcionario) {
+
+		if(funcionario.getEndereco()!=null) {
+			funcionario.setEndereco(daoEndereco.salvar(funcionario.getEndereco()));
+		}
+		daoUsuario.salvar(funcionario.getUsuario());
+		daoFuncionario.salvar(funcionario);
+		daoUsuarioPerfil.salvar(funcionario.getUsuario());
+		//var token = tokenService.criarToken(funcionario);
+		
+		//enviarEmail.ativarConta(funcionario,token);
+		
+	}
+
+	@Override
+	public void alterar(Funcionario funcionario) {
+
+		if(funcionario.getEndereco()!=null) {
+			daoEndereco.alterar(funcionario.getEndereco());
+		}
+
+		daoFuncionario.alterar(funcionario);
+
+		//para pegar o id e senha do usuario
+		Usuario usuario = daoUsuario.buscar(funcionario.getUsuario().getId());
+		if(usuario.getSenha()!="") {
+			funcionario.getUsuario().setSenha(usuario.getSenha());
+		}
+		daoUsuarioPerfil.editar(usuario);
+		daoUsuario.alterar(funcionario.getUsuario());
+	}
+
+
+	@Override
+	public List<Funcionario> listar(Barbearia barbearia) {
+		
+		return daoFuncionario.listar(barbearia.getId());
+	}
+
+	
+	@Override
+	public Funcionario buscar(int id) {
+
+		
+		var funcionario = daoFuncionario.buscar(id);
+		
+		return funcionario;
+	}
+
+
+	@Override
+	public void excluir(int id) {
+		
+		Funcionario funcionario = new Funcionario();
+		funcionario = buscar(id);
+	    
+		if(funcionario.getUsuario().isAtivo()==true) {
+		
+		horarioAtendimentoDAO.excluir(funcionario.getId());
+		daoFuncionario.excluir(funcionario);
+		daoUsuarioPerfil.excluir(funcionario.getUsuario());
+		daoUsuario.excluir(funcionario.getUsuario());
+		daoEndereco.excluir(funcionario.getEndereco());
+		
+		}else {
+			//tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());
+			daoFuncionario.excluir(funcionario);
+			daoUsuarioPerfil.excluir(funcionario.getUsuario());
+			daoUsuario.excluir(funcionario.getUsuario());
+			daoEndereco.excluir(funcionario.getEndereco());
+		}
+		
+	
+		
+	 ///passar get endere�o como parametro 
+	}
+
+	
+	  @Override 
+	  public void salvarPrimeiroFuncionario(Funcionario funcionario) {
+		  
+	  funcionario.getUsuario().getPerfil().setDescricao("ADMINISTRADOR");
+	  funcionario.setEndereco(daoEndereco.salvar(funcionario.getEndereco()));
+	  funcionario.getBarbearia().setEndereco(daoEndereco.salvar(funcionario.
+	  getEndereco()));
+	  funcionario.setBarbearia(daoBarbearia.salvar(funcionario.getBarbearia()));
+	  funcionario.setCargo(Cargo.BARBEIRO);
+	  daoUsuario.salvar(funcionario.getUsuario());
+	  daoFuncionario.salvar(funcionario);
+	  daoUsuarioPerfil.salvar(funcionario.getUsuario());
+	  
+	  var token = tokenService.criarToken(funcionario);
+	  
+	  enviarEmail.ativarConta(funcionario,token);
+	  
+	  }
+
+	@Override
+	public List<Funcionario> listarPorCargo(Cargo cargo,Barbearia barbearia) {
+		
+		return daoFuncionario.listarPorCargo(cargo, barbearia.getId());
+	}
+
+	@Override
+	public Funcionario buscarPorIdUsuario(int idUsuario) {
+		
+		return daoFuncionario.buscarPorIdUsuario(idUsuario);
+	}
+
+	@Override
+	public boolean verificarEmail(String email) {
+		
+		return daoFuncionario.verificarEmail(email);
+	}
+	
+}
