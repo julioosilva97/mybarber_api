@@ -1,6 +1,8 @@
 package com.mybarber.api.domain.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mybarber.api.domain.entity.Barbearia;
 
@@ -9,7 +11,7 @@ import com.mybarber.api.domain.util.Cargo;
 
 public interface FuncionarioService {
 
-	public void salvar(Funcionario funcionario);
+	public void salvar(Map<String, Object> map);
 
 	public List<Funcionario> listar(Barbearia barbearia);
 
@@ -19,9 +21,9 @@ public interface FuncionarioService {
 
 	public void excluir(int id);
 
-	public void salvarPrimeiroFuncionario(Funcionario funcionario);
 
-	public List<Funcionario> listarPorCargo(Cargo cargo, Barbearia barbearia);
+	public List<Funcionario> listarPorCargo(Map<String, Object> map);
+
 	public Funcionario buscarPorIdUsuario(int idUsuario);
 	
 	public boolean verificarEmail(String email);

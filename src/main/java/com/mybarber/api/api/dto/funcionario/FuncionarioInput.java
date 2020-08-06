@@ -1,6 +1,5 @@
 package com.mybarber.api.api.dto.funcionario;
 
-import com.mybarber.api.api.dto.BarbeariaInput;
 import com.mybarber.api.api.dto.endereco.EnderecoDTO;
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
 
@@ -23,10 +22,12 @@ public class FuncionarioInput {
     private EnderecoDTO endereco;
     @NotBlank
     private String cargo;
-    @NotNull
     private UsuarioDTO usuario;
     @NotNull
     private Long idBarbearia;
+
+    @NotNull
+    private Boolean primeiroFuncionario;
 
     public int getId() {
         return id;
@@ -106,5 +107,13 @@ public class FuncionarioInput {
 
     public void setIdBarbearia(Long idBarbearia) {
         this.idBarbearia = idBarbearia;
+    }
+
+    public Boolean getPrimeiroFuncionario() {
+        return primeiroFuncionario;
+    }
+
+    public void setPrimeiroFuncionario(Boolean primeiroFuncionario) {
+        this.primeiroFuncionario = primeiroFuncionario;
     }
 }

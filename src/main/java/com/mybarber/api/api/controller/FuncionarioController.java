@@ -1,118 +1,98 @@
 package com.mybarber.api.api.controller;
 
+import java.util.*;
+import java.util.stream.Collectors;
 
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.mybarber.api.api.dto.funcionario.FuncionarioInput;
+import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.util.ConverterDTO;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.mybarber.api.api.facade.FuncionarioFacade;
-import com.mybarber.api.api.dto.funcionario.BarbeiroDTO;
+
 import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
-import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTOInput;
 import com.mybarber.api.domain.entity.Funcionario;
-import com.mybarber.api.domain.entity.HorarioAtendimento;
 import com.mybarber.api.domain.service.FuncionarioService;
 
 @RestController
 @RequestMapping("funcionarios")
 public class FuncionarioController {
 
-	
-	@Autowired
-	FuncionarioService service;
+    @Autowired
+    FuncionarioService service;
 
-	@Autowired
-	FuncionarioFacade facade;
+    @PostMapping
+    public ResponseEntity<Void> salvar(@Valid @RequestBody FuncionarioInput funcionarioDto) {
 
-	@Autowired
-	ModelMapper modelMapper;
+        var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("funcionario", funcionario);
+        map.put("primeiroFuncionario", funcionarioDto.getPrimeiroFuncionario());
 
-	@PostMapping
-	public ResponseEntity<Void> salvar(@Valid @RequestBody FuncionarioInput funcionarioDto) {
+        service.salvar(map);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
 
-		var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto,Funcionario.class);
+    @PatchMapping("/{id}")
+    public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {
 
-		service.salvar(funcionario);
+        var funcionario = service.buscar(id);
+        var funcionarioDTO = (FuncionarioDTO) ConverterDTO.toDTO(funcionario, FuncionarioDTO.class);
 
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
-	}
+        return new ResponseEntity<FuncionarioDTO>(funcionarioDTO, HttpStatus.OK);
+    }
 
-	@PutMapping
-	public ResponseEntity<Void> editar(@Valid @RequestBody FuncionarioInput funcionarioDto) {
+    @PutMapping
+    public ResponseEntity<Void> editar(@Valid @RequestBody FuncionarioInput funcionarioDto) {
 
-		var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto,Funcionario.class);
+        var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
 
-		service.alterar(funcionario);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
-	}
+        service.alterar(funcionario);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
 
-	@PostMapping("salvar-primeiro-funcionario")
-	public ResponseEntity<Void> salvarPrimeiroFuncionario(@RequestBody Funcionario funcionario,
-			HttpServletRequest request) {
-		facade.salvarPrimeiroFuncionario(funcionario);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
 
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
-
-	@GetMapping("listar/{idBarbearia}")
-	public ResponseEntity<List<FuncionarioDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
-
-		return new ResponseEntity<List<FuncionarioDTO>>(facade.listar(idBarbearia), HttpStatus.OK);
-	}
-
-	// listar somente barbeiros de determinada barbearia
-	@GetMapping("listarBarbeiros")
-	public ResponseEntity<List<BarbeiroDTO>> listarBarbeiros(HttpServletRequest request) {
-
-		return new ResponseEntity<List<BarbeiroDTO>>(facade.listarBarbeiros(request), HttpStatus.OK);
-	}
-
-	@PatchMapping("/editar/{id}")
-	public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {
-
-		return new ResponseEntity<FuncionarioDTO>(facade.buscar(id), HttpStatus.OK);
-	}
+        service.excluir(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 
 
+    @GetMapping("listarPorCargo/{cargo}/{idBarbearia}")
+    public ResponseEntity<List<FuncionarioDTO>> listarPorCargo(@PathVariable("idBarbearia") int idBarbearia,
+                                                               @PathVariable("cargo") String cargo) {
 
-	@DeleteMapping("/deletar/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("idBarbearia", idBarbearia);
+        map.put("cargo", cargo);
 
-		facade.excluir(id);
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+        var funcionarios = service.listarPorCargo(map);
+        var funcionariosDTO = funcionarios.stream()
+                .map(doMain -> (FuncionarioDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
+                .collect(Collectors.toList());
 
-	@PostMapping("/horarioAtendimento")
-	public ResponseEntity<Void> defirnirHorarioAtendimento(@RequestBody List<HorarioAtendimentoDTOInput> horarios) {
+        return new ResponseEntity<List<FuncionarioDTO>>(funcionariosDTO, HttpStatus.OK);
+    }
 
-		facade.salvarHorarioAtendimento(horarios);
+    @GetMapping("{idBarbearia}")
+    public ResponseEntity<List<FuncionarioDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
 
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+        var barbearia = new Barbearia();
+        barbearia.setId(idBarbearia);
 
-	@GetMapping("/buscarHorarioAtendimento/{id}")
-	public ResponseEntity<List<HorarioAtendimento>> buscarHorarioAtendimentoPorFuncionario(@PathVariable("id") int id) {
+        var funcionarios = service.listar(barbearia);
+        var funcionariosDTO = funcionarios.stream()
+                .map(doMain -> (FuncionarioDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
+                .collect(Collectors.toList());
 
-		return new ResponseEntity<List<HorarioAtendimento>>(facade.buscarHorarioAtendimentoPorFuncionario(id),
-				HttpStatus.OK);
-
-	}
-	
-	@GetMapping("verificarEmail/{email}")
-	public ResponseEntity<Boolean> verificarUsuario(@PathVariable("email") String email) {
-
-		return new ResponseEntity<Boolean>(service.verificarEmail(email) , HttpStatus.OK);
-	}
-	
+        return new ResponseEntity<List<FuncionarioDTO>>(funcionariosDTO,HttpStatus.OK);
+    }
 
 }

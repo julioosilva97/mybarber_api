@@ -42,7 +42,7 @@ public class FuncionarioFacadeImpl implements FuncionarioFacade{
 		Barbearia barbearia = (Barbearia) session.getAttribute("barbearia");
 		funcionario.setBarbearia(barbearia);
 		
-		funcionarioService.salvar(funcionario);
+		//funcionarioService.salvar(funcionario);
 		
 	}
 
@@ -77,7 +77,7 @@ public class FuncionarioFacadeImpl implements FuncionarioFacade{
 	@Override
 	public void salvarPrimeiroFuncionario(Funcionario funcionario) {
 		
-		funcionarioService.salvarPrimeiroFuncionario(funcionario);
+		//funcionarioService.salvarPrimeiroFuncionario(funcionario);
 		
 	}
 
@@ -138,7 +138,7 @@ public class FuncionarioFacadeImpl implements FuncionarioFacade{
 		Barbearia barbearia = (Barbearia) session.getAttribute("barbearia");
 		
 		
-		return toListBarbeiroRM(funcionarioService.listarPorCargo(Cargo.valueOf("BARBEIRO"), barbearia)) ;
+		return null ;
 	}
 
 	@Override

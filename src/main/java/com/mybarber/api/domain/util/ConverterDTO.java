@@ -1,10 +1,13 @@
 package com.mybarber.api.domain.util;
 
+import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
+import com.mybarber.api.domain.entity.Funcionario;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,12 +33,27 @@ public class ConverterDTO {
         return mModelMapper.map(doMain, dto);
     }
 
-    public static List<Object> toListDTO(List<Object> listDoMain, Class dto) {
+    /*public static List<Object> toListDTO(List<Object> listDoMain, Class dto) {
 
         return listDoMain.stream()
-                .map(doMain -> toDTO(doMain, dto))
+                .map(doMain -> dto.cast(toDTO(doMain, dto)) )
                 .collect(Collectors.toList());
-    }
+    }*/
+
+
+    /*public static List<Object> toListDTO(List<Object> listDoMain, Class dto) {
+
+        var list = new ArrayList<>();
+
+        listDoMain.forEach(doMain -> {
+            var Objdto = toDTO(doMain, dto);
+            list.add(dto);
+        });
+
+        return list;
+
+    }*/
+
 
     public static List<Object> toListDoMain(List<Object> dtoList, Class doMain) {
 

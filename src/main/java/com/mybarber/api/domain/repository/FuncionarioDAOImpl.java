@@ -83,7 +83,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 	         where f.id_usuario= ? 
 			""";
 
-	String verificarEmail = "SELECT EXISTS(SELECT FROM funcionario WHERE email = ?)";
+
 
 
 
@@ -166,6 +166,8 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 
 	@Override
 	public boolean verificarEmail(String email) {
+
+		var verificarEmail = "SELECT EXISTS(SELECT FROM funcionario WHERE email = ?)";
 
 	     return jdbcTemplate.queryForObject( verificarEmail , new Object[] { email }, Boolean.class);
 
