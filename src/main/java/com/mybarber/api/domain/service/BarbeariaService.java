@@ -12,6 +12,6 @@ public interface BarbeariaService {
 	 public void salvar(Barbearia barbearia);
 		public List<Barbearia> listar();
 		public Barbearia buscarPorId(int id);
-		public void alterar( Barbearia barbearia,HttpServletRequest request);
+		public void alterar( Barbearia barbearia);
 		public void excluir(int id);
 }

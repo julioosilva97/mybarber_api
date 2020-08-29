@@ -16,17 +16,8 @@ import com.mybarber.api.api.util.FlexibleFloatDeserializer;
 public class ServicoDTO {
 	
 	 private int id;
-	 
-	@NotBlank
-	@Size(min = 3,max = 60)
 	private String descricao;
-	
-	@NotNull
-    @JsonDeserialize(using = FlexibleFloatDeserializer.class)
-	@JsonProperty("valor")
 	private float valor;
-    
-	@NotNull
 	private LocalTime tempo;
 	
 	public String getDescricao() {

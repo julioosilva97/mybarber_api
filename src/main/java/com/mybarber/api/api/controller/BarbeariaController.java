@@ -24,8 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mybarber.api.api.dto.BarbeariaInput;
 import com.mybarber.api.api.dto.BarbeariaModel;
+import com.mybarber.api.api.dto.barbearia.BarbeariaDTO;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.service.BarbeariaService;
+import com.mybarber.api.domain.util.ConverterDTO;
 
 
 
@@ -58,17 +60,19 @@ public class BarbeariaController {
 	}
 	
 	@GetMapping("/editar/{id}")
-	public String iniciarEdica(@PathVariable("id") int id, ModelMap model) {
-		model.addAttribute("barbearia",service.buscarPorId(id));
-		return "barbearia/cadastro";
+	public ResponseEntity<BarbeariaDTO>iniciarEdica(@PathVariable("id") int id) {
 		
+		var barbearia = service.buscarPorId(id);
+		var barbeariaDTO = (BarbeariaDTO) ConverterDTO.toDTO(barbearia, Barbearia.class);
+		return new ResponseEntity<BarbeariaDTO> (barbeariaDTO, HttpStatus.OK);
 	}
 	
 	
 	@PutMapping("/editar")
-	public ResponseEntity<Void> editar(@RequestBody Barbearia barbearia,HttpServletRequest request) {
-		service.alterar(barbearia,request);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+	public ResponseEntity<Void> editar(@Valid @RequestBody BarbeariaInput barbeariaDTO) {
+		var barbearia = (Barbearia)ConverterDTO.toDoMain(barbeariaDTO, Barbearia.class);
+		service.alterar(barbearia);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
 		//alterar na sess�o tbm
 		
 	}

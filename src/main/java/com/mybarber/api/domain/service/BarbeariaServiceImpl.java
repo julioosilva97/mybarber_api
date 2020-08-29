@@ -38,11 +38,10 @@ public class BarbeariaServiceImpl implements BarbeariaService {
 	}
 
 	@Override
-	public void alterar(Barbearia barbearia,HttpServletRequest request) {
+	public void alterar(Barbearia barbearia) {
 	
 	daoEndereco.alterar(barbearia.getEndereco());
 	dao.alterar(barbearia);
-	request.getSession().setAttribute("barbearia", barbearia);
 		
 	}
 

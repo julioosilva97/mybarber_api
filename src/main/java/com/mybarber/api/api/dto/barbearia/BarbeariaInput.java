@@ -5,7 +5,7 @@ import com.mybarber.api.domain.entity.Endereco;
 
 import javax.validation.constraints.NotBlank;
 
-public class Barbeariainput {
+public class BarbeariaInput {
 
     private int id;
     @NotBlank
