@@ -8,7 +8,6 @@ create table endereco (
     uf varchar(2)
 );
 
-
 create table usuario(
     id serial not null primary key , 
     login varchar(100) unique,
@@ -113,8 +112,5 @@ create table horario_atendimento(
 		final time not null,
 		id_funcionario integer not null references funcionario(id) ON DELETE CASCADE
 );
-	  
-
-
 
 

@@ -1,6 +1,5 @@
 package com.mybarber.api.api.controller;
 
-import com.mybarber.api.api.facade.FuncionarioFacade;
 import com.mybarber.api.domain.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

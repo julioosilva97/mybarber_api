@@ -21,7 +21,6 @@ public interface FuncionarioService {
 
 	public void excluir(int id);
 
-
 	public List<Funcionario> listarPorCargo(Map<String, Object> map);
 
 	public Funcionario buscarPorIdUsuario(int idUsuario);
