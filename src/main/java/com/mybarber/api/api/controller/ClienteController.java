@@ -2,6 +2,7 @@
 package com.mybarber.api.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,52 +19,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mybarber.api.api.facade.ClienteFacade;
 import com.mybarber.api.api.dto.cliente.ClienteDTO;
+import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
+import com.mybarber.api.domain.entity.Barbearia;
+import com.mybarber.api.domain.entity.Cliente;
 import com.mybarber.api.domain.service.ClienteService;
+import com.mybarber.api.domain.util.ConverterDTO;
 
 @RestController
 @RequestMapping("api/clientes")
 public class ClienteController {
 
 	@Autowired
-	ClienteFacade facade;
-	
-	@Autowired
 	ClienteService service;
 
 	@PostMapping("cadastrar")
-	public ResponseEntity<Void> cadatrar(@RequestBody ClienteDTO clienteDTO, HttpServletRequest request) {
+	public ResponseEntity<Void> cadatrar(@RequestBody ClienteDTO clienteDTO, Barbearia barbearia) {
+		
+		var cliente = (Cliente) ConverterDTO.toDoMain(clienteDTO, Cliente.class);
 
-		facade.cadastrar(clienteDTO, request);
+		service.cadastrar(cliente, barbearia);
 
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
 	@PatchMapping("/editar/{id}")
 	public ResponseEntity<ClienteDTO> iniciarEdicao(@PathVariable("id") int id) {
+		var cliente = service.buscarPorid(id);
 
-		return new ResponseEntity<ClienteDTO>(facade.buscarPorid(id), HttpStatus.OK);
+		var clienteDTO = (ClienteDTO)ConverterDTO.toDTO(cliente, ClienteDTO.class);
+		return new ResponseEntity<ClienteDTO>(clienteDTO, HttpStatus.OK);
 	}
 
 	@PutMapping("/editar")
 	public ResponseEntity<Void> editar(@RequestBody ClienteDTO clienteDTO) {
-
-		facade.editar(clienteDTO);
+		
+		var cliente = (Cliente)ConverterDTO.toDoMain(clienteDTO, ClienteDTO.class);
+		service.editar(cliente);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deletar/{id}")
 	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
 
-		facade.excluir(id);
+		service.excluir(id);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	@GetMapping("listar")
-	public ResponseEntity<List<ClienteDTO>> listar(HttpServletRequest request) {
+	public ResponseEntity<List<ClienteDTO>> listar(@PathVariable ("idbarbearia") int idBarbearia) {
+		var barbearia = new Barbearia();
+		barbearia.setId(idBarbearia);
 		
-		return new ResponseEntity<List<ClienteDTO>>(facade.listar(request),HttpStatus.OK);
+		var clientes = service.listar(barbearia);
+		var clienteDTO = clientes.stream()
+				                 .map(doMain -> (ClienteDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
+				                 .collect(Collectors.toList());
+		
+		return new ResponseEntity<List<ClienteDTO>>(clienteDTO,HttpStatus.OK);
 	}
 	
 	@GetMapping("verificarEmail/{email}")
