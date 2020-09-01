@@ -8,7 +8,7 @@ import javax.validation.Valid;
 
 import com.mybarber.api.api.dto.funcionario.FuncionarioInput;
 import com.mybarber.api.domain.entity.Barbearia;
-import com.mybarber.api.domain.util.ConverterDTO;
+import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

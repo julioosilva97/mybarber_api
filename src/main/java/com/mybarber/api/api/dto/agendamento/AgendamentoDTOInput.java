@@ -20,14 +20,14 @@ public class AgendamentoDTOInput {
 	
 	@NotNull
 	private ClienteRM cliente;
-	
 
 	@NotNull
 	private int idFuncionario;
 	
 	private List<Servico> servicos;
-	
-	
+
+	private int idBarbearia;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	@NotNull
 	private LocalDateTime dataHorarioInicio;
@@ -104,6 +104,13 @@ public class AgendamentoDTOInput {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
+
+
+	public int getIdBarbearia() {
+		return idBarbearia;
+	}
+
+	public void setIdBarbearia(int idBarbearia) {
+		this.idBarbearia = idBarbearia;
+	}
 }

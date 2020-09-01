@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.mybarber.api.api.util.ConverterDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,6 @@ import com.mybarber.api.api.dto.BarbeariaModel;
 import com.mybarber.api.api.dto.barbearia.BarbeariaDTO;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.service.BarbeariaService;
-import com.mybarber.api.domain.util.ConverterDTO;
 
 
 

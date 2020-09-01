@@ -1,4 +1,4 @@
-package com.mybarber.api.domain.util;
+package com.mybarber.api.api.util;
 
 import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.domain.entity.Funcionario;

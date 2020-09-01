@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
 import com.mybarber.api.domain.service.ServicoService;
-import com.mybarber.api.domain.util.ConverterDTO;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
 import com.mybarber.api.api.dto.servico.ServicoInput;
 
@@ -35,7 +35,7 @@ public class ServicoController {
 	@PostMapping("cadastrar")
 	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO, HttpServletRequest request) {
 
-		var servico = (Servico)ConverterDTO.toDoMain(servicoDTO, Servico.class);
+		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
 		
 		service.salvar(servico);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
