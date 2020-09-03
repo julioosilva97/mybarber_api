@@ -23,7 +23,7 @@ import com.mybarber.api.domain.service.UsuarioService;
 
 @Controller
 public class HtmlController {
-
+/*
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -35,26 +35,12 @@ public class HtmlController {
 	
 	@GetMapping("/")
 	public String index(HttpServletRequest request,Principal principal){
-        
-		String login = principal.getName(); //pega o login
-		Usuario usuario = usuarioService.buscarPorLogin(login);//busca pelo nome
-		
-		
-		//verificar se existe algum funcionario relacionado ao id da pessoa
-		Funcionario funcionario = funcionarioService.buscarPorIdUsuario(usuario.getId());
-		if(funcionario != null){
-			request.getSession().setAttribute("barbearia", barbeariaService.buscarPorId(funcionario.getBarbearia().getId()));
-			request.getSession().setAttribute("funcionario", funcionario);
-		}
-		
-		
 		return "fragments/dashboard";
 	}
 	
 	@GetMapping("/senha-redefinida")
 	public String  senhaRedefinida(ModelMap model){
-		
-		
+
 		return "login/login";
 		
 	}
@@ -124,5 +110,5 @@ public class HtmlController {
 	public String ativarConta() {
 		return "senha/resetar-senha";
 	}
-	
+	*/
 }
