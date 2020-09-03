@@ -23,7 +23,7 @@ import com.mybarber.api.domain.service.UsuarioService;
 
 @Controller
 public class HtmlController {
-/*
+
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -110,5 +110,5 @@ public class HtmlController {
 	public String ativarConta() {
 		return "senha/resetar-senha";
 	}
-	*/
+
 }
