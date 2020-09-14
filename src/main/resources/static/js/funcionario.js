@@ -166,15 +166,23 @@ function enviarForm(acao, id)
 function montarDataTable()
 {
 
+	let token = localStorage.getItem("accessToken");
+	let json = parseJwt(token);
+	let idBarbearia = json.dadosUsuario.idBarbearia;
+	
 	var table = $('#table-funcionarios').DataTable(
 	{
+		
 
 		responsive: true,
 	    lengthChange: false,
 		"processing": true,
 		"ajax":
 		{
-			"url": "funcionarios/listar",
+			"url": `api/funcionarios/${idBarbearia}`,
+			'beforeSend': function (request) {
+		        request.setRequestHeader("Authorization", `Bearer ${token}`);
+		    },
 			dataSrc: ''
 		},
 		"columns": [

@@ -32,7 +32,7 @@ import com.mybarber.api.api.dto.relatorio.RelatorioDTO;
 import com.mybarber.api.domain.entity.Agendamento;
 
 @RestController
-@RequestMapping("api/agendamento")
+@RequestMapping("api/agendamentos")
 public class AgendamentoController {
 
 

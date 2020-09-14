@@ -22,10 +22,10 @@
     <div class="logo">
         <img src="/imagens/logoFundoAzul.png" height="100" alt="" />
     </div>
-    <div class="login-box" th:classappend="${param.error} or ${param.senha} or ${param.ativacao} ? box-error : (${param.logout}? 'box-logout' : '')">
-        <form class="login-form" th:action="@{/login}" method="post" name="login" id="form-login">
-            <div th:if="${param.error}" class="alert alert-danger">
-                Login ou senha inválido.
+    <div class="login-box">
+        <form class="login-form" id="form-login">
+            <div id="alert-erro" style="display: none;" class="alert alert-danger">
+                
             </div>
             <div th:if="${param.senha}" class="alert alert-success">
                 Senha alterada com sucesso.
@@ -38,11 +38,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label">LOGIN</label>
-                <input type="text" name="username" class="form-control" id="username" placeholder="Login" />
+                <input type="text" name="login" class="form-control" id="login" placeholder="Login" />
             </div>
             <div class="form-group">
                 <label class="control-label">SENHA</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Senha" />
+                <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha" />
             </div>
             <div class="form-group">
                 <div class="utility">
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="form-group btn-container">
-                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>ENTRAR</button>
+                <button type="submit" class="btn btn-primary btn-block" form="form-login"><i class="fa fa-sign-in fa-lg fa-fw"></i>ENTRAR</button>
             </div>
             <div class="col-md-12">
                 <div class="login-or">
@@ -101,8 +101,6 @@
 <script src="pluginsAdd/jquery.validate.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/main.js"></script>
-<script src="js/index.js"></script>
 <script src="js/login.js"></script>
 <!-- The javascript plugin to display page loading on top-->
 <script src="js/plugins/pace.min.js"></script>

@@ -25,3 +25,7 @@
 	$("[data-toggle='tooltip']").tooltip();
 
 })();
+
+
+
+

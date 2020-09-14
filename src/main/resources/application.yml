@@ -23,3 +23,8 @@ spring:
           starttls :
             enable : true
             required : true
+
+#secutiry
+security:
+  jwt:
+    public-key: classpath:public.txt

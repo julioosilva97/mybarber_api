@@ -1,4 +1,4 @@
-package com.mybarber.api.core;
+package com.mybarber.api.core.modelmapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

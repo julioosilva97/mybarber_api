@@ -20,7 +20,7 @@ import com.mybarber.api.domain.entity.Funcionario;
 import com.mybarber.api.domain.service.FuncionarioService;
 
 @RestController
-@RequestMapping("funcionarios")
+@RequestMapping("api/funcionarios")
 public class FuncionarioController {
 
     @Autowired

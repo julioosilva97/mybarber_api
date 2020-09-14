@@ -14,7 +14,7 @@ import com.mybarber.api.domain.entity.Perfil;
 import com.mybarber.api.domain.repository.PerfilDAO;
 
 @RestController
-@RequestMapping("api/perfil")
+@RequestMapping("api/perfis")
 public class PerfilController {
 
 	@Autowired

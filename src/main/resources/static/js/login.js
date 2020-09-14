@@ -85,6 +85,27 @@ function validarForm(){
 			}
 		});
 
+		$("#form-login").validate(
+        		{
+        			// Rules for form validation
+        			rules:
+        			{
+        				login:
+        				{
+        					required: true
+        				},
+        				senha :
+        				{
+        				    required: true
+        				}
+        			},
+        			submitHandler: function submitHandler()
+        			{
+						login()
+
+        			}
+        		});
+
 }
 
 function verificarEmailFuncionario(){
@@ -175,4 +196,34 @@ function enviarForm(){
 					$("#form-esqueci-senha").find('.is-valid').removeClass("is-valid");
 				}
 			});
+}
+
+function login(){
+
+	$.ajax(
+			
+		{
+			type: 'POST',
+			url: 'http://localhost:8080/oauth/token',
+			data: `username=${$("#login").val()}&password=${$("#senha").val()}&grant_type=password`,
+			beforeSend:function(request){
+				request.setRequestHeader('Authorization', `Basic ${btoa("servidorAuthMyBarber:123")}`)
+				request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+			},
+			error: function error(data)
+			{
+				$('.login-box').addClass('box-error');
+				$("#alert-erro").show().text(data.responseJSON.error_description);
+
+			},
+			//dataType: 'json',
+			success: function success(data)
+			{
+				$('.login-box').removeClass('box-error');
+				$("#alert-erro").hide();
+				localStorage.setItem('accessToken', data.access_token);
+				window.location.href = "/";
+			}
+		});
+	
 }

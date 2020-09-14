@@ -32,7 +32,7 @@ import com.mybarber.api.domain.service.BarbeariaService;
 
 
 @RestController
-@RequestMapping("api/barbearia")
+@RequestMapping("api/barbearias")
 public class BarbeariaController {
 
 	@Autowired
