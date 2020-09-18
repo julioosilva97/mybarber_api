@@ -103,11 +103,18 @@ function enviarForm(acao, id)
 	}
 	
 	
-
+	let token = localStorage.getItem("accessToken");
+	let json = parseJwt(token);
+	let idBarbearia = json.dadosUsuario.idBarbearia;
+	
+	
 	$.ajax(
 	{
 		type: 'POST',
 		url: `funcionarios/${acao}`,
+		'beforeSend': function (request) {
+	        request.setRequestHeader("Authorization", `Bearer ${token}`);
+	    },
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
 		error: function error(data)

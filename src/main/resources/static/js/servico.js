@@ -31,6 +31,10 @@ $(document).ready(function ()
 
 function enviarForm(acao, id)
 {
+	
+	let token = localStorage.getItem("accessToken");
+	let json = parseJwt(token);
+	let idBarbearia = json.dadosUsuario.idBarbearia;
 
 	var verbo;
 	if(!id){
@@ -51,6 +55,10 @@ function enviarForm(acao, id)
 	{
 		type: verbo,
 		url: `/api/servicos/${acao}`,
+		'beforeSend': function (request) {
+	        request.setRequestHeader("Authorization", `Bearer ${token}`);
+	    },
+
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(data),
 		error: function error(data)
@@ -75,9 +83,10 @@ function enviarForm(acao, id)
 function montarDataTable()
 {
 	
-	
-	
-	    
+	let token = localStorage.getItem("accessToken");
+	let json = parseJwt(token);
+	let idBarbearia = json.dadosUsuario.idBarbearia;
+
 	
 	var table = $('#table-servicos').DataTable(
 	{
@@ -88,6 +97,10 @@ function montarDataTable()
 		"ajax":
 		{
 			"url": "api/servicos/listar",
+			'beforeSend': function (request) {
+		        request.setRequestHeader("Authorization", `Bearer ${token}`);
+		    },
+
 			dataSrc: ''
 		},
 		"columns": [
