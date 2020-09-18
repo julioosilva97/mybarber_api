@@ -114,7 +114,6 @@ function enviarForm(acao, id)
 	
 	var verbo;
 	
-<<<<<<< HEAD
 	let token = localStorage.getItem("accessToken");
 	let json = parseJwt(token);
 	let idBarbearia = json.dadosUsuario.idBarbearia;
@@ -127,18 +126,6 @@ function enviarForm(acao, id)
 		'beforeSend': function (request) {
 	        request.setRequestHeader("Authorization", `Bearer ${token}`);
 	    },
-=======
-	if(acao="cadastrar"){
-		var verbo = "POST";
-	}else{
-		var verbo = "PUT";
-	}
-
-	$.ajax(
-	{
-		type: verbo,
-		url: `api/funcionarios`,
->>>>>>> 172e15a70764646054e8d26bf9cb48761d1cbe80
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
 		beforeSend: function (request) {
