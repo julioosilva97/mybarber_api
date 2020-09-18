@@ -212,6 +212,7 @@ function login(){
 			},
 			error: function error(data)
 			{
+				console.log(data)
 				$('.login-box').addClass('box-error');
 				$("#alert-erro").show().text(data.responseJSON.error_description);
 
@@ -221,7 +222,7 @@ function login(){
 			{
 				$('.login-box').removeClass('box-error');
 				$("#alert-erro").hide();
-				localStorage.setItem('accessToken', data.access_token);
+				sessionStorage.setItem('accessToken', data.access_token);
 				window.location.href = "/";
 			}
 		});

@@ -16,8 +16,7 @@ public class FuncionarioInput {
     private String nome;
     private String sobrenome;
     private String telefone;
-    @Email
-    private String email;
+    
     private LocalDate dataNascimento;
     private EnderecoDTO endereco;
     @NotBlank
@@ -53,13 +52,6 @@ public class FuncionarioInput {
         this.telefone = telefone;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public LocalDate getDataNascimento() {
         return dataNascimento;

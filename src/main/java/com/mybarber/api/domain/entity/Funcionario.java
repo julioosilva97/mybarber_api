@@ -40,23 +40,23 @@ public class Funcionario extends Pessoa {
 	public Funcionario() {
 	}
 
-	public Funcionario(int id, String nome, String telefone, String email, LocalDate dataNascimento, Endereco endereco,
+	public Funcionario(int id, String nome, String telefone,LocalDate dataNascimento, Endereco endereco,
 			Usuario usuario, Cargo cargo, Barbearia barbearia) {
-		super(id, nome, telefone, email, dataNascimento, endereco, usuario);
+		super(id, nome, telefone, dataNascimento, endereco, usuario);
 		this.cargo = cargo;
 		this.barbearia = barbearia;
 	}
 
-	public Funcionario(int id, String nome, String telefone, String email, Endereco endereco, Usuario usuario,
+	public Funcionario(int id, String nome, String telefone, Endereco endereco, Usuario usuario,
 			Cargo cargo, Barbearia barbearia) {
-		super(id, nome, telefone, email, endereco, usuario);
+		super(id, nome, telefone, endereco, usuario);
 		this.cargo = cargo;
 		this.barbearia = barbearia;
 	}
 
-	public Funcionario(int id, String nome, String telefone, String email, Endereco endereco, Cargo cargo,
+	public Funcionario(int id, String nome, String telefone, Endereco endereco, Cargo cargo,
 			Usuario usuario, Barbearia barbearia) {
-		super(id, nome, telefone, email, endereco, usuario);
+		super(id, nome, telefone, endereco, usuario);
 		this.cargo = cargo;
 		this.barbearia = barbearia;
 	}

@@ -55,17 +55,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public boolean verificarUsuario(String usuario) {
 
-		if (buscarPorLogin(usuario) == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return usuarioDAO.verificarLogin(usuario);
 	}
 
 	@Override
 	public void esqueceuSenha(String email) {
 
-		if (funcionarioDAO.verificarEmail(email)) {
+		/*if (funcionarioDAO.verificarEmail(email)) {
 
 			var funcionario = funcionarioDAO.buscarPorEmail(email);
 			var token = tokenService.criarToken(funcionario);
@@ -78,7 +74,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 		} else {
 
 			// lan�ar execpition
-		}
+		}*/
+	}
+
+	@Override
+	public boolean verificarEmail(String email) {
+		
+		return usuarioDAO.verificarEmail(email);
+		
+		
 	}
 
 

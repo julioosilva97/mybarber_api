@@ -11,5 +11,6 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 		System.out.println("Foi porra (API MINHA BARBA FODA C)");
 	}
-
+	
+	
 }

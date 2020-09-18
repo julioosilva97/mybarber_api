@@ -1,6 +1,10 @@
 $(document).ready(function ()
 {
 	
+	var emailEdicao;
+	var loginEdicao;
+	
+	
 	$('.modal-loading').modal('hide');
 	
 	$(function () {
@@ -92,6 +96,8 @@ function enviarForm(acao, id)
 {  
 	$('.modal-loading').modal('show');
 	
+	
+	
 	var sendInfo = {
 			id : id,
 			nome : $("#nome").val(),
@@ -99,65 +105,48 @@ function enviarForm(acao, id)
 			email : $("#email").val(),
 			dataNascimento: $("#dataNascimento").val(),
 			cargo : $("#cargo").val(),
-			usuario:{id: $("#login").attr('idUsuario'),login: $("#login").val(),idPerfil :$("#perfilAcesso").val()}
+			usuario:{id: $("#login").attr('idUsuario'),login: $("#login").val(),idPerfil :$("#perfilAcesso").val()},
+			idBarbearia: getIdBarbearia(getToken()),
+			primeiroFuncionario : false
 	}
 	
+	console.log(sendInfo)
 	
+	var verbo;
+	
+	if(acao="cadastrar"){
+		var verbo = "POST";
+	}else{
+		var verbo = "PUT";
+	}
 
 	$.ajax(
 	{
-		type: 'POST',
-		url: `funcionarios/${acao}`,
+		type: verbo,
+		url: `api/funcionarios`,
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
 		error: function error(data)
 		{
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": true,
-				"progressBar": true,
-				"positionClass": "toast-top-right",
-				"preventDuplicates": true,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "2000",
-				"extendedTimeOut": "3000",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut"
+			$('.modal-loading').modal('hide');
+			
+			console.log(data)
+			
+			if(data.status == 400){
+				lancarToastr("error",`${data.responseJSON.titulo}`);
+			}else{
+				lancarToastr("error",`${data.responseJSON.error_description}`);
 			}
-			toastr["error"](`${data.responseText}`)
 
 		},
 		//dataType: 'json',
 		success: function success(data)
 		{
-			$('#modal-funcionario').modal('hide');
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": true,
-				"progressBar": true,
-				"positionClass": "toast-top-right",
-				"preventDuplicates": true,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "2000",
-				"extendedTimeOut": "3000",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut",
-				"onHidden": function ()
-				{
-					window.location.reload();
-				}
-			}
-			toastr["success"](`Funcionário ${acao == "salvar" ? "salvo" : "editado"} com sucesso.`);
+			$('.modal-loading').modal('hide');
+			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`);
 
 		}
 	});
@@ -165,23 +154,20 @@ function enviarForm(acao, id)
 
 function montarDataTable()
 {
-
-	let token = localStorage.getItem("accessToken");
-	let json = parseJwt(token);
-	let idBarbearia = json.dadosUsuario.idBarbearia;
+	
+	
 	
 	var table = $('#table-funcionarios').DataTable(
 	{
 		
-
 		responsive: true,
 	    lengthChange: false,
 		"processing": true,
 		"ajax":
 		{
-			"url": `api/funcionarios/${idBarbearia}`,
+			"url": `api/funcionarios/${getIdBarbearia(getToken())}`,
 			'beforeSend': function (request) {
-		        request.setRequestHeader("Authorization", `Bearer ${token}`);
+		        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 		    },
 			dataSrc: ''
 		},
@@ -196,7 +182,7 @@ function montarDataTable()
 	    {
 			'mRender': function (data, type, row)
 			{
-				console.log(row)
+			
 				return `<button type="button" class="btn btn-secondary btn-sm viewEndereco"
 				                    tabindex="0" data-trigger="focus"
 									data-container="body" data-toggle="popover" tabindex="0"
@@ -232,6 +218,8 @@ function montarDataTable()
             className: 'btn-primary btn-novo',
             title: 'Clique para cadastrar um novo serviço',
             action: function ( e, dt, node, config ) {
+            	emailEdicao = null;
+            	loginEdicao = null;
                 $('.funcionario-form').slideDown('slow');
                 $(".listagem").slideUp('slow');
                 $(".btn-salvar").removeAttr('data-id');
@@ -294,8 +282,11 @@ function iniciarEdicao(tabelaBody)
 		$.ajax(
 				{
 					type: "PATCH",
-					url: "funcionarios/editar/" + $(this).attr('data-id'),
+					url: "api/funcionarios/" + $(this).attr('data-id'),
 					cache: false,
+					beforeSend: function (request) {
+						request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+				    },
 					error: function error(data)
 					{
 						lancarToastr("error",`${data.responseText}`);
@@ -307,7 +298,7 @@ function iniciarEdicao(tabelaBody)
 						$(".tile-title").text("Editar funcionário");
 						$("#nome").val(data.nome);
 						$("#telefone").val(data.telefone);
-						$("#email").val(data.email);
+						
 						$("#dataNascimento").val(data.dataNascimento);
 						
 						if(data.endereco){
@@ -320,8 +311,12 @@ function iniciarEdicao(tabelaBody)
 						}
 						$("#cargo").val(data.cargo);
 						if(data.usuario){
+							
 							$("#login").val(data.usuario.login).prop( "disabled", true ).attr("idUsuario", data.usuario.id);
+							loginEdicao = data.usuario.login;
 							$("#perfilAcesso").val(data.usuario.idPerfil);
+							$("#email").val(data.usuario.email);
+							emailEdicao = data.usuario.email;
 						}
 					}
 				});
@@ -346,7 +341,6 @@ function inciarExclusao(tabelaBody)
 		      		closeOnCancel: false
 		      	}, function(isConfirm) {
 		      		if (isConfirm) {
-		      			console.log(id)
 		      			excluir(id);
 		      		} else {
 		      			swal("Cancelado", "O funcionário não será excluido :)", "error");
@@ -358,60 +352,26 @@ function inciarExclusao(tabelaBody)
 
 function excluir(id)
 {
-	    console.log(id)
-
+	    swal.close();
+	    $('.modal-loading').modal('hide');
+	
 		$.ajax(
 		{
 			type: "DELETE",
-			url: "funcionarios/deletar/" + id,
+			url: "api/funcionarios/" + id,
 			cache: false,
+			beforeSend: function (request) {
+				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
 			error: function error(data)
 			{
-				toastr.options = {
-					"closeButton": true,
-					"debug": false,
-					"newestOnTop": true,
-					"progressBar": true,
-					"positionClass": "toast-top-right",
-					"preventDuplicates": true,
-					"onclick": null,
-					"showDuration": "300",
-					"hideDuration": "1000",
-					"timeOut": "2000",
-					"extendedTimeOut": "3000",
-					"showEasing": "swing",
-					"hideEasing": "linear",
-					"showMethod": "fadeIn",
-					"hideMethod": "fadeOut"
-				}
-				toastr["error"](`${data.responseText}`);
+				
+				lancarToastr("error",`${data.responseText}`);
 
 			},
 			success: function ()
 			{
-				$('#modal-excluir').modal('hide');
-				toastr.options = {
-					"closeButton": true,
-					"debug": false,
-					"newestOnTop": true,
-					"progressBar": true,
-					"positionClass": "toast-top-right",
-					"preventDuplicates": true,
-					"onclick": null,
-					"showDuration": "300",
-					"hideDuration": "1000",
-					"timeOut": "2000",
-					"extendedTimeOut": "3000",
-					"showEasing": "swing",
-					"hideEasing": "linear",
-					"showMethod": "fadeIn",
-					"hideMethod": "fadeOut",
-					"onHidden": function ()
-					{
-						window.location.reload();
-					}
-				}
-				toastr["success"](`Funcionário excluido com sucesso.`)
+				lancarToastr("success",`Funcionário excluido com sucesso.`,true);
 
 			}
 		});
@@ -445,6 +405,12 @@ jQuery.validator.addMethod("verificarUsuario", function(value, element,parametro
 	
 },'Nome de usuário já existente.');
 
+jQuery.validator.addMethod("verificarEmail", function(value, element,parametros) {
+	
+	return  !verificarEmail();
+	
+},'Email já utilizado.');
+
 	
 	$("#form-funcionario").validate(
 	{
@@ -467,6 +433,10 @@ jQuery.validator.addMethod("verificarUsuario", function(value, element,parametro
 			perfilAcesso:
 			{
 				required: true
+			},
+			email : {
+				required: true,
+				verificarEmail: true
 			}
 		},
 		messages : {
@@ -502,8 +472,11 @@ function preencherComboPerfil(){
 	$.ajax(
 			{
 				type: "GET",
-				url: "api/perfil/listar",
+				url: "api/perfis/listar",
 				cache: false,
+				beforeSend: function (request) {
+					request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+			    },
 				error: function error(data)
 				{
 					
@@ -525,28 +498,72 @@ function verificarUsuario(){
 	
 	var existe;
 	let login = $('#login').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `api/usuarios/verificarUsuario/${login}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					console.log(data)
-					existe = data;
-				}
-			});
 	
-	return existe;
+	
+		
+		if(login == loginEdicao) return false;
+		
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarUsuario/${login}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }
+
+function verificarEmail(){
+	
+	
+	
+	var existe;
+	let email = $('#email').val();
+	
+	
+		
+		if(email == emailEdicao) return false;
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarEmail/${email}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
+	
+}
+

@@ -15,6 +15,4 @@ public interface FuncionarioDAO {
 	public void excluir(Funcionario funcionario);
 	public List<Funcionario> listarPorCargo(Cargo cargo, int id_barbearia);
 	public Funcionario buscarPorIdUsuario(int idUsuario);
-	public boolean verificarEmail(String email);
-	public Funcionario buscarPorEmail(String email);
 }

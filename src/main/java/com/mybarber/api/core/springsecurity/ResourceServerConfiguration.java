@@ -51,6 +51,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	        .authorizeRequests()
 	        .antMatchers("/css/**", "/js/**", "/imagens/**","/pluginsAdd/**","/compiler/**","/img/**","/resources/**", "/webjars/**",
 	        		"/api/usuarios/verificarUsuario/{login}",
+	        		"/api/usuarios/verificarEmail/{email}",
 	        		"/resetar-senha",
 	        		"/registro",
 	        		"/resources/template/AdminLTE**",
