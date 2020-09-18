@@ -12,6 +12,8 @@ public interface UsuarioService {
 	
 	public boolean verificarUsuario(String usuario);
 	
+	public boolean verificarEmail(String email);
+	
 	public void esqueceuSenha(String email);
 	
 

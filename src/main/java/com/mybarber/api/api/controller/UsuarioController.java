@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
@@ -34,7 +35,14 @@ public class UsuarioController {
 		return new ResponseEntity<Boolean>(service.verificarUsuario(login) , HttpStatus.OK);
 	}
 	
-	@GetMapping("esqueceu-senha/{email}")
+	@GetMapping("verificarEmail/{email:.+}")
+	public ResponseEntity<Boolean> verificarEmail(@PathVariable("email") String email) {
+		
+
+		return new ResponseEntity<Boolean>(service.verificarEmail(email) , HttpStatus.OK);
+	}
+	
+	@GetMapping("esqueceu-senha/{email:.+}")
 	public ResponseEntity<Void> esqueceuSenha(@PathVariable("email") String email) {
 		
 		

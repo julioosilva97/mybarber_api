@@ -23,22 +23,11 @@ public class ClienteDAOImpl implements ClienteDAO {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
-	String salvar = "INSERT INTO cliente(nome, telefone, email, data_nascimento) VALUES (?, ?, ?, ?)";
-	
-	String buscarPorid = "select * from cliente where id = ?";
-	
-	String editar = """
-			UPDATE cliente SET  nome=?, telefone=?, email=?, data_nascimento=? WHERE id = ?
-			""";
-	
-	String listar = "select c.* from cliente c inner join cliente_barbearia cb on cb.id_cliente = c.id where cb.id_barbearia = ?";
-	
-	String excluir = "delete from cliente where id = ?";
-	
-	
 	
 	@Override
 	public void cadastrar(Cliente cliente) {
+		
+		String salvar = "INSERT INTO cliente(nome, telefone, data_nascimento) VALUES (?, ?, ?, ?)";
 		
 		try {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,7 +39,6 @@ public class ClienteDAOImpl implements ClienteDAO {
 					PreparedStatement ps = con.prepareStatement(salvar, new String[] { "id" });
 					ps.setString(1, cliente.getNome());
 					ps.setString(2, cliente.getTelefone());
-					ps.setString(3, cliente.getEmail());
 					ps.setObject(4, cliente.getDataNascimento());
 					
 					return ps;
@@ -67,8 +55,11 @@ public class ClienteDAOImpl implements ClienteDAO {
 
 	@Override
 	public Cliente buscarPorid(int id) {
+		
+		String buscarPorid = "select * from cliente where id = ?";
+		
 		return jdbcTemplate.queryForObject(buscarPorid, new Object[] { id }, (rs, rowNum) ->
-		new Cliente(rs.getInt("id"),rs.getString("nome"),rs.getString("telefone"),rs.getString("email"),rs.getDate("data_nascimento").toLocalDate() ,
+		new Cliente(rs.getInt("id"),rs.getString("nome"),rs.getString("telefone"),rs.getDate("data_nascimento").toLocalDate() ,
 				new Endereco(),
 				new Usuario()
 				));
@@ -77,24 +68,35 @@ public class ClienteDAOImpl implements ClienteDAO {
 	@Override
 	public void editar(Cliente cliente) {
 		
-		jdbcTemplate.update(editar, cliente.getNome(), cliente.getTelefone(),cliente.getEmail(), cliente.getDataNascimento(),cliente.getId());	
+		String editar = """
+				UPDATE cliente SET  nome=?, telefone=?, data_nascimento=? WHERE id = ?
+				""";
+		
+		
+		jdbcTemplate.update(editar, cliente.getNome(), cliente.getTelefone(), cliente.getDataNascimento(),cliente.getId());	
 		
 	}
 
 	@Override
 	public void excluir(int id) {
+		
+		String excluir = "delete from cliente where id = ?";
+
+		
 		jdbcTemplate.update(excluir, id);	
 		
 	}
 
 	@Override
 	public List<Cliente> listar(Barbearia barbearia) {
+		
+		String listar = "select c.* from cliente c inner join cliente_barbearia cb on cb.id_cliente = c.id where cb.id_barbearia = ?";
+
 		return jdbcTemplate.query(listar,  new Object[] { barbearia.getId() },
 				(rs, rowNum) ->
 		new Cliente(rs.getInt("id"), 
 				rs.getString("nome"), 
 				rs.getString("telefone"),
-				rs.getString("email"),
 				rs.getDate("data_nascimento").toLocalDate(),
 				new Endereco(),
 				new Usuario()

@@ -3,20 +3,23 @@
 	$(document).ready(function() {
 		
 		
+		$(window).on("beforeunload", function(e) {
+		    alert("call");
+		    console.log("this will be triggered");
+		});
+		
 		checkLogin();
 		
 	});
 	
-	function checkLogin(){
+	 function checkLogin(){
 		
-		if(localStorage.getItem("accessToken")){
-			
-		}else{
+		if(!sessionStorage.getItem("accessToken")){
 			window.location.href = "/login";
 		}
 	}
 
-	function lancarToastr(acao,mensagem){
+	function lancarToastr(acao,mensagem,reload=false){
 		
 		toastr.options = {
 					"closeButton": true,
@@ -36,7 +39,7 @@
 					"hideMethod": "fadeOut",
 					"onHidden": function ()
 	  				{
-	  					if(acao=='success')window.location.reload();
+	  					if(reload)window.location.reload();
 	  				}
 				}
 				toastr[acao](mensagem);
@@ -66,7 +69,18 @@
 	    return JSON.parse(jsonPayload);
 	};
 
+	function getIdBarbearia(token){
+		
+		let json = parseJwt(token);
+		
+		return json.dadosUsuario.idBarbearia;
+	}
 
 
-
+	function getToken(){
+		
+		return sessionStorage.getItem("accessToken");
+	}
+	
+	
 

@@ -1,28 +1,26 @@
 package com.mybarber.api.domain.service;
 
-import java.util.EnumMap;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
 
 import com.mybarber.api.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Funcionario;
-import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import com.mybarber.api.domain.entity.Usuario;
 import com.mybarber.api.domain.repository.BarbeariaDAO;
 import com.mybarber.api.domain.repository.EnderecoDAO;
 import com.mybarber.api.domain.repository.FuncionarioDAO;
 import com.mybarber.api.domain.repository.HorarioAtendimentoDAO;
 import com.mybarber.api.domain.repository.PerfilDAO;
-import com.mybarber.api.domain.repository.TokenDeVerificacaoDAO;
 import com.mybarber.api.domain.repository.UsuarioDAO;
-import com.mybarber.api.domain.repository.UsuarioPerfilDAO;
 import com.mybarber.api.domain.util.Cargo;
 import com.mybarber.api.domain.util.EnviarEmail;
 
@@ -39,8 +37,6 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Autowired
     UsuarioDAO daoUsuario;
 
-    @Autowired
-    UsuarioPerfilDAO daoUsuarioPerfil;
 
     @Autowired
     BarbeariaDAO daoBarbearia;
@@ -60,14 +56,14 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     @Transactional
     public void salvar(Map<String, Object> map) {
+    	
 
         var funcionario = (Funcionario) map.get("funcionario");
         var primeiroFuncionario = (Boolean) map.get("primeiroFuncionario");
 
-        var login = funcionario.getUsuario().getLogin();
-        if (daoUsuario.buscarPorLogin(login) == null) {
+        if (!daoUsuario.verificarLogin(funcionario.getUsuario().getLogin())) {
 
-            if (!daoFuncionario.verificarEmail(funcionario.getEmail())) {
+            if (!daoUsuario.verificarEmail(funcionario.getUsuario().getEmail())) {
 
                 if (funcionario.getEndereco() != null) {
                     funcionario.setEndereco(daoEndereco.salvar(funcionario.getEndereco()));
@@ -85,7 +81,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
                 daoUsuario.salvar(funcionario.getUsuario());
                 daoFuncionario.salvar(funcionario);
-                daoUsuarioPerfil.salvar(funcionario.getUsuario());
+                
 
                // var token = tokenService.criarToken(funcionario);
 
@@ -114,7 +110,6 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         if (usuario.getSenha() != "") {
             funcionario.getUsuario().setSenha(usuario.getSenha());
         }
-        daoUsuarioPerfil.editar(usuario);
         daoUsuario.alterar(funcionario.getUsuario());
     }
 
@@ -139,6 +134,9 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public void excluir(int id) {
 
+    	
+    	//verificar se o funcionario não tem cadastro como cliente, se tiver manter usuario e excluir da tabela funcionario
+    	
         Funcionario funcionario = new Funcionario();
         funcionario = buscar(id);
 
@@ -146,14 +144,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
             horarioAtendimentoDAO.excluir(funcionario.getId());
             daoFuncionario.excluir(funcionario);
-            daoUsuarioPerfil.excluir(funcionario.getUsuario());
             daoUsuario.excluir(funcionario.getUsuario());
             daoEndereco.excluir(funcionario.getEndereco());
 
         } else {
             //tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());
             daoFuncionario.excluir(funcionario);
-            daoUsuarioPerfil.excluir(funcionario.getUsuario());
             daoUsuario.excluir(funcionario.getUsuario());
             daoEndereco.excluir(funcionario.getEndereco());
         }
@@ -196,7 +192,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public boolean verificarEmail(String email) {
 
-        return daoFuncionario.verificarEmail(email);
+        return false; //daoFuncionario.verificarEmail(email);
     }
 
 }

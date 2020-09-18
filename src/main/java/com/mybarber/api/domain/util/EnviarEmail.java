@@ -66,7 +66,7 @@ public class EnviarEmail {
 		try {
 			var email = new Email();
 			email.setDe("MyBarber <mybarber.btech@gmail.com>");
-			email.setPara(pessoa.getEmail());
+			//email.setPara(pessoa.getEmail()); passar email do usuario
 			
 			Map<String, Object> map = new HashMap<>();
 			map.put("token", token.getToken());

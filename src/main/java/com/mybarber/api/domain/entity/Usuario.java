@@ -19,6 +19,8 @@ public class Usuario {
     private boolean ativo;
 
     private Perfil perfil;
+    
+    private String email;
 
     public int getId() {
         return id;
@@ -72,12 +74,13 @@ public class Usuario {
 
 
     public Usuario(int id, String login,
-                   String senha, boolean ativo, Perfil perfil) {
+                   String senha, boolean ativo, Perfil perfil,String email) {
         this.id = id;
         this.login = login;
         this.senha = senha;
         this.ativo = ativo;
         this.perfil = perfil;
+        this.email = email;
     }
 
 
@@ -115,4 +118,12 @@ public class Usuario {
         return modelMapper.map(usuarioDTO, Usuario.class);
 
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

@@ -38,6 +38,8 @@ public class FuncionarioController {
         service.salvar(map);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
+    
+    
 
     @PatchMapping("/{id}")
     public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {

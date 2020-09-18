@@ -1,6 +1,5 @@
 package com.mybarber.api.domain.repository;
 
-import ch.qos.logback.core.subst.Token;
 import com.mybarber.api.domain.entity.Usuario;
 
 public interface UsuarioDAO {
@@ -14,6 +13,8 @@ public interface UsuarioDAO {
 	public void alterarSenha(Usuario usuario);
 
 	public Usuario buscarPorLogin(String login);
+	public boolean verificarLogin(String login);
+	public boolean verificarEmail(String email);
 	/*public void alterarSenha(Usuario usuario);*/
 	
 
