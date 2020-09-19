@@ -41,7 +41,7 @@ public class ServicoController {
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("listar")
+	@GetMapping("{idBarbearia}")
 	public ResponseEntity<List<ServicoDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
 
 		var barbearia = new Barbearia();

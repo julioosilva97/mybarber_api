@@ -67,6 +67,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	        		"/funcionarios/salvar-primeiro-funcionario",
 	        		"/servicos",
                     "/funcionarios",
+                    "/clientes",
                     "/agenda",
                     "/usuarios/reset",
                     "/").permitAll()
