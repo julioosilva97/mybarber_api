@@ -56,7 +56,7 @@ public class ServicoController {
 		return new ResponseEntity <List<ServicoDTO>>(servicosDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("editar")
+	@PutMapping
 	public ResponseEntity<Void> editar(@Valid @RequestBody ServicoInput servicoDTO) {
 
 		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);

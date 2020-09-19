@@ -23,7 +23,9 @@ spring:
           starttls :
             enable : true
             required : true
-
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 #secutiry
 security:
   jwt:

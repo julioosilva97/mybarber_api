@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -18,7 +19,10 @@ public class ServicoDTO {
 	 private int id;
 	private String descricao;
 	private float valor;
+	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime tempo;
+    @NotNull
+    private Long idBarbearia;
 	
 	public String getDescricao() {
 		return descricao;
@@ -39,7 +43,12 @@ public class ServicoDTO {
 		this.tempo = tempo;
 	}
 	
-	
+	public Long getIdBarbearia() {
+		return idBarbearia;
+	}
+	public void setIdBarbearia(Long idBarbearia) {
+		this.idBarbearia = idBarbearia;
+	}
 	public int getId() {
 		return id;
 	}

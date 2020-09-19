@@ -41,19 +41,25 @@ function enviarForm(acao, id)
 	var data = {
 		id: id,
 		descricao: $("#descricao").val(),
-		valor: $("#valor").val(),
-		tempo: $("#tempo").val()
+		valor: $("#valor").val().replace(",", "."),
+		tempo: $("#tempo").val(),
+		idBarbearia: getIdBarbearia(getToken())
 	}
-
+	
+	
+var verbo;
+	
+	if(acao=="cadastrar"){
+		var verbo = "POST";
+	}else{
+		var verbo = "PUT";
+	}
+	console.log(verbo)
 	console.log(data)
 	$.ajax(
 	{
-		type: 'POST',
-		url: `api/servicos/${acao}`,
-		'beforeSend': function (request) {
-	        request.setRequestHeader("Authorization", `Bearer ${token}`);
-	    },
-
+		type: verbo,
+		url: `api/servicos`,
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(data),
 		beforeSend: function (request) {
@@ -61,15 +67,18 @@ function enviarForm(acao, id)
 	    },
 		error: function error(data)
 		{
-			console.log(data)
-			lancarToastr("error",data);
+			fecharModalLoading();
+			console.log(data);
+			if(data.status == 400){
+				lancarToastr("error",`${data.responseJSON.titulo}`);
+			}else{
+				lancarToastr("error",`${data.responseJSON.error_description}`);
+			}
 
 		},
 		//dataType: 'json',
 		success: function success(data)
 		{
-			$('.modal-loading').modal('show');
-			$('#modal-servico').modal('hide');
            
 			lancarToastr("success",`Serviço ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`);
 			
@@ -112,7 +121,8 @@ function montarDataTable()
 		},
 		{
 			"data": "tempo",render: function (data, type, row) {
-				
+				console.log(data);
+				//return data;
                 return moment(getDateFromHours(data)).format('HH:mm')
             }
 		},
