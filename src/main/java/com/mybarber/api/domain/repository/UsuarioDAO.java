@@ -13,6 +13,7 @@ public interface UsuarioDAO {
 	public void alterarSenha(Usuario usuario);
 
 	public Usuario buscarPorLogin(String login);
+	public Usuario buscarPorEmail(String email);
 	public boolean verificarLogin(String login);
 	public boolean verificarEmail(String email);
 	/*public void alterarSenha(Usuario usuario);*/

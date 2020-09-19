@@ -1,6 +1,7 @@
 package com.mybarber.api.api.dto.usuario;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 public class UsuarioDTO {
 
@@ -10,6 +11,7 @@ public class UsuarioDTO {
 	private int idPerfil;
 	private boolean ativo;
 	@Email
+	@NotBlank
     private String email;
 	
 	public String getEmail() {

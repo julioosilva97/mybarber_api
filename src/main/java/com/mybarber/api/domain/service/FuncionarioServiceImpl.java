@@ -99,18 +99,53 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public void alterar(Funcionario funcionario) {
 
-        if (funcionario.getEndereco() != null) {
-            daoEndereco.alterar(funcionario.getEndereco());
-        }
+    	
+    	if(funcionario.getId()!=0) {
+    		
+    		
+    		if(funcionario.getUsuario().getId()!=0) {
+    			
+    			var usuarioEdicao = funcionario.getUsuario();
+    			
+    			var usuarioAntigoLogin = daoUsuario.buscarPorLogin(usuarioEdicao.getLogin());
+    			
+    			if(usuarioAntigoLogin == null || usuarioAntigoLogin.getId() == usuarioEdicao.getId()) {
+    				
+    				var usuarioAntigoEmail = daoUsuario.buscarPorEmail(usuarioEdicao.getEmail());
+    				
+    				if(usuarioAntigoEmail == null || usuarioAntigoEmail.getId() == usuarioEdicao.getId()) {
+    					
+    					if (funcionario.getEndereco() != null) {
+    			            daoEndereco.alterar(funcionario.getEndereco());
+    			        }
+    			        
+    			        daoFuncionario.alterar(funcionario);
+    			        
+    			      //para pegar o id e senha do usuario
+    			        Usuario usuario = daoUsuario.buscar(funcionario.getUsuario().getId());
+    			        if (usuario.getSenha() != "") {
+    			            funcionario.getUsuario().setSenha(usuario.getSenha());
+    			        }
+    			        daoUsuario.alterar(funcionario.getUsuario());
+    					
+    				}else{
+    					throw new NegocioException("Já existe um usuário com email : "+usuarioEdicao.getEmail());
+    				}
+    				
+    			}else {
+    				throw new NegocioException("Já existe um usuário com login : "+usuarioEdicao.getLogin());
+    			}
+    				
+    			
+    		}else {
+        		throw new NegocioException("Usuário sem id");
 
-        daoFuncionario.alterar(funcionario);
-
-        //para pegar o id e senha do usuario
-        Usuario usuario = daoUsuario.buscar(funcionario.getUsuario().getId());
-        if (usuario.getSenha() != "") {
-            funcionario.getUsuario().setSenha(usuario.getSenha());
-        }
-        daoUsuario.alterar(funcionario.getUsuario());
+    		}
+    		
+    	}else {
+    		throw new NegocioException("Funcionário sem id");
+    	}
+    	
     }
 
 

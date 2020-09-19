@@ -82,5 +82,12 @@
 		return sessionStorage.getItem("accessToken");
 	}
 	
+	function fecharModalLoading(){
+		
+		setTimeout(function () {
+			$('.modal-loading').modal('hide');
+	   }, 1000);
+	}
+	
 	
 

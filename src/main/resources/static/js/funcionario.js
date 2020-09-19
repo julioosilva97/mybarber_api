@@ -94,31 +94,33 @@ $(document).ready(function ()
 
 function enviarForm(acao, id)
 {  
-	$('.modal-loading').modal('show');
-	
 	
 	
 	var sendInfo = {
 			id : id,
 			nome : $("#nome").val(),
 			telefone : $("#telefone").val(),
-			email : $("#email").val(),
 			dataNascimento: $("#dataNascimento").val(),
 			cargo : $("#cargo").val(),
-			usuario:{id: $("#login").attr('idUsuario'),login: $("#login").val(),idPerfil :$("#perfilAcesso").val()},
+			usuario:{id: $("#login").attr('idUsuario'),
+				     login: $("#login").val(),
+				     idPerfil :$("#perfilAcesso").val(),
+				     email : $("#email").val()},
 			idBarbearia: getIdBarbearia(getToken()),
 			primeiroFuncionario : false
 	}
 	
-	console.log(sendInfo)
+	
 	
 	var verbo;
 	
-	if(acao="cadastrar"){
+	if(acao=="cadastrar"){
 		var verbo = "POST";
 	}else{
 		var verbo = "PUT";
 	}
+	console.log(acao)
+	console.log(verbo)
 
 	$.ajax(
 	{
@@ -131,30 +133,36 @@ function enviarForm(acao, id)
 	    },
 		error: function error(data)
 		{
-			$('.modal-loading').modal('hide');
-			
-			console.log(data)
-			
+			fecharModalLoading();
 			if(data.status == 400){
 				lancarToastr("error",`${data.responseJSON.titulo}`);
 			}else{
 				lancarToastr("error",`${data.responseJSON.error_description}`);
 			}
-
+			
 		},
 		//dataType: 'json',
 		success: function success(data)
 		{
-			$('.modal-loading').modal('hide');
-			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`);
+			
+			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
+			
+		/*setTimeout(function () {
+			$('.modal-loading').modal('toggle');
+			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
+       	
+       }, 1000);*/
+			
 
 		}
+		
+		
 	});
 }
 
 function montarDataTable()
 {
-	
+	$('.modal-loading').modal('show');
 	
 	
 	var table = $('#table-funcionarios').DataTable(
@@ -177,7 +185,7 @@ function montarDataTable()
 	    }, {
 	        "data" : "telefone"
 	    }, {
-	        "data" : "email"
+	        "data" : "usuario.email"
 	    },
 	    {
 			'mRender': function (data, type, row)
@@ -254,17 +262,23 @@ function montarDataTable()
 				"sSortDescending": ": Ordenar colunas de forma descendente"
 			}
 		},
+		"fnDrawCallback": function(oSettings){
+			fecharModalLoading()
+        },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-funcionarios_wrapper .col-md-6:eq(0)' );
 			$('.btn-novo').removeClass('btn-secondary');
+			
 		}
-
+		
 	});
 	
 	
 	$(function () {
 		  $('[data-toggle="popover"]').popover();
 	});
+	
+	
 }
 
 
@@ -460,7 +474,7 @@ jQuery.validator.addMethod("verificarEmail", function(value, element,parametros)
 		},
 		submitHandler: function submitHandler(form)
 		{
-             
+			$('.modal-loading').modal('show');
 			enviarForm($(".btn-salvar").attr("acao"), $(".btn-salvar").attr("data-id"))
 
 		}
