@@ -114,18 +114,16 @@ function enviarForm(acao, id)
 	
 	var verbo;
 	
-	let token = localStorage.getItem("accessToken");
-	let json = parseJwt(token);
-	let idBarbearia = json.dadosUsuario.idBarbearia;
-	
-	
+	if(acao="cadastrar"){
+		var verbo = "POST";
+	}else{
+		var verbo = "PUT";
+	}
+
 	$.ajax(
 	{
-		type: 'POST',
-		url: `funcionarios/${acao}`,
-		'beforeSend': function (request) {
-	        request.setRequestHeader("Authorization", `Bearer ${token}`);
-	    },
+		type: verbo,
+		url: `api/funcionarios`,
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
 		beforeSend: function (request) {
@@ -568,4 +566,3 @@ function verificarEmail(){
 	
 	
 }
-

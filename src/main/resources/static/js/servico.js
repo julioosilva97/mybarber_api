@@ -36,12 +36,7 @@ function enviarForm(acao, id)
 	let json = parseJwt(token);
 	let idBarbearia = json.dadosUsuario.idBarbearia;
 
-	var verbo;
-	if(!id){
-		verbo = 'POST';
-	}else{
-		verbo = 'PUT';
-	}
+
 	
 	var data = {
 		id: id,
@@ -53,14 +48,17 @@ function enviarForm(acao, id)
 	console.log(data)
 	$.ajax(
 	{
-		type: verbo,
-		url: `/api/servicos/${acao}`,
+		type: 'POST',
+		url: `api/servicos/${acao}`,
 		'beforeSend': function (request) {
 	        request.setRequestHeader("Authorization", `Bearer ${token}`);
 	    },
 
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(data),
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
 		error: function error(data)
 		{
 			console.log(data)
@@ -96,9 +94,9 @@ function montarDataTable()
 		"processing": true,
 		"ajax":
 		{
-			"url": "api/servicos/listar",
+			"url": `api/servicos/${getIdBarbearia(getToken())}`,
 			'beforeSend': function (request) {
-		        request.setRequestHeader("Authorization", `Bearer ${token}`);
+		        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 		    },
 
 			dataSrc: ''
