@@ -43,7 +43,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 				ps.setString(1, usuario.getLogin());
 				ps.setString(2, usuario.getSenha());
 				ps.setBoolean(3, false);
-				ps.setString(3, usuario.getEmail());
+				ps.setString(4, usuario.getEmail());
 				return ps;
 			}
 		}, keyHolder);
