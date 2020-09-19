@@ -99,6 +99,7 @@ function enviarForm(acao, id)
 	var sendInfo = {
 			id : id,
 			nome : $("#nome").val(),
+			sobrenome : $("#sobrenome").val(),
 			telefone : $("#telefone").val(),
 			dataNascimento: $("#dataNascimento").val(),
 			cargo : $("#cargo").val(),
@@ -311,6 +312,7 @@ function iniciarEdicao(tabelaBody)
 						
 						$(".tile-title").text("Editar funcionário");
 						$("#nome").val(data.nome);
+						$("#sobrenome").val(data.sobrenome);
 						$("#telefone").val(data.telefone);
 						
 						$("#dataNascimento").val(data.dataNascimento);

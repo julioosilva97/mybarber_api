@@ -32,8 +32,6 @@ $(document).ready(function ()
 function enviarForm(acao, id)
 {
 
-
-	
        
 	var sendInfo = {
 			id : id,
@@ -128,7 +126,10 @@ function montarDataTable()
 		"processing": true,
 		"ajax":
 		{
-			"url": "api/clientes/listar",
+			"url": `api/clientes/${getIdBarbearia(getToken())}`,
+			'beforeSend': function (request) {
+		        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
 			dataSrc: ''
 		},
 		"columns": [

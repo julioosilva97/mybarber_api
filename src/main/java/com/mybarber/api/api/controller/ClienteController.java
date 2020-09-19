@@ -66,8 +66,8 @@ public class ClienteController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
-	@GetMapping("listar")
-	public ResponseEntity<List<ClienteDTO>> listar(@PathVariable ("idbarbearia") int idBarbearia) {
+	@GetMapping("{idBarbearia}")
+	public ResponseEntity<List<ClienteDTO>> listar(@PathVariable ("idBarbearia") int idBarbearia) {
 		var barbearia = new Barbearia();
 		barbearia.setId(idBarbearia);
 		
