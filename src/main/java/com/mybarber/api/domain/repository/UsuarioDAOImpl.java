@@ -23,9 +23,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	
 
 	
-
-	String alterar = "update usuario set login = ?, senha = ? where id =?";
-	
 	String buscarportoken = "SELECT * FROM usuario WHERE reset_token = ?";
 	String alterarsenha = "update usuario set senha =?, ativo=? where id =?";
 
@@ -74,9 +71,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	@Override
 	public void alterar(Usuario usuario) {
 		
-		
 
-		jdbcTemplate.update(alterar, usuario.getLogin(), usuario.getSenha(), usuario.getId());
+		String alterar = "update usuario set login = ?, senha = ?, email = ? where id =?";
+
+		jdbcTemplate.update(alterar, usuario.getLogin(), usuario.getSenha(),usuario.getEmail(),usuario.getId());
 		
 		String alterarUsuarioPerfil = "update usuario_perfil set id_perfil = ? where id_usuario= ?";
 		jdbcTemplate.update(alterarUsuarioPerfil, usuario.getPerfil().getId(),usuario.getId());
@@ -133,6 +131,20 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
 		return jdbcTemplate.queryForObject(verificarEmail, new Object[] { email }, Boolean.class);
 		
+	}
+
+	@Override
+	public Usuario buscarPorEmail(String email) {
+		
+		String buscarPorEmail = "select * from usuario u where u.email = ?";
+
+		try {
+			return jdbcTemplate.queryForObject(buscarPorEmail, new Object[] { email },
+					(rs, rowNum) -> new Usuario(rs.getInt("id"), rs.getString("login"), rs.getBoolean("ativo")));
+
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
