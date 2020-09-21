@@ -7,7 +7,7 @@ import com.mybarber.api.domain.entity.Cliente;
 
 public interface ClienteService {
 
-	public void cadastrar(Cliente cliente, Barbearia barbearia);
+	public void cadastrar(Cliente cliente, int idBarbearia);
 
 	public Cliente buscarPorid(int id);
 
@@ -16,6 +16,5 @@ public interface ClienteService {
 	public void excluir(int id);
 
 	public List<Cliente> listar(Barbearia barbearia);
-	public boolean verificarEmail(String email);
 
 }

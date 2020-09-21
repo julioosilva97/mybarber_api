@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.cliente.ClienteDTO;
+import com.mybarber.api.api.dto.cliente.ClienteInput;
 import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Cliente;
@@ -33,17 +34,19 @@ public class ClienteController {
 	@Autowired
 	ClienteService service;
 
-	@PostMapping("cadastrar")
-	public ResponseEntity<Void> cadatrar(@RequestBody ClienteDTO clienteDTO, Barbearia barbearia) {
+	@PostMapping
+	public ResponseEntity<Void> cadatrar(@RequestBody ClienteInput clienteInput) {
 		
-		var cliente = (Cliente) ConverterDTO.toDoMain(clienteDTO, Cliente.class);
+		var idBarberia = clienteInput.getIdBarbearia();
+		
+		var cliente = (Cliente) ConverterDTO.toDoMain(clienteInput, Cliente.class);
 
-		service.cadastrar(cliente, barbearia);
+		service.cadastrar(cliente, idBarberia);
 
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
-	@PatchMapping("/editar/{id}")
+	@PatchMapping("{id}")
 	public ResponseEntity<ClienteDTO> iniciarEdicao(@PathVariable("id") int id) {
 		var cliente = service.buscarPorid(id);
 
@@ -51,15 +54,15 @@ public class ClienteController {
 		return new ResponseEntity<ClienteDTO>(clienteDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("/editar")
-	public ResponseEntity<Void> editar(@RequestBody ClienteDTO clienteDTO) {
+	@PutMapping
+	public ResponseEntity<Void> editar(@RequestBody ClienteInput clienteDTO) {
 		
-		var cliente = (Cliente)ConverterDTO.toDoMain(clienteDTO, ClienteDTO.class);
+		var cliente = (Cliente)ConverterDTO.toDoMain(clienteDTO, Cliente.class);
 		service.editar(cliente);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
-	@DeleteMapping("/deletar/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
 
 		service.excluir(id);
@@ -67,21 +70,16 @@ public class ClienteController {
 	}
 
 	@GetMapping("{idBarbearia}")
-	public ResponseEntity<List<ClienteDTO>> listar(@PathVariable ("idBarbearia") int idBarbearia) {
+	public ResponseEntity<List<ClienteInput>> listar(@PathVariable ("idBarbearia") int idBarbearia) {
 		var barbearia = new Barbearia();
 		barbearia.setId(idBarbearia);
 		
 		var clientes = service.listar(barbearia);
 		var clienteDTO = clientes.stream()
-				                 .map(doMain -> (ClienteDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
+				                 .map(doMain -> (ClienteInput) ConverterDTO.toDTO(doMain, ClienteInput.class))
 				                 .collect(Collectors.toList());
 		
-		return new ResponseEntity<List<ClienteDTO>>(clienteDTO,HttpStatus.OK);
+		return new ResponseEntity<List<ClienteInput>>(clienteDTO,HttpStatus.OK);
 	}
 	
-	@GetMapping("verificarEmail/{email}")
-	public ResponseEntity<Boolean> verificarUsuario(@PathVariable("email") String email) {
-
-		return new ResponseEntity<Boolean>(service.verificarEmail(email) , HttpStatus.OK);
-	}
 }

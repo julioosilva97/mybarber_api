@@ -24,6 +24,7 @@ spring:
             enable : true
             required : true
 
+
 #secutiry
 security:
   jwt:

@@ -71,9 +71,17 @@ public class Usuario {
 
     public Usuario() {
     }
+    
+    public Usuario(String email) {
+		this.email = email;
+	}
+    
+    public Usuario(int id, String email) {
+    	this.id = id;
+		this.email = email;
+	}
 
-
-    public Usuario(int id, String login,
+	public Usuario(int id, String login,
                    String senha, boolean ativo, Perfil perfil,String email) {
         this.id = id;
         this.login = login;

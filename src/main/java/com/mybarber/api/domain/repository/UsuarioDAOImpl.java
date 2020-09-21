@@ -37,8 +37,18 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = con.prepareStatement(salvar, new String[] { "id" });
-				ps.setString(1, usuario.getLogin());
-				ps.setString(2, usuario.getSenha());
+				if(usuario.getLogin()!=null) {
+					ps.setString(1, usuario.getLogin());
+				}else {
+					ps.setNull(1, java.sql.Types.VARCHAR);
+				}
+				
+				if(usuario.getSenha()!=null) {
+					ps.setString(2, usuario.getSenha());
+				}else{
+					ps.setNull(2, java.sql.Types.VARCHAR);
+				}
+				
 				ps.setBoolean(3, false);
 				ps.setString(4, usuario.getEmail());
 				return ps;
