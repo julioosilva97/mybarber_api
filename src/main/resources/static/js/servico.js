@@ -13,6 +13,8 @@ $(document).ready(function ()
 	iniciarEdicao(tabelaBody);
 
 	inciarExclusao(tabelaBody);
+	
+	cadastrarPromocao(tabelaBody);
 
 	
 	
@@ -31,10 +33,8 @@ $(document).ready(function ()
 
 function enviarForm(acao, id)
 {
+	$('.modal-loading').modal('show');
 	
-	let token = localStorage.getItem("accessToken");
-	let json = parseJwt(token);
-	let idBarbearia = json.dadosUsuario.idBarbearia;
 
 
 	
@@ -80,7 +80,7 @@ var verbo;
 		success: function success(data)
 		{
            
-			lancarToastr("success",`Serviço ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`);
+			lancarToastr("success",`Serviço ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
 			
 
 		}
@@ -89,6 +89,10 @@ var verbo;
 
 function montarDataTable()
 {
+	
+	
+
+	$('.modal-loading').modal('show');
 	
 	let token = localStorage.getItem("accessToken");
 	let json = parseJwt(token);
@@ -130,7 +134,8 @@ function montarDataTable()
 			'mRender': function (data, type, row)
 			{
 				return `<a sec:authorize="hasRole('EDITAR_SERVICO')" type="button" class="btn btn-secondary btn-sm btn-editar" title="Editar serviço" data-id="${row.id}" data-toggle="modal" ><i class="fa fa-lg fa-edit"></i></a>
-            <a sec:authorize="hasRole('EXCLUIR_SERVICO')" type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>`
+            <a sec:authorize="hasRole('EXCLUIR_SERVICO')" type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>
+             <a sec:authorize="hasRole('CADASTRAR_PROMOCAO')" type="button" class="btn btn-primary btn-sm btn-promocao" data-toggle="modal" href="#modal-excluir" title="Cadastrar Promoção" data-id="${row.id}" ><i class="fa fa-lg fa-percent"></i></a>`
 			},
 		}],
 		buttons: [ {
@@ -143,7 +148,8 @@ function montarDataTable()
                 $(".btn-salvar").removeAttr('data-id');
         		$(".btn-salvar").attr("acao", "cadastrar");
             }
-        } ],
+        },
+        ],
 		"oLanguage":
 		{
 			"sEmptyTable": "Não foi encontrado nenhum registo",
@@ -170,6 +176,9 @@ function montarDataTable()
 				"sSortDescending": ": Ordenar colunas de forma descendente"
 			}
 		},
+		"fnDrawCallback": function(oSettings){
+			fecharModalLoading()
+        },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-servicos_wrapper .col-md-6:eq(0)' );
 			$('.btn-novo').removeClass('btn-secondary');
@@ -193,6 +202,17 @@ function iniciarEdicao(tabelaBody)
 		$("#tempo").val($(this).closest("tr").find('td:eq(2)').text());
 		$(".btn-salvar").attr("data-id", $(this).attr('data-id'));
 	});
+}
+
+function cadastrarPromocao(tabelaBody) {
+	tabelaBody.on("click", "a.btn-promocao", function (e) {
+		$('.promocao-form').slideDown('slow');
+		 $(".listagem").slideUp('slow');
+	
+		 $(".btn-salvar").attr("acao", "cadastrar");
+		 $(".btn-salvar").attr("data-id", $(this).attr('data-id'));
+		 
+	})
 }
 
 function inciarExclusao(tabelaBody)
