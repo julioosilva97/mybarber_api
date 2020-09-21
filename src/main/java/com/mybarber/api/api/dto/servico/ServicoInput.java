@@ -23,6 +23,8 @@ public class ServicoInput {
 		@JsonProperty("valor")
 		private float valor;
 	    
+	    @NotNull
+	    private Long idBarbearia;
 		@NotNull
 		private LocalTime tempo;
 
@@ -57,6 +59,15 @@ public class ServicoInput {
 		public void setTempo(LocalTime tempo) {
 			this.tempo = tempo;
 		}
+
+		public Long getIdBarbearia() {
+			return idBarbearia;
+		}
+
+		public void setIdBarbearia(Long idBarbearia) {
+			this.idBarbearia = idBarbearia;
+		}
+		
 		
 		
 }

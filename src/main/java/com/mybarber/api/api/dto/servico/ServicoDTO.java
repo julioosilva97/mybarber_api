@@ -21,6 +21,8 @@ public class ServicoDTO {
 	private float valor;
 	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime tempo;
+    @NotNull
+    private Long idBarbearia;
 	
 	public String getDescricao() {
 		return descricao;
@@ -41,7 +43,12 @@ public class ServicoDTO {
 		this.tempo = tempo;
 	}
 	
-	
+	public Long getIdBarbearia() {
+		return idBarbearia;
+	}
+	public void setIdBarbearia(Long idBarbearia) {
+		this.idBarbearia = idBarbearia;
+	}
 	public int getId() {
 		return id;
 	}

@@ -20,7 +20,8 @@ public class ServicoServiceImpl implements ServicoService{
 	@Override
 	public List<Servico> listar(Barbearia barbearia) {
 		
-		return dao.listar(barbearia.getId());
+		var show = dao.listar(barbearia.getId());
+		return show;
 	}
 
 	@Override

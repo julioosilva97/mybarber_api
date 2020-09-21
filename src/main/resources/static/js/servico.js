@@ -13,6 +13,8 @@ $(document).ready(function ()
 	iniciarEdicao(tabelaBody);
 
 	inciarExclusao(tabelaBody);
+	
+	cadastrarPromocao(tabelaBody);
 
 	
 	
@@ -31,41 +33,54 @@ $(document).ready(function ()
 
 function enviarForm(acao, id)
 {
+	$('.modal-loading').modal('show');
+	
 
-	var verbo;
-	if(!id){
-		verbo = 'POST';
-	}else{
-		verbo = 'PUT';
-	}
+
 	
 	var data = {
 		id: id,
 		descricao: $("#descricao").val(),
-		valor: $("#valor").val(),
-		tempo: $("#tempo").val()
+		valor: $("#valor").val().replace(",", "."),
+		tempo: $("#tempo").val(),
+		idBarbearia: getIdBarbearia(getToken())
 	}
-
+	
+	
+var verbo;
+	
+	if(acao=="cadastrar"){
+		var verbo = "POST";
+	}else{
+		var verbo = "PUT";
+	}
+	console.log(verbo)
 	console.log(data)
 	$.ajax(
 	{
 		type: verbo,
-		url: `/api/servicos/${acao}`,
+		url: `api/servicos`,
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(data),
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
 		error: function error(data)
 		{
-			console.log(data)
-			lancarToastr("error",data);
+			fecharModalLoading();
+			console.log(data);
+			if(data.status == 400){
+				lancarToastr("error",`${data.responseJSON.titulo}`);
+			}else{
+				lancarToastr("error",`${data.responseJSON.error_description}`);
+			}
 
 		},
 		//dataType: 'json',
 		success: function success(data)
 		{
-			$('.modal-loading').modal('show');
-			$('#modal-servico').modal('hide');
            
-			lancarToastr("success",`Serviço ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`);
+			lancarToastr("success",`Serviço ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
 			
 
 		}
@@ -76,8 +91,13 @@ function montarDataTable()
 {
 	
 	
+
+	$('.modal-loading').modal('show');
 	
-	    
+	let token = localStorage.getItem("accessToken");
+	let json = parseJwt(token);
+	let idBarbearia = json.dadosUsuario.idBarbearia;
+
 	
 	var table = $('#table-servicos').DataTable(
 	{
@@ -87,7 +107,11 @@ function montarDataTable()
 		"processing": true,
 		"ajax":
 		{
-			"url": "api/servicos/listar",
+			"url": `api/servicos/${getIdBarbearia(getToken())}`,
+			'beforeSend': function (request) {
+		        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
+
 			dataSrc: ''
 		},
 		"columns": [
@@ -101,7 +125,8 @@ function montarDataTable()
 		},
 		{
 			"data": "tempo",render: function (data, type, row) {
-				
+				console.log(data);
+				//return data;
                 return moment(getDateFromHours(data)).format('HH:mm')
             }
 		},
@@ -109,7 +134,8 @@ function montarDataTable()
 			'mRender': function (data, type, row)
 			{
 				return `<a sec:authorize="hasRole('EDITAR_SERVICO')" type="button" class="btn btn-secondary btn-sm btn-editar" title="Editar serviço" data-id="${row.id}" data-toggle="modal" ><i class="fa fa-lg fa-edit"></i></a>
-            <a sec:authorize="hasRole('EXCLUIR_SERVICO')" type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>`
+            <a sec:authorize="hasRole('EXCLUIR_SERVICO')" type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>
+             <a sec:authorize="hasRole('CADASTRAR_PROMOCAO')" type="button" class="btn btn-primary btn-sm btn-promocao" data-toggle="modal" href="#modal-excluir" title="Cadastrar Promoção" data-id="${row.id}" ><i class="fa fa-lg fa-percent"></i></a>`
 			},
 		}],
 		buttons: [ {
@@ -122,7 +148,8 @@ function montarDataTable()
                 $(".btn-salvar").removeAttr('data-id');
         		$(".btn-salvar").attr("acao", "cadastrar");
             }
-        } ],
+        },
+        ],
 		"oLanguage":
 		{
 			"sEmptyTable": "Não foi encontrado nenhum registo",
@@ -149,6 +176,9 @@ function montarDataTable()
 				"sSortDescending": ": Ordenar colunas de forma descendente"
 			}
 		},
+		"fnDrawCallback": function(oSettings){
+			fecharModalLoading()
+        },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-servicos_wrapper .col-md-6:eq(0)' );
 			$('.btn-novo').removeClass('btn-secondary');
@@ -172,6 +202,17 @@ function iniciarEdicao(tabelaBody)
 		$("#tempo").val($(this).closest("tr").find('td:eq(2)').text());
 		$(".btn-salvar").attr("data-id", $(this).attr('data-id'));
 	});
+}
+
+function cadastrarPromocao(tabelaBody) {
+	tabelaBody.on("click", "a.btn-promocao", function (e) {
+		$('.promocao-form').slideDown('slow');
+		 $(".listagem").slideUp('slow');
+	
+		 $(".btn-salvar").attr("acao", "cadastrar");
+		 $(".btn-salvar").attr("data-id", $(this).attr('data-id'));
+		 
+	})
 }
 
 function inciarExclusao(tabelaBody)

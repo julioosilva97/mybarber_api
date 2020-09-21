@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
 import com.mybarber.api.domain.service.ServicoService;
+import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
 import com.mybarber.api.api.dto.servico.ServicoInput;
 
@@ -32,7 +33,7 @@ public class ServicoController {
 	@Autowired
 	private ServicoService service;
 
-	@PostMapping("cadastrar")
+	@PostMapping
 	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO, HttpServletRequest request) {
 
 		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
@@ -55,7 +56,7 @@ public class ServicoController {
 		return new ResponseEntity <List<ServicoDTO>>(servicosDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("editar")
+	@PutMapping
 	public ResponseEntity<Void> editar(@Valid @RequestBody ServicoInput servicoDTO) {
 
 		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
@@ -69,5 +70,6 @@ public class ServicoController {
 		service.excluir(id);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+
 
 }

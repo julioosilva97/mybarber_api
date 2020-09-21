@@ -48,6 +48,7 @@
 
 	function getDateFromHours(time,dia) {
 
+		console.log(time)
 	time = time.split(':');
 	let now = new Date();
 	if(dia){
