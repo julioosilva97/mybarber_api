@@ -63,8 +63,11 @@ function pegarDiaGlobal(){
 function listarBarbeiros() {
     $.ajax({
         type: "GET",
-        url: "funcionarios/listarBarbeiros",
+        url: `api/funcionarios/listarPorCargo/BARBEIRO/${getIdBarbearia(getToken())}`,
         cache: false,
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
         	lancarToastr('error','Sem barbearia na sessão.')
         },
@@ -199,6 +202,9 @@ function pegarAgendamentosDia(dia){
 	       type: "GET",
 	       url: `api/agendamento/buscarPorData/${dia}/${idBarbeiro}`,
 	       cache: false,
+	       beforeSend: function (request) {
+				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
 	       error: function error(data) {
 	           console.log(data);
 	       },
@@ -217,6 +223,9 @@ function listarServicos(){
 	        type: "GET",
 	        url: "api/servicos/listar",
 	        cache: false,
+	        beforeSend: function (request) {
+				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
 	        error: function error(data) {
 
 	        	lancarToastr('error','Sem barbearia na sessão.');
@@ -290,6 +299,9 @@ function autoCompleteCliente(){
                 type: "GET",
                 url: `api/clientes/listar`,
                 dataType: "json",
+                beforeSend: function (request) {
+        			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+        	    },
                 error: function error(data) {
                     console.log(data);
                 },
@@ -374,6 +386,9 @@ function carregarHorarioAtendimento() {
         type: "GET",
         url: `funcionarios/buscarHorarioAtendimento/${idBarbeiro}`,
         cache: false,
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
             console.log(data)
             lancarToastr('error', data.responseJSON.message);
@@ -553,6 +568,9 @@ function enviarForm(acao, id) {
         url: `/api/agendamento/${acao}`,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(sendInfo),
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
             console.log(data)
             lancarToastr("error", data.responseJSON);
@@ -579,6 +597,9 @@ function visualizarAgendamento(info) {
         type: "PATCH",
         url: `api/agendamento/buscarPorId/${info.event.id}`,
         cache: false,
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
 
             console.log(data)
@@ -716,6 +737,9 @@ function iniciarEdicao(id) {
         type: "PATCH",
         url: `api/agendamento/buscarPorId/${id}`,
         cache: false,
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
 
         	lancarToastr('error',data)
@@ -759,6 +783,9 @@ function alterarStatus(id, status) {
         url: `/api/agendamento/alterarStatus`,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(sendInfo),
+        beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
         error: function error(data) {
             console.log(data)
             lancarToastr("error", data.responseJSON);
