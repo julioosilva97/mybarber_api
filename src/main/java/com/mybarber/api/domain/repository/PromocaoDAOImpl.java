@@ -18,14 +18,14 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	private String save = "insert into promocao (nome, dataHoraInicio, dataHoraFim, id_servico) values (?, ?, ?,?) ";
+	private String save = "insert into promocao (dataInicio, dataFim, descricao, id_servico) values (?, ?, ?,?) ";
 	private String delete = "delete from promocao where id = ?";
-	private String update = "update promocao set nome =?, dataHoraInicio = ?, dataHoraFim = ? where id =?";
+	private String update = "update promocao dataInicio = ?, dataFim = ?, descricao= ?, id_servico = ? where id =?";
 
 	@Override
 	public void salvar(Promocao promocao) {
 
-		jdbcTemplate.update(save, promocao.getNome(), promocao.getDataHoraInicio(), promocao.getDataHoraFim(), promocao.getServico().getId());
+		jdbcTemplate.update(save,promocao.getDataInicio(), promocao.getDataFim(),promocao.getDescricao(), promocao.getServico().getId());
 	}
 
 	@Override

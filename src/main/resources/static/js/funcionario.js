@@ -229,6 +229,7 @@ function montarDataTable()
             action: function ( e, dt, node, config ) {
             	emailEdicao = null;
             	loginEdicao = null;
+            	$(".tile-title").text("Novo funcionário");
                 $('.funcionario-form').slideDown('slow');
                 $(".listagem").slideUp('slow');
                 $(".btn-salvar").removeAttr('data-id');
@@ -382,7 +383,8 @@ function excluir(id)
 			error: function error(data)
 			{
 				
-				lancarToastr("error",`${data.responseText}`);
+				console.log(data);
+				lancarToastr("error",`${data.responseJSON.message}`);
 
 			},
 			success: function ()

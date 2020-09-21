@@ -174,23 +174,32 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     	
         Funcionario funcionario = new Funcionario();
         funcionario = buscar(id);
+        
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String login = principal.toString();
+        
+        var usuario =  daoUsuario.buscarPorLogin(login);
+        
+        var funcionarioLogado =  buscarPorIdUsuario(usuario.getId());
+        
+        if(funcionarioLogado.getId() != funcionario.getId()) {
+        	if (funcionario.getUsuario().isAtivo() == true) {
 
-        if (funcionario.getUsuario().isAtivo() == true) {
+                horarioAtendimentoDAO.excluir(funcionario.getId());
+                daoFuncionario.excluir(funcionario);
+                daoUsuario.excluir(funcionario.getUsuario());
+                daoEndereco.excluir(funcionario.getEndereco());
 
-            horarioAtendimentoDAO.excluir(funcionario.getId());
-            daoFuncionario.excluir(funcionario);
-            daoUsuario.excluir(funcionario.getUsuario());
-            daoEndereco.excluir(funcionario.getEndereco());
+            } else {
+                //tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());
+                daoFuncionario.excluir(funcionario);
+                daoUsuario.excluir(funcionario.getUsuario());
+                daoEndereco.excluir(funcionario.getEndereco());
+            }
 
-        } else {
-            //tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());
-            daoFuncionario.excluir(funcionario);
-            daoUsuario.excluir(funcionario.getUsuario());
-            daoEndereco.excluir(funcionario.getEndereco());
+        }else {
+        	throw new NegocioException("Voce não pode se excluir");
         }
-
-
-        ///passar get endere�o como parametro
     }
 
 
