@@ -48,7 +48,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		
 		if(dataHorarioInicio.isBefore(dataHorarioFim)) {
-			verificarHorarioAtendimento(dataHorarioInicio,dataHorarioFim,agendamento.getFuncionario().getId());
+			verificarHorarioAtendimento(agendamento);
 			
 		}else {
 			throw new NegocioException("Data e horário de inicio "+dataHorarioInicio.format(formatter)+" maior que data e horário de término "+dataHorarioFim.format(formatter));
@@ -80,15 +80,30 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		
 		if(diaAtendimentoFuncionario.isAberto()) {
 			
-			
 			var horarioInicio = agendamento.getDataHorarioInicio().toLocalTime();
 			var horarioFim = agendamento.getDataHorarioFim().toLocalTime();
 			
+			var entrada = diaAtendimentoFuncionario.getEntrada();
+			var saida = diaAtendimentoFuncionario.getSaida();
+			var saidaAlmoco = diaAtendimentoFuncionario.getSaidaAlmoco();
+			var entradaAlmoco = diaAtendimentoFuncionario.getEntradaAlmoco();
 			
+			
+			if(horarioInicio.isAfter(entrada)&&horarioInicio.isBefore(saida)) {
+				
+				if(!horarioInicio.isAfter(saidaAlmoco)&&!horarioInicio.isBefore(entradaAlmoco)) {
+					
+				}else {
+					throw new NegocioException("Horário de inicio  "+horarioInicio+" forá do horário de atendimento");
+				}
+				
+			}else {
+				throw new NegocioException("Horário de inicio  "+horarioInicio+" forá do horário de atendimento");
+			}
 		
 			
 		}else {
-			throw new NegocioException("Dia "+dataHorarioInicio.format(formatter)+" está fechado");
+			throw new NegocioException("Dia "+agendamento.getDataHorarioInicio().format(formatter)+" está fechado");
 		}
 		
 		
