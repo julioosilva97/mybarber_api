@@ -27,6 +27,14 @@ $(document).ready(function ()
 		$("#form-servico").find('.is-valid').removeClass("is-valid");
 	});
 	
+	$(".btn-cancelar").on("click",function(){
+		$(".promocao-form").slideUp('slow');
+		$('.listagem').slideDown('slow');
+		$('#form-servico').validate().resetForm();
+		$("#form-servico").find('.is-valid').removeClass("is-valid");
+	});
+	
+	
 	
 });
 
