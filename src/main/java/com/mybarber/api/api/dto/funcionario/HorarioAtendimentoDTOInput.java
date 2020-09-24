@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 public class HorarioAtendimentoDTOInput {
 
+	
 	private boolean aberto;
 	private int dia;
 	private LocalTime inicio;

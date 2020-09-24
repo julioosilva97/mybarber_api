@@ -25,10 +25,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
-	String salvar = 	"""
-			INSERT INTO agendamento( datahorainicio, datahoratermino, observacao, status, valor, id_cliente, id_barbeiro, id_barbearia,nome_cliente)
-			VALUES (?, ?, ?, ?, ?,?,?,?,?)
-			""";
+	
 	
 	String listarPorBarbeiro = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
 			"c.id id_cliente," + 
@@ -46,7 +43,6 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 			" inner join funcionario f on a.id_barbeiro = f.id" + 
 			" where a.id = ?";
 	
-	String editar = "UPDATE agendamento SET id=?, datahorainicio=?, datahoratermino=?, observacao=?, status=?, valor=?, id_cliente=?,id_barbeiro=?, id_barbearia=? where id = ?";
 	
 	String alterarStatus = "update agendamento set status = ? where id = ?";
 	
@@ -63,6 +59,11 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 
 	@Override
 	public void salvar(Agendamento agendamento) {
+		
+		String salvar = 	"""
+				INSERT INTO agendamento( datahorainicio, datahoratermino, observacao, status, valor, id_cliente, id_barbeiro,nome_cliente)
+				VALUES (?, ?, ?, ?, ?,?,?,?)
+				""";
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		
@@ -84,8 +85,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 				}
 				
 				ps.setInt(7, agendamento.getFuncionario().getId());
-				ps.setInt(8, agendamento.getBarbearia().getId());
-				ps.setString(9, agendamento.getCliente().getNome());
+				ps.setString(8, agendamento.getCliente().getNome());
 				return ps;
 			}
 		}, keyHolder);
@@ -112,9 +112,18 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	@Override
 	public void editar(Agendamento agendamento) {
 		
+		String editar = "UPDATE agendamento SET id=?, datahorainicio=?, datahoratermino=?, observacao=?, status=?, valor=?, id_cliente=?,id_barbeiro=?, nome_cliente=? where id = ?";
+
+
 		jdbcTemplate.update(editar,agendamento.getId(),agendamento.getDataHorarioInicio(),agendamento.getDataHorarioFim(),
 				agendamento.getObservacao(),agendamento.getStatus().getDescricao(),agendamento.getValor(),
-				agendamento.getCliente().getId(),agendamento.getFuncionario().getId(),agendamento.getBarbearia().getId(),agendamento.getId());
+				agendamento.getCliente().getId()==0?null:agendamento.getCliente().getId(),
+				agendamento.getFuncionario().getId(),agendamento.getCliente().getNome(),agendamento.getId());
+
+					
+				
+		
+		
 		
 	}
 

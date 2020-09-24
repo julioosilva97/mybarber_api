@@ -93,7 +93,7 @@ function carregarAgenda(dias){
 	$('.modal-loading').modal('hide');
    var calendarEl = document.getElementById('calendar');
    let idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
-   console.log(idBarbeiro)
+   console.log(dias)
    
    diasGlobal = dias;
    
@@ -148,14 +148,14 @@ function carregarAgenda(dias){
            var diaClick = moment(info.start);
            
            diaGlobal = diaClick;
-           console.log(diaGlobal);
        },
        eventLimit: true, // allow "more" link when too many events
        eventSources: [
 
+    	   
            // your event source
            {
-               url: `api/agendamento/listarFullCalendar/${idBarbeiro}`, // use
+               url: `api/agendamentos/listarFullCalendar/${idBarbeiro}`,
                // the
                // `url`
                // property
@@ -183,6 +183,8 @@ function carregarAgenda(dias){
 
            startTime: '00:00', // a start time (10am in this example)
            endTime: '23:59', // an end time (6pm in this example)
+           
+           //se não tiver o horário de atendimento, deixar tudo disponivel 
        }
    });
 
@@ -200,7 +202,7 @@ function pegarAgendamentosDia(dia){
 	
 	$.ajax({
 	       type: "GET",
-	       url: `api/agendamento/buscarPorData/${dia}/${idBarbeiro}`,
+	       url: `api/agendamentos/buscarPorData/${dia}/${idBarbeiro}`,
 	       cache: false,
 	       beforeSend: function (request) {
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -221,7 +223,7 @@ function listarServicos(){
 	
 	 $.ajax({
 	        type: "GET",
-	        url: "api/servicos/listar",
+	        url: `api/servicos/${getIdBarbearia(getToken())}`,
 	        cache: false,
 	        beforeSend: function (request) {
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -255,7 +257,7 @@ function calcularValor(){
        		 let preco = $(this).attr('preco');
        		 total = total + parseInt(preco) ;
        	});
-
+       	 
             $('#valor').val(total);
 
         });
@@ -297,7 +299,7 @@ function autoCompleteCliente(){
         source: function(request, response) {
             $.ajax({
                 type: "GET",
-                url: `api/clientes/listar`,
+                url: `api/clientes/${getIdBarbearia(getToken())}`,
                 dataType: "json",
                 beforeSend: function (request) {
         			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -384,7 +386,7 @@ function carregarHorarioAtendimento() {
 
     $.ajax({
         type: "GET",
-        url: `funcionarios/buscarHorarioAtendimento/${idBarbeiro}`,
+        url: `api/funcionarios/buscarHorarioAtendimento/${idBarbeiro}`,
         cache: false,
         beforeSend: function (request) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -394,16 +396,23 @@ function carregarHorarioAtendimento() {
             lancarToastr('error', data.responseJSON.message);
         },
         success: function(data) {
-
+        	console.log(data)
             if (data.length > 0) {
                 data.forEach(function(element) {
 
+                	
                     if (element.aberto) {
                         dias.push({
                             daysOfWeek: [element.dia],
-                            startTime: element.inicio,
-                            endTime: element.fim
-                        })
+                            startTime: element.entrada,
+                            endTime: element.saidaAlmoco
+                        });
+                        
+                         dias.push({
+                            daysOfWeek: [element.dia],
+                            startTime: element.entradaAlmoco,
+                            endTime: element.saida
+                        });
                     }
 
                 });
@@ -417,7 +426,6 @@ function carregarHorarioAtendimento() {
         }
     });
     
-    console.log(dias)
     $('.modal-loading').modal('show');
     setTimeout(function() {
         carregarAgenda(dias);
@@ -488,15 +496,15 @@ $("#form-agendamento").validate({
                 required: true
             },
             horarioInicio: {
-                required: true,
-                validarHorarioComercial : ['inicio'],
-                validarHorarioAgendamentos : ['inicio']
+                required: true
+                //validarHorarioComercial : ['inicio'],
+                //validarHorarioAgendamentos : ['inicio']
             },
             horarioTermino :{
-            	required: true,
-            	  validarHorarioComercial : ['termino'],
-                  validarHorarioAgendamentos : ['termino'],
-                  validarHorarioTermino : ['#form-agendamento']
+            	required: true
+            	  //validarHorarioComercial : ['termino'],
+                  //validarHorarioAgendamentos : ['termino'],
+                 // validarHorarioTermino : ['#form-agendamento']
             }
         },
         messages: {
@@ -560,12 +568,11 @@ function enviarForm(acao, id) {
         var verbo = 'POST'
     }
  
-    console.log(sendInfo)
     
     
     $.ajax({
         type: verbo,
-        url: `/api/agendamento/${acao}`,
+        url: `/api/agendamentos`,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(sendInfo),
         beforeSend: function (request) {
@@ -579,7 +586,7 @@ function enviarForm(acao, id) {
         // dataType: 'json',
         success: function success(data) {
         	lancarToastr("success", `Agendamento ${acao == "cadastrar" ? "salvo" :  "editado"} com sucesso.`);
-        	$('#form-agendamento')[0].reset();
+        	//$('#form-agendamento')[0].reset();
 
 
         }
@@ -595,7 +602,7 @@ function visualizarAgendamento(info) {
     $('#detalhes').modal('show');
     $.ajax({
         type: "PATCH",
-        url: `api/agendamento/buscarPorId/${info.event.id}`,
+        url: `api/agendamentos/${info.event.id}`,
         cache: false,
         beforeSend: function (request) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -735,7 +742,7 @@ function iniciarEdicao(id) {
     
     $.ajax({
         type: "PATCH",
-        url: `api/agendamento/buscarPorId/${id}`,
+        url: `api/agendamentos/${id}`,
         cache: false,
         beforeSend: function (request) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -780,7 +787,7 @@ function alterarStatus(id, status) {
 
     $.ajax({
         type: 'POST',
-        url: `/api/agendamento/alterarStatus`,
+        url: `/api/agendamentos/alterarStatus`,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(sendInfo),
         beforeSend: function (request) {
@@ -810,28 +817,19 @@ function verificarHorarioComercial(parametros){
 	let horarioComercial = pegarHorarioComercial();
 
 	
-
 	pegarDiaGlobal();
 	let diaClick = diaGlobal.date();
 	let resposta = [];
 	
     if(!horarioComercial){
-    	console.log('kk')
     	resposta.push(false);
 		resposta.push(`Dia ${moment(diaGlobal).format('DD/MM/YYYY')} está fechado.`);
 		return resposta;
 	}else{
 		
-	
-	
-	
 	let inicioHorarioComercial = moment(getDateFromHours(horarioComercial.startTime,diaClick),"YYYY-MM-DD", true);
 	let fimHorarioComercial = moment(getDateFromHours(horarioComercial.endTime,diaClick),"YYYY-MM-DD", true);
 
-	
-	
-	
-	
 	if(parametros[0]=='inicio'){
 		
 		let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),diaClick),"YYYY-MM-DD", true);
@@ -998,18 +996,17 @@ function pegarHorarioComercial(){
 	
 	pegarDiaGlobal();	
 	
-	console.log(diaGlobal.format("ddd"));
-	console.log(diasGlobal);
-	
-	diasGlobal.forEach(function(e){
-  	
-  	if(e.daysOfWeek[0]==getNumeroDia(diaGlobal.format("ddd"))){
-  		horarioComercial = e ;
-  	}
-  });
+	if(diasGlobal){
+		diasGlobal.forEach(function(e){
+	  	
+	  	if(e.daysOfWeek[0]==getNumeroDia(diaGlobal.format("ddd"))){
+	  		horarioComercial = e ;
+	  	}
+	  });
+	}
 	
   return horarioComercial;
-  console.log(horarioComercial);
+ 
 }
 
 function validarHorario(dias) {

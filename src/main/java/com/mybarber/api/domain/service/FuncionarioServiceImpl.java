@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Funcionario;
+import com.mybarber.api.domain.entity.HorarioAtendimento;
 import com.mybarber.api.domain.entity.Usuario;
 import com.mybarber.api.domain.repository.BarbeariaDAO;
 import com.mybarber.api.domain.repository.EnderecoDAO;
@@ -238,5 +239,27 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
         return false; //daoFuncionario.verificarEmail(email);
     }
+
+	@Override
+	public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento) {
+		
+		List<HorarioAtendimento> horarios = horarioAtendimentoDAO
+				.buscarPorFuncionario(horarioAtendimento.get(0).getId());
+
+		if (horarios.size() > 0) {
+
+			horarioAtendimentoDAO.editar(horarioAtendimento);
+
+		} else {
+			horarioAtendimentoDAO.salvar(horarioAtendimento);
+		}
+		
+	}
+
+	@Override
+	public List<HorarioAtendimento> buscarHorarioAtendimentoPorFuncionario(int idFuncionario) {
+		
+		return horarioAtendimentoDAO.buscarPorFuncionario(idFuncionario);
+	}
 
 }

@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import com.mybarber.api.api.util.ConverterDTO;
 import com.mybarber.api.domain.entity.Barbearia;
+import com.mybarber.api.domain.enumfactory.AgendamentoAgendado;
 import com.mybarber.api.domain.service.AgendamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.agendamento.AgendamentoDTO;
 import com.mybarber.api.api.dto.agendamento.AgendamentoDTOInput;
-import com.mybarber.api.api.dto.agendamento.EventoRM;
+import com.mybarber.api.api.dto.agendamento.EventoDTO;
 import com.mybarber.api.api.dto.relatorio.RelatorioDTO;
 import com.mybarber.api.domain.entity.Agendamento;
 
@@ -42,7 +43,7 @@ public class AgendamentoController {
     @PostMapping
     public ResponseEntity<Void> salvar(@Valid @RequestBody AgendamentoDTOInput agendamentoDtoInput) {
 
-        var agendamento = (Agendamento) ConverterDTO.toDoMain(agendamentoDtoInput, Agendamento.class);
+        var agendamento = (Agendamento) ConverterDTO.toDoMain(agendamentoDtoInput, AgendamentoAgendado.class);
 
         service.salvar(agendamento);
 
@@ -50,21 +51,22 @@ public class AgendamentoController {
     }
 
     @GetMapping("/listarFullCalendar/{idBarbeiro}")
-    public ResponseEntity<List<EventoRM>> listarPorBarbeiro(@PathVariable("idBarbeiro") int id) {
+    public ResponseEntity<List<EventoDTO>> listarPorBarbeiro(@PathVariable("idBarbeiro") int id) {
 
 
         var agendamentos = service.listarPorBarbeiro(id);
 
 
         var eventosDTO = agendamentos.stream()
-                .map(agendamento -> (EventoRM) ConverterDTO.toDTO(agendamento, EventoRM.class))
+                .map(agendamento -> new EventoDTO(agendamento.getId(), agendamento.getCliente().getNome() , agendamento.gerarColor(),
+						agendamento.getDataHorarioInicio(), agendamento.getDataHorarioFim()))
                 .collect(Collectors.toList());
 
 
-        return new ResponseEntity<List<EventoRM>>(eventosDTO, HttpStatus.OK);
+        return new ResponseEntity<List<EventoDTO>>(eventosDTO, HttpStatus.OK);
     }
 
-    @PatchMapping
+    @PatchMapping("{id}")
     public ResponseEntity<AgendamentoDTO> buscarPorId(@PathVariable("id") int id) {
 
         var agendamentoDTO = (AgendamentoDTO) ConverterDTO.toDTO(service.buscarPorId(id),
@@ -76,7 +78,7 @@ public class AgendamentoController {
     @PutMapping
     public ResponseEntity<Void> editar(@Valid @RequestBody AgendamentoDTOInput agendamentoDTOImput) {
 
-        var agendamento = (Agendamento) ConverterDTO.toDoMain(agendamentoDTOImput,Agendamento.class);
+        var agendamento = (Agendamento) ConverterDTO.toDoMain(agendamentoDTOImput,AgendamentoAgendado.class);
 
         service.editar(agendamento);
 

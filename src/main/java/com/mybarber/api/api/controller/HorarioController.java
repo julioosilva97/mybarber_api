@@ -18,23 +18,6 @@ public class HorarioController {
     @Autowired
     FuncionarioService service;
 
-    @PostMapping("/horarioAtendimento")
-    public ResponseEntity<Void> defirnirHorarioAtendimento(@RequestBody List<HorarioAtendimentoDTOInput> horarios) {
-
-        //facade.salvarHorarioAtendimento(horarios);
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
-    @GetMapping("/buscarHorarioAtendimento/{id}")
-    public ResponseEntity<List<HorarioAtendimento>> buscarHorarioAtendimentoPorFuncionario(@PathVariable("id") int id) {
-
-        /*return new ResponseEntity<List<HorarioAtendimento>>(service.buscarHorarioAtendimentoPorFuncionario(id),
-                HttpStatus.OK);*/
-
-        return  null;
-
-    }
-
+    
 
 }
