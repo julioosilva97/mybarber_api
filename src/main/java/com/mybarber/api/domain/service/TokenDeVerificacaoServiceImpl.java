@@ -38,7 +38,7 @@ public class TokenDeVerificacaoServiceImpl implements TokenDeVerificacaoService 
 
 		var mToken = tokenDAO.buscarPorToken(token);
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:m");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		
 		
 		if (mToken != null) {

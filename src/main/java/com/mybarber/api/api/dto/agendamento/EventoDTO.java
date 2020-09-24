@@ -2,12 +2,16 @@ package com.mybarber.api.api.dto.agendamento;
 
 import java.time.LocalDateTime;
 
-public class EventoRM {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class EventoDTO {
 
 	private int id;
 	private String title ;
 	private String color;
+	 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime start;
+	 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime end;
 	public int getId() {
 		return id;
@@ -39,7 +43,7 @@ public class EventoRM {
 	public void setEnd(LocalDateTime end) {
 		this.end = end;
 	}
-	public EventoRM(int id, String title, String color, LocalDateTime start, LocalDateTime end) {
+	public EventoDTO(int id, String title, String color, LocalDateTime start, LocalDateTime end) {
 		super();
 		this.id = id;
 		this.title = title;

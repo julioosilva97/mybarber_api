@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mybarber.api.domain.entity.Barbearia;
 
 import com.mybarber.api.domain.entity.Funcionario;
+import com.mybarber.api.domain.entity.HorarioAtendimento;
 import com.mybarber.api.domain.util.Cargo;
 
 public interface FuncionarioService {
@@ -26,5 +27,9 @@ public interface FuncionarioService {
 	public Funcionario buscarPorIdUsuario(int idUsuario);
 	
 	public boolean verificarEmail(String email);
+	
+	public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento);
+	
+	public List<HorarioAtendimento> buscarHorarioAtendimentoPorFuncionario(int idFuncionario);
 
 }

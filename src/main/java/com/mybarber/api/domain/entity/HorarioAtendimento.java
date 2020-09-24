@@ -2,13 +2,44 @@ package com.mybarber.api.domain.entity;
 
 import java.time.LocalTime;
 
+import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTO;
+import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTOInput;
+import com.mybarber.api.domain.util.DiaDaSemana;
+
 public class HorarioAtendimento {
 
 	private int id;
 	private boolean aberto;
-	private int dia;
-	private LocalTime inicio;
-	private LocalTime fim;
+	private DiaDaSemana dia;
+	private LocalTime entrada;
+	private LocalTime saida;
+	private LocalTime entradaAlmoco;
+	private LocalTime saidaAlmoco;
+	public LocalTime getEntrada() {
+		return entrada;
+	}
+	public void setEntrada(LocalTime entrada) {
+		this.entrada = entrada;
+	}
+	public LocalTime getSaida() {
+		return saida;
+	}
+	public void setSaida(LocalTime saida) {
+		this.saida = saida;
+	}
+	public LocalTime getEntradaAlmoco() {
+		return entradaAlmoco;
+	}
+	public void setEntradaAlmoco(LocalTime entradaAlmoco) {
+		this.entradaAlmoco = entradaAlmoco;
+	}
+	public LocalTime getSaidaAlmoco() {
+		return saidaAlmoco;
+	}
+	public void setSaidaAlmoco(LocalTime saidaAlmoco) {
+		this.saidaAlmoco = saidaAlmoco;
+	}
+
 	private Funcionario funcionario;
 	
 	public int getId() {
@@ -23,23 +54,11 @@ public class HorarioAtendimento {
 	public void setAberto(boolean aberto) {
 		this.aberto = aberto;
 	}
-	public int getDia() {
+	public DiaDaSemana getDia() {
 		return dia;
 	}
-	public void setDia(int dia) {
+	public void setDia(DiaDaSemana dia) {
 		this.dia = dia;
-	}
-	public LocalTime getInicio() {
-		return inicio;
-	}
-	public void setInicio(LocalTime inicio) {
-		this.inicio = inicio;
-	}
-	public LocalTime getFim() {
-		return fim;
-	}
-	public void setFim(LocalTime fim) {
-		this.fim = fim;
 	}
 	public Funcionario getFuncionario() {
 		return funcionario;
@@ -47,18 +66,35 @@ public class HorarioAtendimento {
 	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
-	public HorarioAtendimento(int id, boolean aberto, int dia, LocalTime inicio, LocalTime fim) {
-		super();
-		this.id = id;
-		this.aberto = aberto;
-		this.dia = dia;
-		this.inicio = inicio;
-		this.fim = fim;
-	}
+	
 	public HorarioAtendimento() {
 	}
 	
 	
+	
+	public HorarioAtendimento(int id, boolean aberto, DiaDaSemana dia, LocalTime entrada, LocalTime saida,
+			LocalTime entradaAlmoco, LocalTime saidaAlmoco) {
+		this.id = id;
+		this.aberto = aberto;
+		this.dia = dia;
+		this.entrada = entrada;
+		this.saida = saida;
+		this.entradaAlmoco = entradaAlmoco;
+		this.saidaAlmoco = saidaAlmoco;
+	}
+	public HorarioAtendimentoDTO toDTO() {
+		
+		var horarioAtendimentoDTO = new HorarioAtendimentoDTO();
+		horarioAtendimentoDTO.setAberto(this.aberto);
+		horarioAtendimentoDTO.setDia(this.getDia().getNumeroSemana());
+		horarioAtendimentoDTO.setSaida(this.saida);
+		horarioAtendimentoDTO.setEntrada(this.entrada);
+		horarioAtendimentoDTO.setEntradaAlmoco(this.entradaAlmoco);
+		horarioAtendimentoDTO.setSaidaAlmoco(this.saidaAlmoco);
+		//horarioAtendimentoDTO.setIdFuncionario(this.funcionario.getId());
+		
+		return horarioAtendimentoDTO;
+	}
 	
 }
 
