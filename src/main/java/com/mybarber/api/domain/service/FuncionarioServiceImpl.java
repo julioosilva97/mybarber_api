@@ -259,7 +259,9 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	@Override
 	public List<HorarioAtendimento> buscarHorarioAtendimentoPorFuncionario(int idFuncionario) {
 		
-		return horarioAtendimentoDAO.buscarPorFuncionario(idFuncionario);
+		var show = horarioAtendimentoDAO.buscarPorFuncionario(idFuncionario);
+		return show;
+				
 	}
 
 }

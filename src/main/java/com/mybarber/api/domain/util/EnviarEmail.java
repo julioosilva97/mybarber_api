@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.mybarber.api.domain.entity.Agendamento;
+import com.mybarber.api.domain.entity.Cliente;
 import com.mybarber.api.domain.entity.Email;
 import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.TokenDeVerificacao;
@@ -49,7 +51,7 @@ public class EnviarEmail {
 	}
 
 
-	public  void resetarSenha(Pessoa pessoa,TokenDeVerificacao token) {
+	public void resetarSenha(Pessoa pessoa,TokenDeVerificacao token) {
 		
 
 		var email  = gerarEmail(pessoa,token);
@@ -59,6 +61,19 @@ public class EnviarEmail {
 		enviarEmail(email,"email/redefinir-senha.html");
 	}
 	
+	public void notificarAgendamento(Agendamento agendamento) {
+		
+		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm");
+		
+		var email = gerarEmail(agendamento.getCliente(),null);
+		email.setAssunto("Notificação de agendamento");
+		email.getMap().put("inicio",agendamento.getDataHorarioInicio().format(formatterTime).toString());
+		email.getMap().put("termino",agendamento.getDataHorarioFim().format(formatterTime).toString());
+		email.getMap().put("dia",agendamento.getDataHorarioInicio().format(formatterDate).toString());
+		enviarEmail(email,"email/notificar-agendamento.html");
+	}
+	
 	
 	
 	private  Email gerarEmail(Pessoa pessoa,TokenDeVerificacao token) {
@@ -66,19 +81,18 @@ public class EnviarEmail {
 		try {
 			var email = new Email();
 			email.setDe("MyBarber <mybarber.btech@gmail.com>");
-			//email.setPara(pessoa.getEmail()); passar email do usuario
+			email.setPara(pessoa.getUsuario().getEmail());
 			
 			Map<String, Object> map = new HashMap<>();
-			map.put("token", token.getToken());
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:m");
-			map.put("validadeToken", "Token v�lido at� " + token.getDataHoraExpiracao().format(formatter)+".");
+			if(token!=null) {
+				map.put("token", token.getToken());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:m");
+				map.put("validadeToken", "Token v�lido at� " + token.getDataHoraExpiracao().format(formatter)+".");
+			}
+			
 			map.put("pessoa", pessoa);
 			map.put("signature", "https://com.mybarber.api.br");
-			
-			
-			
-			System.out.println(map);
-			
+
 			email.setMap(map);
 			return email;
 		}catch (Exception e) {

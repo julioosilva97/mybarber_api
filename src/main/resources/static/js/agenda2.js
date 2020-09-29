@@ -2,8 +2,7 @@ $(document).ready(function() {
 
 
 	var diasGlobal = []; // horários de atendimento do barbeiro
-	
-	var agendamentosDia = []; // agendamento do dia
+
 	var idEventoClick = null; // para tirar o agendamento da validação quando
 								// for editar, fora isso sempre tenq ser null
 	
@@ -16,8 +15,7 @@ $(document).ready(function() {
 		 dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
 		
 	}).datepicker('setDate', 'today');
-	 var diaGlobal = moment(); // recebe o dia do select ou clickEnven do fullCalendar receber o dia quando alterar o dataPicker
-	console.log(diaGlobal);
+	 var diaGlobal = moment(new Date()); // recebe o dia do select ou clickEnven do fullCalendar receber o dia quando alterar o dataPicker
 	 var now = new Date();
      $('#horarioInicio').val(moment(now).format('HH:mm'))
 	
@@ -40,11 +38,11 @@ function eventoData(){
 	
 	 $('#data').on('change',function(){
 		 
-		 let dia = $(this).val();
-		 var dateObject = moment(dia, "DD/MM/YYYY")
-		 
+		 let dia = formataStringData($(this).val());
+		 var dateObject = moment(dia)
 		 diaGlobal = dateObject;
-		 pegarAgendamentosDia(moment(diaGlobal).format('YYYY-MM-DD'));
+		 $('#form-agendamento').validate().element("#horarioTermino");
+	     $('#form-agendamento').validate().element("#horarioInicio");
 			
 	});
 }
@@ -54,8 +52,7 @@ function eventoData(){
 function pegarDiaGlobal(){
 	
 	
-	let dateObject = moment($('#data').val(), "DD/MM/YYYY")
-	 
+	let dateObject = moment(formataStringData($('#data').val()))
 	diaGlobal = dateObject;
 	
 }
@@ -93,9 +90,8 @@ function carregarAgenda(dias){
 	$('.modal-loading').modal('hide');
    var calendarEl = document.getElementById('calendar');
    let idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
-   console.log(dias)
    
-   diasGlobal = dias;
+  
    
    var calendar = new FullCalendar.Calendar(calendarEl, {
    	
@@ -124,8 +120,8 @@ function carregarAgenda(dias){
        allDaySlot: false,
        selectConstraint: "businessHours",
        selectAllow: function(info) {
-           const today = moment(new Date(), "YYYY-MM-DD", true)
-
+           const today = moment(new Date())
+           
            const click = moment(info.start)
            if (click.isBefore(today))
                return false;
@@ -135,13 +131,13 @@ function carregarAgenda(dias){
        	
            var dia = moment(info.start).format('YYYY-MM-DD');
        	
-           pegarAgendamentosDia(dia);
             
            var horario = info.start;
 
+           $(".btn-salvar").attr("acao", "cadastrar");
            $('#horarioInicio').val(moment(horario).format("HH:mm"));
            $('#data').datepicker('setDate', moment(horario).format("DD/MM/YYYY")).focus();
-           $(".btn-salvar").attr("acao", "cadastrar");
+          
            
            idEventoClick = null;
            
@@ -171,9 +167,8 @@ function carregarAgenda(dias){
        	var diaClick = moment(info.el.fcSeg.start);
        	idEventoClick = info.event.id;
            
-           diaGlobal = diaClick;
-           pegarAgendamentosDia(dia);
-           visualizarAgendamento(info);
+        diaGlobal = diaClick;
+        visualizarAgendamento(info);
 
        },
        businessHours: dias ? dias : {
@@ -195,28 +190,6 @@ function carregarAgenda(dias){
 }
 
 
-
-function pegarAgendamentosDia(dia){
-	
-	var idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
-	
-	$.ajax({
-	       type: "GET",
-	       url: `api/agendamentos/buscarPorData/${dia}/${idBarbeiro}`,
-	       cache: false,
-	       beforeSend: function (request) {
-				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
-		    },
-	       error: function error(data) {
-	           console.log(data);
-	       },
-	       success: function(data) {
-
-	    	console.log(data);
-	       	agendamentosDia = data;
-	       }
-	     });
-}
 
 
 function listarServicos(){
@@ -342,7 +315,6 @@ function autoCompleteCliente(){
         	
         	
             if (ui.item == null) {
-            	console.log(e.target)
                 $(e.target).siblings(".invalid").remove();
                 $(e.target).addClass("state-error").after('<div class="invalid">Nome inválido</div	>');
                 $('#cliente').val("").focus();
@@ -396,23 +368,40 @@ function carregarHorarioAtendimento() {
             lancarToastr('error', data.responseJSON.message);
         },
         success: function(data) {
-        	console.log(data)
+        	diasGlobal = data;
             if (data.length > 0) {
                 data.forEach(function(element) {
 
                 	
                     if (element.aberto) {
-                        dias.push({
-                            daysOfWeek: [element.dia],
-                            startTime: element.entrada,
-                            endTime: element.saidaAlmoco
-                        });
-                        
-                         dias.push({
-                            daysOfWeek: [element.dia],
-                            startTime: element.entradaAlmoco,
-                            endTime: element.saida
-                        });
+                    	
+                    	if(element.almoco){
+                    		
+                    		dias.push({
+                                daysOfWeek: [element.dia]==7?[0]:[element.dia],
+                                startTime: element.entrada,
+                                endTime: element.saidaAlmoco,
+                                almoco : element.almoco
+                            });
+                    		
+                    		dias.push({
+                                daysOfWeek: [element.dia]==7?[0]:[element.dia],
+                                startTime: element.entradaAlmoco,
+                                endTime: element.saida,
+                                almoco : element.almoco
+                            });
+                    		
+                    	}else{
+                    		
+                    		dias.push({
+                                daysOfWeek: [element.dia]==7?[0]:[element.dia],
+                                startTime: element.entrada,
+                                endTime: element.saida,
+                                almoco : element.almoco
+                            });
+                    		
+                    	}
+                    	
                     }
 
                 });
@@ -438,7 +427,6 @@ function validarForm(){
 		errorElement: 'div',
 	    errorPlacement: function (error, element) {
 	    	error.addClass('invalid-feedback');
-	    	console.log(error);
 	    	$(element).after(error);
 	    },
 	    highlight: function (element, errorClass, validClass) {
@@ -471,10 +459,11 @@ function validarForm(){
 	});
 	
 	jQuery.validator.addMethod("validarHorarioTermino", function(value, element,parametros) {
-		console.log(`${parametros[0]}#horarioInicio`)
-		let diaClick = diaGlobal.date();
-		let horarioInicio = moment(getDateFromHours($(`${parametros[0]} #horarioInicio`).val(),diaClick),"YYYY-MM-DD", true);
-		let horarioTermino = moment(getDateFromHours($(`${parametros[0]} #horarioTermino`).val(),diaClick),"YYYY-MM-DD", true);
+		
+		let horarioInicio = moment($(`${parametros[0]} #horarioInicio`).val(),'h:mm');
+		let horarioTermino = moment($(`${parametros[0]} #horarioTermino`).val(),'h:mm');
+		
+	
 		return horarioTermino.isAfter(horarioInicio);
 		
 	},'Horário termino não pode ser antes ou igual ao horário de inicio.');
@@ -496,15 +485,15 @@ $("#form-agendamento").validate({
                 required: true
             },
             horarioInicio: {
-                required: true
-                //validarHorarioComercial : ['inicio'],
-                //validarHorarioAgendamentos : ['inicio']
+                required: true,
+                validarHorarioComercial : ['inicio'],
+                validarHorarioAgendamentos : ['inicio']
             },
             horarioTermino :{
-            	required: true
-            	  //validarHorarioComercial : ['termino'],
-                  //validarHorarioAgendamentos : ['termino'],
-                 // validarHorarioTermino : ['#form-agendamento']
+            	required: true,
+            	validarHorarioComercial : ['termino'],
+                validarHorarioAgendamentos : ['termino'],
+                validarHorarioTermino : ['#form-agendamento']
             }
         },
         messages: {
@@ -604,6 +593,7 @@ function visualizarAgendamento(info) {
         type: "PATCH",
         url: `api/agendamentos/${info.event.id}`,
         cache: false,
+	    async: false,
         beforeSend: function (request) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
@@ -632,6 +622,7 @@ function visualizarAgendamento(info) {
                 $(".btn-cancelar-agendamento").show();
                 $(".btn-concluido").attr('idAgendamento', data.id);
                 $(".btn-concluido").show();
+                $(".btn-editar").show();
                 $(".btn-editar").attr('idAgendamento', data.id);
             } else {
             	$(".btn-cancelar-agendamento").removeAttr('idAgendamento');
@@ -640,6 +631,7 @@ function visualizarAgendamento(info) {
             	$(".btn-concluido").hide();
             	$(".btn-editar").removeAttr('idAgendamento');
             	$(".btn-editar").hide();
+            	console.log('aqui')
             }
             
             if(moment(data.dataHorarioInicio).isAfter(moment())){
@@ -721,7 +713,6 @@ function btns(){
   $("#cli-nao-cadastrado").on("change",function(){
     	
     	if($(this).is(":checked")){
-    		console.log('sim')
     		$("#cliente").removeAttr('idCliente');
     		$("#cliente").autocomplete("destroy");
     		$("#cliente").val('');
@@ -739,11 +730,14 @@ function btns(){
 }
 
 function iniciarEdicao(id) {
-    
+	
+	
+	
     $.ajax({
         type: "PATCH",
         url: `api/agendamentos/${id}`,
         cache: false,
+	    async: false,
         beforeSend: function (request) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
@@ -754,6 +748,11 @@ function iniciarEdicao(id) {
 
         },
         success: function(data) {
+        	var dia = new Date(data.dataHorarioInicio);
+        	$(".btn-salvar").attr('acao', 'editar');
+            $("#horarioInicio").val(pegarHorario(data).inicio);
+            $("#horarioTermino").val(pegarHorario(data).fim);
+        	$('#data').datepicker('setDate', moment(diaGlobal).format("DD/MM/YYYY"))
         	$('.form-titulo').html('Editar agendamento');
         	$('.form-agendamento').addClass('form-select-agendamento');
         	$('#detalhes').modal('hide');
@@ -764,16 +763,16 @@ function iniciarEdicao(id) {
             	 
             	 servicos.push(e.id);
             });
-            console.log(servicos);
             $('#servicos').val(servicos).trigger('change');
             $("#valor").val(data.valor);
-            var dia = new Date(data.dataHorarioInicio);
+            
             $('#data').val(moment(dia).format('DD/MM/YYYY'));
-            $("#horarioInicio").val(pegarHorario(data).inicio);
-            $("#horarioTermino").val(pegarHorario(data).fim);
             $("#obs").val(data.observacao);
             $(".btn-salvar").attr('idAgendamento', data.id);
-            $(".btn-salvar").attr('acao', 'editar');
+            
+            
+   		    
+   		   
         }
     });
 }
@@ -812,76 +811,152 @@ function alterarStatus(id, status) {
 
 function verificarHorarioComercial(parametros){
 	
-    const agora = moment(new Date(), "YYYY-MM-DD", true);
+    const agora = moment(new Date());
 	
-	let horarioComercial = pegarHorarioComercial();
+	let horarioComercial = pegarHorarioComercial();//pega os horarios do dia que está no input de data 
 
-	
 	pegarDiaGlobal();
-	let diaClick = diaGlobal.date();
 	let resposta = [];
 	
-    if(!horarioComercial){
+    if(!horarioComercial.aberto){
     	resposta.push(false);
 		resposta.push(`Dia ${moment(diaGlobal).format('DD/MM/YYYY')} está fechado.`);
 		return resposta;
-	}else{
-		
-	let inicioHorarioComercial = moment(getDateFromHours(horarioComercial.startTime,diaClick),"YYYY-MM-DD", true);
-	let fimHorarioComercial = moment(getDateFromHours(horarioComercial.endTime,diaClick),"YYYY-MM-DD", true);
+	}
+	
+    
+    var dataEscolhida = moment(formataStringData($('#data').val()));
 
+	
+    
+    var month = dataEscolhida.format('M');
+    var day   = dataEscolhida.format('D');
+    var year  = dataEscolhida.format('YYYY');
+    
+    let entrada =  moment(getDateFromHours(horarioComercial.entrada,day,month,year));
+    let saida = moment(getDateFromHours(horarioComercial.saida,day,month,year));
+    
+    
+	
+	if(horarioComercial.almoco){	
+	
+    
+    let entradaAlmoco = moment(getDateFromHours(horarioComercial.entradaAlmoco,day,month,year));
+    let saidaAlmoco = moment(getDateFromHours(horarioComercial.saidaAlmoco,day,month,year));
+    
+    var saidaAlmocoAux = getDateFromHours(horarioComercial.saidaAlmoco,day,month,year)
+    var milliseconds = Date.parse(saidaAlmocoAux)
+    milliseconds = milliseconds - (1 * 60 * 1000)
+    saidaAlmocoAux = new Date(milliseconds)
+    
+    var entradaAlmocoAux = getDateFromHours(horarioComercial.entradaAlmoco,day,month,year)
+    var milliseconds = Date.parse(entradaAlmocoAux)
+    milliseconds = milliseconds + (1 * 60 * 1000)
+    entradaAlmocoAux = new Date(milliseconds)
+    
+ 
 	if(parametros[0]=='inicio'){
 		
-		let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),diaClick),"YYYY-MM-DD", true);
-		console.log(horarioInicio);
-		console.log(fimHorarioComercial);
-		console.log(horarioInicio.isAfter(fimHorarioComercial));
 		
-
+		$(`#horarioInicio`).trigger('change');
+		let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),day,month,year));
+		
 		// se for antes de agora
 		if(horarioInicio.isBefore(agora)){
 			 resposta.push(false);
 			 resposta.push(`Você não pode marcar um horário passado`);
-			 
-		 }else if (horarioInicio.isAfter(fimHorarioComercial)){
+			
+		 }else if (horarioInicio.isBefore(entrada) || horarioInicio.isAfter(saida)){
 			 // depois do horario comercial de determinado dia
 			 resposta.push(false);
 			 resposta.push(`Horário atendimento dia ${horarioInicio.format('DD/MM/YY')}
-					  das ${moment(getDateFromHours(horarioComercial.startTime)).format('HH:mm')}
-					 ás ${moment(getDateFromHours(horarioComercial.endTime)).format('HH:mm')}`);
-		 }else if(horarioInicio.isBefore(inicioHorarioComercial)){
+					  das ${entrada.format('HH:mm')} ás ${moment(saidaAlmocoAux).format('HH:mm')} e ${moment(entradaAlmocoAux).format('HH:mm')}
+					 ás ${saida.format('HH:mm')}`);
+		 }else if(!horarioInicio.isBefore(saidaAlmoco) && !horarioInicio.isAfter(entradaAlmoco)){
 			// antes do horario comercial de determinado dia
 			 resposta.push(false);
 			 resposta.push(`Horário atendimento dia ${horarioInicio.format('DD/MM/YY')}
-					  das ${moment(getDateFromHours(horarioComercial.startTime)).format('HH:mm')}
-					 ás ${moment(getDateFromHours(horarioComercial.endTime)).format('HH:mm')}`);
+					  das ${entrada.format('HH:mm')} ás ${moment(saidaAlmocoAux).format('HH:mm')} e ${moment(entradaAlmocoAux).format('HH:mm')}
+					 ás ${saida.format('HH:mm')}`);
 		 }else{
-			 console.log('aqui')
+			 
 			 resposta.push(true);
 		 }
 	}else{
 		
-		let horarioTermino = moment(getDateFromHours($(`#horarioTermino`).val(),diaClick),"YYYY-MM-DD", true);
+		let horarioTermino = moment(getDateFromHours($(`#horarioTermino`).val(),day,month,year));
 		
-		 if (horarioTermino.isAfter(fimHorarioComercial)){
+		
+		
+		if(horarioTermino.isBefore(agora)){
+			 resposta.push(false);
+			 resposta.push(`Você não pode marcar um horário passado`);
+			
+		 }else if (horarioTermino.isBefore(entrada) || horarioTermino.isAfter(saida)){
+			 // depois do horario comercial de determinado dia
 			 resposta.push(false);
 			 resposta.push(`Horário atendimento dia ${horarioTermino.format('DD/MM/YY')}
-					  das ${moment(getDateFromHours(horarioComercial.startTime)).format('HH:mm')}
-					 ás ${moment(getDateFromHours(horarioComercial.endTime)).format('HH:mm')}`);
-		 }else if(horarioTermino.isBefore(inicioHorarioComercial)){
+					  das ${entrada.format('HH:mm')} ás ${moment(saidaAlmocoAux).format('HH:mm')} e ${moment(entradaAlmocoAux).format('HH:mm')}
+					 ás ${saida.format('HH:mm')}`);
+		 }else if(!horarioTermino.isBefore(saidaAlmoco) && !horarioTermino.isAfter(entradaAlmoco)){
+			// antes do horario comercial de determinado dia
 			 resposta.push(false);
 			 resposta.push(`Horário atendimento dia ${horarioTermino.format('DD/MM/YY')}
-					  das ${moment(getDateFromHours(horarioComercial.startTime)).format('HH:mm')}
-					 ás ${moment(getDateFromHours(horarioComercial.endTime)).format('HH:mm')}`);
+					  das ${entrada.format('HH:mm')} ás ${moment(saidaAlmocoAux).format('HH:mm')} e ${moment(entradaAlmocoAux).format('HH:mm')}
+					 ás ${saida.format('HH:mm')}`);
 		 }else{
-			 resposta.push(true);
 			 
+			 resposta.push(true);
 		 }
 	}
 	
-	
 	return resposta;
 	
+	}else{
+		
+	    
+		if(parametros[0]=='inicio'){
+			
+			
+			let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),day,month,year));
+			
+			
+			// se for antes de agora
+			if(horarioInicio.isBefore(agora)){
+				 resposta.push(false);
+				 resposta.push(`Você não pode marcar um horário passado`);
+				
+			 }else if (horarioInicio.isBefore(entrada) || horarioInicio.isAfter(saida)){
+				 // depois do horario comercial de determinado dia
+				 resposta.push(false);
+				 resposta.push(`Horário atendimento dia ${horarioInicio.format('DD/MM/YY')}
+						  das ${entrada.format('HH:mm')} ás ${saida.format('HH:mm')}`);
+			 }else{
+				 
+				 resposta.push(true);
+			 }
+		}else{
+			
+			let horarioTermino = moment(getDateFromHours($(`#horarioTermino`).val(),day,month,year));
+			
+			
+			if(horarioTermino.isBefore(agora)){
+				 resposta.push(false);
+				 resposta.push(`Você não pode marcar um horário passado`);
+				
+			 }else if (horarioTermino.isBefore(entrada) || horarioTermino.isAfter(saida)){
+				 // depois do horario comercial de determinado dia
+				 resposta.push(false);
+				 resposta.push(`Horário atendimento dia ${horarioTermino.format('DD/MM/YY')}
+				  das ${entrada.format('HH:mm')} ás ${saida.format('HH:mm')}`);
+			 }else{
+				 
+				 resposta.push(true);
+			 }
+		}
+		
+		return resposta;
+
 	}
 	
 }
@@ -889,18 +964,42 @@ function verificarHorarioComercial(parametros){
 
 function verficarAgendamentos(parametros){
 	
+    var idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
+    
+    var agendamentosDia = [];
 	
+	$.ajax({
+	       type: "GET",
+	       url: `api/agendamentos/buscarPorData/${diaGlobal.format('YYYY-MM-DD')}/${idBarbeiro}`,
+	       cache: false,
+	       async: false,
+	       beforeSend: function (request) {
+				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
+	       error: function error(data) {
+	           console.log(data);
+	       },
+	       success: function(data) {
+	       	agendamentosDia = data;
+	       }
+	     });
+	
+	let resposta = [];
+	
+	if(agendamentosDia.length<1) resposta.push(true);
 	
 	let diaClick = diaGlobal.date();
-	let resposta = [];
+	
 	let format = 'hh:mm'
-	
-	
-	agendamentosDia;
-	
+		
+    var dataEscolhida = moment(formataStringData($('#data').val()));
+	console.log(dataEscolhida)
+    var month = dataEscolhida.format('M');
+    var day   = dataEscolhida.format('D');
+    var year  = dataEscolhida.format('YYYY');
+
    if($('.btn-salvar').attr('acao')=="editar"){
 		
-	   console.log('é')
 		
 		agendamentosDia.forEach(function(element,i,array){
 			
@@ -914,19 +1013,18 @@ function verficarAgendamentos(parametros){
 	
 	if(parametros[0] =='inicio'){
 		
-		let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),diaClick),"YYYY-MM-DD", true);
-		console.log(horarioInicio);
+		let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),day,month,year));
 		
 		agendamentosDia.forEach(function(element){
 			
-			let inicioAgendamento = moment(getDateFromHours(moment(element.dataHorarioInicio).format('HH:mm'),diaClick),"YYYY-MM-DD", true);
+			let inicioAgendamento = moment(getDateFromHours(moment(element.dataHorarioInicio).format('HH:mm'),day,month,year));
 			
-			let terminoAgendamento =  moment(getDateFromHours(moment(element.dataHorarioFim).format('HH:mm'),diaClick),"YYYY-MM-DD", true);
+			let terminoAgendamento =  moment(getDateFromHours(moment(element.dataHorarioFim).format('HH:mm'),day,month,year));
 
 			
 			if(horarioInicio.isBetween(tirar1Minuto(inicioAgendamento),add1Minuto(terminoAgendamento))){
 				resposta.push(false);
-				resposta.push(`Já tem um agendamento marcado de ${add1Minuto(inicioAgendamento).format('HH:mm')} ás ${tirar1Minuto(terminoAgendamento).format('HH:mm')}.`);
+				resposta.push(`Dia ${diaGlobal.format('DD/MM/YYYY')} já tem um agendamento marcado de ${add1Minuto(inicioAgendamento).format('HH:mm')} ás ${tirar1Minuto(terminoAgendamento).format('HH:mm')}.`);
 				return;
 			}
 			
@@ -935,19 +1033,18 @@ function verficarAgendamentos(parametros){
 		resposta.push(true);
 	}else if(parametros[0] =='termino'){
 		
-		   console.log('entro aqui')
-		   let horarioTérmino = moment(getDateFromHours($(`#horarioTermino`).val(),diaClick),"YYYY-MM-DD", true);
+		   let horarioTérmino = moment(getDateFromHours($(`#horarioTermino`).val(),day,month,year));
 		
            agendamentosDia.forEach(function(element){
 			
-			let inicioAgendamento = moment(getDateFromHours(moment(element.dataHorarioInicio).format('HH:mm'),diaClick),"YYYY-MM-DD", true);
+			let inicioAgendamento = moment(getDateFromHours(moment(element.dataHorarioInicio).format('HH:mm'),day,month,year));
 			
-			let terminoAgendamento =  moment(getDateFromHours(moment(element.dataHorarioFim).format('HH:mm'),diaClick),"YYYY-MM-DD", true);
+			let terminoAgendamento =  moment(getDateFromHours(moment(element.dataHorarioFim).format('HH:mm'),day,month,year));
 
 			
 			if(horarioTérmino.isBetween(tirar1Minuto(inicioAgendamento),add1Minuto(terminoAgendamento))){
 				resposta.push(false);
-				resposta.push(`Já tem um agendamento marcado de ${add1Minuto(inicioAgendamento).format('HH:mm')} ás ${tirar1Minuto(terminoAgendamento).format('HH:mm')}.`);
+				resposta.push(`Dia ${diaGlobal.format('DD/MM/YYYY')} já tem um agendamento marcado de ${add1Minuto(inicioAgendamento).format('HH:mm')} ás ${tirar1Minuto(terminoAgendamento).format('HH:mm')}.`);
 				return;
 			}
 			
@@ -957,7 +1054,6 @@ function verficarAgendamentos(parametros){
 		
 	}
 	
-	console.log(resposta)
 	return resposta;
 	
 }
@@ -975,7 +1071,7 @@ function add1Minuto(tempo){
 
 function getNumeroDia(dia) {
 	  var dias = {
-	     'Sun' : 0,
+	     'Sun' : 7,
 	    'Mon': 1,
 	    'Tue': 2,
 	    'Wed': 3,
@@ -994,16 +1090,18 @@ function pegarHorarioComercial(){
      
 	let horarioComercial;
 	
-	pegarDiaGlobal();	
+	pegarDiaGlobal();
 	
 	if(diasGlobal){
 		diasGlobal.forEach(function(e){
-	  	
-	  	if(e.daysOfWeek[0]==getNumeroDia(diaGlobal.format("ddd"))){
-	  		horarioComercial = e ;
+			
+	  	if(e.dia == getNumeroDia(diaGlobal.format("ddd"))){
+	  		
+	  		horarioComercial = e;
 	  	}
 	  });
 	}
+	
 	
   return horarioComercial;
  

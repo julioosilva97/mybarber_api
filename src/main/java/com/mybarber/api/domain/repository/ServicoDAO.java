@@ -18,5 +18,6 @@ public interface ServicoDAO {
 	
 	public Servico buscarPorId(int id);
 	
+	public List<Servico> buscarPorIdAgendamento(int idAgendamento);
 	
 }

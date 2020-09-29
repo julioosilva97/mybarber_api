@@ -15,6 +15,8 @@ public class HorarioAtendimento {
 	private LocalTime saida;
 	private LocalTime entradaAlmoco;
 	private LocalTime saidaAlmoco;
+	private boolean almoco;
+	
 	public LocalTime getEntrada() {
 		return entrada;
 	}
@@ -73,7 +75,7 @@ public class HorarioAtendimento {
 	
 	
 	public HorarioAtendimento(int id, boolean aberto, DiaDaSemana dia, LocalTime entrada, LocalTime saida,
-			LocalTime entradaAlmoco, LocalTime saidaAlmoco) {
+			LocalTime entradaAlmoco, LocalTime saidaAlmoco,boolean almoco) {
 		this.id = id;
 		this.aberto = aberto;
 		this.dia = dia;
@@ -81,6 +83,7 @@ public class HorarioAtendimento {
 		this.saida = saida;
 		this.entradaAlmoco = entradaAlmoco;
 		this.saidaAlmoco = saidaAlmoco;
+		this.almoco = almoco;
 	}
 	public HorarioAtendimentoDTO toDTO() {
 		
@@ -91,9 +94,15 @@ public class HorarioAtendimento {
 		horarioAtendimentoDTO.setEntrada(this.entrada);
 		horarioAtendimentoDTO.setEntradaAlmoco(this.entradaAlmoco);
 		horarioAtendimentoDTO.setSaidaAlmoco(this.saidaAlmoco);
-		//horarioAtendimentoDTO.setIdFuncionario(this.funcionario.getId());
+		horarioAtendimentoDTO.setAlmoco(this.almoco);
 		
 		return horarioAtendimentoDTO;
+	}
+	public boolean isAlmoco() {
+		return almoco;
+	}
+	public void setAlmoco(boolean almoco) {
+		this.almoco = almoco;
 	}
 	
 }

@@ -88,19 +88,24 @@ public class AgendamentoController {
     @PostMapping("/alterarStatus")
     public ResponseEntity<Void> alterarStatus(@RequestBody AgendamentoDTO agendamentoDto) {
 
-        var agendamento = (Agendamento) ConverterDTO.toDoMain(agendamentoDto,Agendamento.class);
-
-        service.alterarStatus(agendamento);
+        
+        service.alterarStatus(agendamentoDto.getId(),agendamentoDto.getStatus());
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 
     @GetMapping("/buscarPorData/{data}/{idBarbeiro}")
-    public ResponseEntity<List<Agendamento>> buscarPorData(@PathVariable("data") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data, @PathVariable("idBarbeiro") int idBarbeiro) {
+    public ResponseEntity<List<AgendamentoDTO>> buscarPorData(@PathVariable("data") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data, @PathVariable("idBarbeiro") int idBarbeiro) {
 
 
-        return new ResponseEntity<List<Agendamento>>(service.buscarPorData(data, idBarbeiro), HttpStatus.OK);
+    	var agendamentos = service.buscarPorData(data, idBarbeiro);
+    	
+    	var agendamentosDTO = agendamentos.stream()
+    			.map(agendamento -> (AgendamentoDTO) ConverterDTO.toDTO(agendamento,AgendamentoDTO.class))
+    			.collect(Collectors.toList());
+    	
+        return new ResponseEntity<List<AgendamentoDTO>>(agendamentosDTO, HttpStatus.OK);
 
     }
 
