@@ -202,7 +202,6 @@ function listarServicos(){
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 		    },
 	        error: function error(data) {
-
 	        	lancarToastr('error','Sem barbearia na sessão.');
 
 	        },
@@ -530,7 +529,7 @@ $("#form-agendamento").validate({
 
 function enviarForm(acao, id) {
 
-	
+	$('.modal-loading').modal('show');
 	var servicoSelect = $('#servicos').val();
 	var servicos = [];
 	servicoSelect.forEach(function(e){
@@ -574,10 +573,7 @@ function enviarForm(acao, id) {
         },
         // dataType: 'json',
         success: function success(data) {
-        	lancarToastr("success", `Agendamento ${acao == "cadastrar" ? "salvo" :  "editado"} com sucesso.`);
-        	//$('#form-agendamento')[0].reset();
-
-
+        	lancarToastr("success", `Agendamento ${acao == "cadastrar" ? "salvo" :  "editado"} com sucesso.`,true);
         }
     });
 
@@ -742,7 +738,7 @@ function iniciarEdicao(id) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
         error: function error(data) {
-
+        	fecharModalLoading();
         	lancarToastr('error',data)
             console.log(data)
 
@@ -779,6 +775,7 @@ function iniciarEdicao(id) {
 
 function alterarStatus(id, status) {
 
+	$('.modal-loading').modal('show');
     var sendInfo = {
         id: id,
         status: status
@@ -793,6 +790,7 @@ function alterarStatus(id, status) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
         error: function error(data) {
+        	fecharModalLoading();
             console.log(data)
             lancarToastr("error", data.responseJSON);
 
@@ -800,7 +798,7 @@ function alterarStatus(id, status) {
         // dataType: 'json',
         success: function success(data) {
             $('#modal-servico').modal('hide');
-            lancarToastr("success", "Status alterado com sucesso.");
+            lancarToastr("success", "Status alterado com sucesso.",true);
 
 
         }

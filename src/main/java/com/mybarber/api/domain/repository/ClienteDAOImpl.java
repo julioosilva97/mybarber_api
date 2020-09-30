@@ -143,4 +143,14 @@ public class ClienteDAOImpl implements ClienteDAO {
 		return jdbcTemplate.queryForObject( verificarEmail , new Object[] { email }, Boolean.class);
 	}
 
+	@Override
+	public int countPorBarbearia(int idBarbearia) {
+		
+		String countPorBarbearia = """
+				select count(*) from cliente_barbearia where id_barbearia = ?""";
+		
+		return jdbcTemplate.queryForObject(countPorBarbearia,new Object[] { idBarbearia },int.class);
+		
+	}
+
 }

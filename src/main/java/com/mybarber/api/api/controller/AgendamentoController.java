@@ -110,7 +110,7 @@ public class AgendamentoController {
     }
 
     @GetMapping("somaValorMensal/{idBarbearia}")
-    public ResponseEntity<List<RelatorioDTO>> valorTotalMensal(@PathVariable("id") int idBarbearia, LocalDate data) {
+    public ResponseEntity<List<RelatorioDTO>> valorTotalMensal(@PathVariable("idBarbearia") int idBarbearia, LocalDate data) {
 
         var barbearia = new Barbearia();
         barbearia.setId(idBarbearia);

@@ -54,19 +54,20 @@ public class BarbeariaController {
 	}
 	
 	@GetMapping("listar")
-	public ResponseEntity <List<BarbeariaModel>> listar(ModelMap model) {
+	public ResponseEntity <List<BarbeariaModel>> listar() {
 		
 		return new ResponseEntity<List<BarbeariaModel>>(toCollectionModel(service.listar()),HttpStatus.OK);
 	}
 	
-	@GetMapping("/editar/{id}")
+	@GetMapping("/buscarPorId/{id}")
 	public ResponseEntity<BarbeariaDTO>iniciarEdica(@PathVariable("id") int id) {
 		
 		var barbearia = service.buscarPorId(id);
-		var barbeariaDTO = (BarbeariaDTO) ConverterDTO.toDTO(barbearia, Barbearia.class);
+		var barbeariaDTO = (BarbeariaDTO) ConverterDTO.toDTO(barbearia, BarbeariaDTO.class);
 		return new ResponseEntity<BarbeariaDTO> (barbeariaDTO, HttpStatus.OK);
 	}
 	
+
 	
 	@PutMapping("/editar")
 	public ResponseEntity<Void> editar(@Valid @RequestBody BarbeariaInput barbeariaDTO) {

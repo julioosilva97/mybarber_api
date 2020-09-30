@@ -49,7 +49,6 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	
 	
 	
-	String somaValorMensal = "select sum(valor) valor, extract (month from datahorainicio) datahorainicio from agendamento where extract (year from datahorainicio)= ? and status='CONCLUIDO' and id_barbearia=? group by extract(month from datahorainicio)";
 	
 
 	@Override
@@ -185,7 +184,19 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	
 	@Override
 	public List<Relatorio>somaValorMensal(int idBarbearia, LocalDate data){
-		return jdbcTemplate.query(somaValorMensal, new Object[] { data.getYear(),idBarbearia}, (rs, rowNum)-> new Relatorio(rs.getDouble("valor"), rs.getInt("datahorainicio")));
+		
+		String somaValorMensal = """
+				select sum(a.valor) valor, extract (month from a.datahorainicio) datahorainicio
+				from agendamento a
+				inner join funcionario f on f.id = a.id_barbeiro 
+				inner join barbearia b on b.id = f.id_barbearia
+				where extract (year from a.datahorainicio)= ?
+				and a.status='CONCLUIDO' and b.id=? group by extract(month from a.datahorainicio)
+				""";
+
+		
+		return jdbcTemplate.query(somaValorMensal, new Object[] { data.getYear(),idBarbearia}, (rs, rowNum)->
+		new Relatorio(rs.getDouble("valor"), rs.getInt("datahorainicio")));
 				
 	}
 

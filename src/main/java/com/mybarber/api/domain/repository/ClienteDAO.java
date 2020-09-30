@@ -13,5 +13,6 @@ public interface ClienteDAO {
 	public void excluir(int id);
 	public List<Cliente> listar(Barbearia barbearia);
 	public boolean verificarEmail(String email);
+	public int countPorBarbearia(int idBarbearia);
 
 }

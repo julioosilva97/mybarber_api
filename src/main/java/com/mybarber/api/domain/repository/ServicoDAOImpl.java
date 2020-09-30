@@ -16,7 +16,7 @@ public class ServicoDAOImpl implements ServicoDAO {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	String selectall = "select * from servico where id_barbearia = ?";
+	
 	String select = "select * from servico where id = ?";
 	String save = "insert into servico(descricao,valor,tempo,id_barbearia) values(?,?,?,?)";
 	String delete = "delete from servico where id=?";
@@ -24,6 +24,8 @@ public class ServicoDAOImpl implements ServicoDAO {
 
 	@Override
 	public List<Servico> listar(int id) {
+		
+		String selectall = "select * from servico where id_barbearia = ?";
 		return jdbcTemplate.query(selectall, new Object[] { id }, new ServicoMapper());
 
 	}

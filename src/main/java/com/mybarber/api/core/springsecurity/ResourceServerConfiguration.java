@@ -74,14 +74,6 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                     "/",
                     "/api/agendamentos/listarFullCalendar/{idBarbeiro}").permitAll()
 	        .antMatchers("/thymeleaf/").hasRole("LISTAR_SERVICO")
-		    /*.antMatchers("/funcionarios/cadastrar").hasRole("ADMINISTRADOR")
-	        .antMatchers("/servicos/listar").hasAnyRole("COMUM","ADMINISTRADOR")
-	        .antMatchers("/funcionarios/listar").hasAnyRole("COMUM","ADMINISTRADOR")
-	        .antMatchers("/servicos/editar/{id}").hasRole("ADMINISTRADOR")
-	        .antMatchers("/funcionarios/editar/{id}").hasRole("ADMINISTRADOR")
-	        .antMatchers("/servicos/editar").hasRole("ADMINISTRADOR")
-	        .antMatchers("/funcionarios/editar").hasRole("ADMINISTRADOR")
-	        .antMatchers("/funcionarios/excluir/{id}").hasRole("ADMINISTRADOR")*/
 	        .anyRequest().authenticated(); // tira o token do json, depois ver isso
 	        
     }
