@@ -53,4 +53,14 @@ public class ServicoDAOImpl implements ServicoDAO {
 
 	}
 
+	@Override
+	public List<Servico> buscarPorIdAgendamento(int idAgendamento) {
+		
+        String buscarPorIdAgendamento = "select s.* from agendamento_servico  inner join servico s on agendamento_servico.id_servico = s.id where agendamento_servico.id_agendamento = ?";
+
+		
+		return jdbcTemplate.query(buscarPorIdAgendamento,new Object[] {idAgendamento},(rs,rowNum) -> new Servico(rs.getInt("id"),
+				rs.getString("descricao"), rs.getFloat("valor"), rs.getTime("tempo").toLocalTime()));
+	}
+
 }

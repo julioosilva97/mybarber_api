@@ -95,10 +95,10 @@ public class HtmlController {
 		return "relatorio/barGraph";
 	}
 	
-	@GetMapping("teste")
+	/*@GetMapping("teste")
 	public String teste() {
-		return "email/email-template";
-	}
+		return "email/notificar-agendamento";
+	}*/
 	
 	@GetMapping("resetar-senha")
 	public String resetarSenha() {

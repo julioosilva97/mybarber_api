@@ -46,19 +46,15 @@
 	}
 
 
-	function getDateFromHours(time,dia) {
-
-		console.log(time)
+	function getDateFromHours(time,dia,mes,ano) {
+	mes = mes-1
 	time = time.split(':');
 	let now = new Date();
-	if(dia){
-		return new Date(now.getFullYear(), now.getMonth(), dia, ...time);
-	}else{
-		return new Date(now.getFullYear(), now.getMonth(), now.getDate(), ...time);
-	}
+	if(dia && mes && ano){
+		return new Date(ano,mes,dia, ...time);
 
 	}
-	
+	}
 	
 	function parseJwt(token) {
 	    var base64Url = token.split('.')[1];
@@ -69,6 +65,8 @@
 
 	    return JSON.parse(jsonPayload);
 	};
+	
+	
 
 	function getIdBarbearia(token){
 		
@@ -76,6 +74,15 @@
 		
 		return json.dadosUsuario.idBarbearia;
 	}
+	
+	function formataStringData(data) {
+		  var dia  = data.split("/")[0];
+		  var mes  = data.split("/")[1];
+		  var ano  = data.split("/")[2];
+
+		  return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
+		  // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+		}
 
 
 	function getToken(){

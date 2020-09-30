@@ -22,4 +22,7 @@ public interface AgendamentoDAO {
 	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro);
 
 	public List<Relatorio> somaValorMensal(int idBarbearia, LocalDate data);
+	
+	public void alterarNotificado(int idAgendamento);
+	
 }

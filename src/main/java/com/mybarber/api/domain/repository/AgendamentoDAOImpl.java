@@ -11,6 +11,7 @@ import com.mybarber.api.domain.entity.Relatorio;
 import com.mybarber.api.domain.rowmapper.AgendamentoMapper;
 import org.springframework.asm.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -46,13 +47,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	
 	String alterarStatus = "update agendamento set status = ? where id = ?";
 	
-	String buscarPorData = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
-			"c.id id_cliente," + 
-			"a.nome_cliente" + 
-			" from agendamento a" + 
-			" left join cliente c on a.id_cliente = c.id" + 
-			" inner join funcionario f on a.id_barbeiro = f.id" + 
-			" where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status NOT IN('CANCELADO') and a.id_barbeiro = ?";
+	
 	
 	String somaValorMensal = "select sum(valor) valor, extract (month from datahorainicio) datahorainicio from agendamento where extract (year from datahorainicio)= ? and status='CONCLUIDO' and id_barbearia=? group by extract(month from datahorainicio)";
 	
@@ -92,6 +87,8 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 		
 		int idAgendamento = keyHolder.getKey().intValue();
 		agendamento.setId(idAgendamento);
+		
+		salvarAgendamentoServico(agendamento);
 	}
 
 	@Override
@@ -122,9 +119,32 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 
 					
 				
+		String excluirAgendamentoServico = "delete from agendamento_servico where id_agendamento = ?";
+		jdbcTemplate.update(excluirAgendamentoServico,agendamento.getId());
+		
+		salvarAgendamentoServico(agendamento);
 		
 		
+	}
+	
+	private void salvarAgendamentoServico(Agendamento agendamento) {
 		
+		String salvarAgendamentoServicos = "INSERT INTO agendamento_servico(id_agendamento, id_servico) VALUES (?, ?)";
+		
+        jdbcTemplate.batchUpdate(salvarAgendamentoServicos, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setInt(1, agendamento.getId());
+				ps.setInt(2, agendamento.getServicos().get(i).getId());
+			}
+			
+			@Override
+			public int getBatchSize() {
+				
+				return agendamento.getServicos().size();
+			}
+		});
 	}
 
 	@Override
@@ -137,7 +157,29 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	@Override
 	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro){
 		
-		return jdbcTemplate.query(buscarPorData,new Object[] {data.toString(),idBarbeiro}, new AgendamentoMapper());
+		if(idBarbeiro!=0) {
+			String buscarPorData = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
+					"c.id id_cliente," + 
+					"a.nome_cliente" + 
+					" from agendamento a" + 
+					" left join cliente c on a.id_cliente = c.id" + 
+					" inner join funcionario f on a.id_barbeiro = f.id" + 
+					" where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status NOT IN('CANCELADO') and a.id_barbeiro = ?";
+			
+			return jdbcTemplate.query(buscarPorData,new Object[] {data.toString(),idBarbeiro}, new AgendamentoMapper());
+		}else {
+			//pegar os agendamentos para notificar 
+			String buscarPorData = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," + 
+					"c.id id_cliente," + 
+					"a.nome_cliente" + 
+					" from agendamento a" + 
+					" left join cliente c on a.id_cliente = c.id" + 
+					" inner join funcionario f on a.id_barbeiro = f.id" + 
+					" where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status = 'AGENDADO' and notificado != true and id_cliente is not null";
+			
+			return jdbcTemplate.query(buscarPorData,new Object[] {data.toString()}, new AgendamentoMapper());
+		}
+		
 		
 	}
 	
@@ -145,6 +187,14 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 	public List<Relatorio>somaValorMensal(int idBarbearia, LocalDate data){
 		return jdbcTemplate.query(somaValorMensal, new Object[] { data.getYear(),idBarbearia}, (rs, rowNum)-> new Relatorio(rs.getDouble("valor"), rs.getInt("datahorainicio")));
 				
+	}
+
+	@Override
+	public void alterarNotificado(int idAgendamento) {
+		
+		var alterarNotificado = "update agendamento set notificado = true where id =?";
+		jdbcTemplate.update(alterarNotificado,idAgendamento);
+		
 	}
 	
 	

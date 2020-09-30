@@ -16,7 +16,7 @@ public class HorarioAtendimentoDTO {
 	private LocalTime entradaAlmoco;
 	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime saidaAlmoco;
-	private int idFuncionario;
+	private boolean almoco;
 	
 	public boolean isAberto() {
 		return aberto;
@@ -29,12 +29,6 @@ public class HorarioAtendimentoDTO {
 	}
 	public void setDia(int dia) {
 		this.dia = dia;
-	}
-	public int getIdFuncionario() {
-		return idFuncionario;
-	}
-	public void setIdFuncionario(int idFuncionario) {
-		this.idFuncionario = idFuncionario;
 	}
 	public LocalTime getEntrada() {
 		return entrada;
@@ -60,7 +54,11 @@ public class HorarioAtendimentoDTO {
 	public void setSaidaAlmoco(LocalTime saidaAlmoco) {
 		this.saidaAlmoco = saidaAlmoco;
 	}
-	
-	
+	public boolean isAlmoco() {
+		return almoco;
+	}
+	public void setAlmoco(boolean almoco) {
+		this.almoco = almoco;
+	}
 	
 }
