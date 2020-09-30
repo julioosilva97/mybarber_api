@@ -1,13 +1,18 @@
 package com.mybarber.api.api.dto.promocao;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PromocaoDTO {
 
 	private int id;
-	private Date dataInicio;
-	private Date dataFim;
+
+	private LocalDate dataInicio;
+	
+	private LocalDate dataFim;
 	private String descricao;
 	private Long idServico;
 	public int getId() {
@@ -16,16 +21,16 @@ public class PromocaoDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Date getDataInicio() {
+	public LocalDate getDataInicio() {
 		return dataInicio;
 	}
-	public void setDataInicio(Date dataInicio) {
+	public void setDataInicio(LocalDate dataInicio) {
 		this.dataInicio = dataInicio;
 	}
-	public Date getDataFim() {
+	public LocalDate getDataFim() {
 		return dataFim;
 	}
-	public void setDataFim(Date dataFim) {
+	public void setDataFim(LocalDate dataFim) {
 		this.dataFim = dataFim;
 	}
 	public String getDescricao() {

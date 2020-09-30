@@ -10,4 +10,6 @@ public interface PromocaoDAO {
 	public void editar (Promocao promocao);
 	
 	public void excluir (int id);
+	
+	public Promocao status(int idServico);
 }

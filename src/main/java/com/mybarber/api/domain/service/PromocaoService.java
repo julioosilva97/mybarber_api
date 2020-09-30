@@ -7,4 +7,5 @@ public interface PromocaoService {
 
 	
 	public void salvar(Promocao promocao);
+	
 }

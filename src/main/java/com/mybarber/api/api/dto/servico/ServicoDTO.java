@@ -19,7 +19,7 @@ public class ServicoDTO {
 	 private int id;
 	private String descricao;
 	private float valor;
-	@JsonFormat(pattern = "HH:mm:ss")
+	@JsonFormat(pattern = "HH:mm")
 	private LocalTime tempo;
     @NotNull
     private Long idBarbearia;
