@@ -9,6 +9,28 @@ public class BarbeariaDTO {
 	private String nome;
 	private String descricao;
 	private EnderecoDTO endereco;
+    private Integer qtdFuncionario;
+	private Integer qtdCliente;
+	private Integer qtdServico;
+	
+	public Integer getQtdFuncionario() {
+		return qtdFuncionario;
+	}
+	public void setQtdFuncionario(Integer qtdFuncionario) {
+		this.qtdFuncionario = qtdFuncionario;
+	}
+	public Integer getQtdCliente() {
+		return qtdCliente;
+	}
+	public void setQtdCliente(Integer qtdCliente) {
+		this.qtdCliente = qtdCliente;
+	}
+	public Integer getQtdServico() {
+		return qtdServico;
+	}
+	public void setQtdServico(Integer qtdServico) {
+		this.qtdServico = qtdServico;
+	}
 	public int getId() {
 		return id;
 	}

@@ -1,4 +1,4 @@
-package com.mybarber.api.core.tarefas;
+package com.mybarber.api.domain.tarefa;
 
 import java.time.Duration;
 import java.time.LocalDate;

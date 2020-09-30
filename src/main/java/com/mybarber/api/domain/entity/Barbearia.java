@@ -16,6 +16,38 @@ public class Barbearia {
 	
   
 	private Endereco endereco;
+	
+	private Integer qtdFuncionario;
+	
+	private Integer qtdCliente;
+	
+	private Integer qtdServico;
+	
+	
+
+	public Integer getQtdFuncionario() {
+		return qtdFuncionario;
+	}
+
+	public void setQtdFuncionario(Integer qtdFuncionario) {
+		this.qtdFuncionario = qtdFuncionario;
+	}
+
+	public Integer getQtdCliente() {
+		return qtdCliente;
+	}
+
+	public void setQtdCliente(Integer qtdCliente) {
+		this.qtdCliente = qtdCliente;
+	}
+
+	public Integer getQtdServico() {
+		return qtdServico;
+	}
+
+	public void setQtdServico(Integer qtdServico) {
+		this.qtdServico = qtdServico;
+	}
 
 	public int getId() {
 		return id;
@@ -58,12 +90,15 @@ public class Barbearia {
 		this.id = id;
 	}
 
-	public Barbearia(int id, String nome, String descricao, Endereco endereco) {
+	public Barbearia(int id, String nome, String descricao, Endereco endereco,Integer qtdCliente, Integer qtdFuncionario, Integer qtdServico) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.endereco = endereco;
+		this.qtdCliente = qtdCliente;
+		this.qtdFuncionario = qtdFuncionario;
+		this.qtdServico = qtdServico;
 	}
 
 	public Barbearia(String nome, Endereco endereco) {
