@@ -50,6 +50,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Autowired
     TokenDeVerificacaoService tokenService;
+    
 
     @Autowired
     private EnviarEmail enviarEmail;
@@ -79,7 +80,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                     funcionario.getUsuario().getPerfil().setDescricao("ADMINISTRADOR");
                     funcionario.setCargo(Cargo.BARBEIRO);
                 }
-
+                
+                var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
+        		
+        		barbearia.setQtdCliente(barbearia.getQtdFuncionario()+1);
+        		
+        		daoBarbearia.alterar(barbearia);
                 daoUsuario.salvar(funcionario.getUsuario());
                 daoFuncionario.salvar(funcionario);
                 
@@ -190,6 +196,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                 daoFuncionario.excluir(funcionario);
                 daoUsuario.excluir(funcionario.getUsuario());
                 daoEndereco.excluir(funcionario.getEndereco());
+                
+                 var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
+        		
+        		barbearia.setQtdCliente(barbearia.getQtdFuncionario()-1);
+        		
+        		daoBarbearia.alterar(barbearia);
 
             } else {
                 //tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());

@@ -13,7 +13,7 @@ public interface ClienteService {
 
 	public void editar(Cliente cliente);
 
-	public void excluir(int id);
+	public void excluir(int id, int idBarbearia);
 
 	public List<Cliente> listar(Barbearia barbearia);
 
