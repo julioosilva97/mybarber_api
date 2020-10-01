@@ -17,6 +17,7 @@ public class Promocao {
 	private LocalDate dataFim;
 	private String descricao;
 	private boolean status;
+	private float valor;
 	private Servico servico;
 	
 	public int getId() {
@@ -57,16 +58,33 @@ public class Promocao {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public Promocao(int id, LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status, Servico servico) {
+	
+	public float getValor() {
+		return valor;
+	}
+	public void setValor(float valor) {
+		this.valor = valor;
+	}
+	public Promocao(int id, LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status, float valor, Servico servico) {
 		this.id = id;
+		this.dataInicio = dataInicio;
+		this.dataFim = dataFim;
+		this.descricao = descricao;
+		this.status = status;
+		this.valor = valor;
+		this.servico = servico;
+	}
+	
+	
+	
+	
+	public Promocao(LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status, Servico servico) {
 		this.dataInicio = dataInicio;
 		this.dataFim = dataFim;
 		this.descricao = descricao;
 		this.status = status;
 		this.servico = servico;
 	}
-	
-	
 	public Promocao(boolean status) {
 		this.status = status;
 	}

@@ -15,7 +15,7 @@ public interface ServicoService {
 
 	public void atualizar(Servico servico);
 
-	public Servico buscarPorId(int id);
+	public Servico buscarPorIdServico(int id);
 	
 	
 

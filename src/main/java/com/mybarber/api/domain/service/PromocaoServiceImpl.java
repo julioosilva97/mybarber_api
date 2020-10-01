@@ -18,4 +18,5 @@ public class PromocaoServiceImpl implements PromocaoService {
 		dao.salvar(promocao);
 	}
 
+
 }

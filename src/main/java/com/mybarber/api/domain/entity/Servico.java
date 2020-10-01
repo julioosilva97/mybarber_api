@@ -63,6 +63,12 @@ public class Servico {
 		this.valor = valor;
 		this.tempo = tempo;
 	}
+	
+	
+
+	public Servico(int id) {
+		this.id = id;
+	}
 
 	public Servico() {
 	}

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
+import com.mybarber.api.domain.repository.PromocaoDAO;
 import com.mybarber.api.domain.repository.ServicoDAO;
 
 
@@ -17,11 +18,20 @@ public class ServicoServiceImpl implements ServicoService{
 	@Autowired
 	ServicoDAO dao;
 	
+	@Autowired
+	PromocaoDAO promocaoDAO;
+	
 	@Override
 	public List<Servico> listar(Barbearia barbearia) {
 		
-		var show = dao.listar(barbearia.getId());
-		return show;
+		var servicos = dao.listar(barbearia.getId());
+		servicos.forEach(servico -> {
+			var promocao = promocaoDAO.buscarPorIdServico(servico.getId());
+			if(promocao!= null && promocao.isStatus() ) {
+				
+			}
+		});
+		return servicos;
 	}
 
 	@Override
@@ -45,8 +55,11 @@ public class ServicoServiceImpl implements ServicoService{
 	}
 
 	@Override
-	public Servico buscarPorId(int id) {
-		return dao.buscarPorId(id);
+	public Servico buscarPorIdServico(int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
 
 }

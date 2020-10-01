@@ -14,6 +14,7 @@ public class PromocaoDTO {
 	
 	private LocalDate dataFim;
 	private String descricao;
+	private float valor;
 	private Long idServico;
 	public int getId() {
 		return id;
@@ -44,6 +45,13 @@ public class PromocaoDTO {
 	}
 	public void setIdServico(Long idServico) {
 		this.idServico = idServico;
+	}
+	
+	public float getValor() {
+		return valor;
+	}
+	public void setValor(float valor) {
+		this.valor = valor;
 	}
 	public PromocaoDTO() {
 	}
