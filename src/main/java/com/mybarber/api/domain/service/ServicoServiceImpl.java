@@ -9,8 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
 
+
 import com.mybarber.api.domain.repository.PromocaoDAO;
 
+import com.mybarber.api.domain.repository.BarbeariaDAO;
+
+
+import com.mybarber.api.domain.repository.PromocaoDAO;
 import com.mybarber.api.domain.repository.BarbeariaDAO;
 
 import com.mybarber.api.domain.repository.ServicoDAO;
