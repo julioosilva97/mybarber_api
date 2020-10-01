@@ -16,8 +16,8 @@ $(document).ready(function ()
 
 	inciarExclusao(tabelaBody);
 	
-	cadastrarPromocao(tabelaBody);
 
+    cadastrarPromocao(tabelaBody);
 	
 	
 	validarForm();
@@ -29,8 +29,71 @@ $(document).ready(function ()
 		$("#form-servico").find('.is-valid').removeClass("is-valid");
 	});
 	
+	$(".btn-cancelar").on("click",function(){
+		$(".promocao-form").slideUp('slow');
+		$('.listagem').slideDown('slow');
+		$('#form-servico').validate().resetForm();
+		$("#form-servico").find('.is-valid').removeClass("is-valid");
+	});
+	
+	
 	
 });
+
+function enviarFormPromocao(acao, id) {
+	$('.modal-loading').modal('show');
+	
+	var data = {
+			id: id,
+			dataInicio: $("#dataInicio").val(),
+			dataFim: $("#dataFim").val(),
+			descricao: $("#descricaoPromocao").val(),
+			valor: $("#valorPromocao").val().replace(",", "."),
+			idServico: $(".btn-salvar-promocao").attr("data-id-servico")
+		}
+	
+	console.log(data);
+	
+var verbo;
+	
+	if(acao=="cadastrar"){
+		var verbo = "POST";
+	}else{
+		var verbo = "PUT";
+	}
+	console.log(verbo)
+	$.ajax(
+	{
+		type: verbo,
+		url: `api/promocao`,
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(data),
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
+		error: function error(data)
+		{
+			fecharModalLoading();
+			console.log(data);
+			if(data.status == 400){
+				lancarToastr("error",`${data.responseJSON.titulo}`);
+			}else{
+				lancarToastr("error",`${data.responseJSON.error_description}`);
+			}
+
+		},
+		//dataType: 'json',
+		success: function success(data)
+		{
+           
+			lancarToastr("success",`Promoção ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
+			
+
+		}
+	});
+		
+	
+}
 
 
 function enviarForm(acao, id)
@@ -127,7 +190,7 @@ function montarDataTable()
 		},
 		{
 			"data": "tempo",render: function (data, type, row) {
-				console.log(data);
+				
 				//return data;
                 return moment(getDateFromHours(data)).format('HH:mm')
             }
@@ -210,9 +273,13 @@ function cadastrarPromocao(tabelaBody) {
 	tabelaBody.on("click", "a.btn-promocao", function (e) {
 		$('.promocao-form').slideDown('slow');
 		 $(".listagem").slideUp('slow');
-	
-		 $(".btn-salvar").attr("acao", "cadastrar");
-		 $(".btn-salvar").attr("data-id", $(this).attr('data-id'));
+		 $('#form-promocao')[0].reset();
+		 $("#dataInicio").val($(this).closest("tr").find('td:eq(0)').text());
+		 $("#dataFim").val($(this).closest("tr").find('td:eq(1)').text());
+		 $("#descricao").val($(this).closest("tr").find('td:eq(1)').text());
+		 $("#valor").val($(this).closest("tr").find('td:eq(1)').text());
+		 $(".btn-salvar-promocao").attr("acao", "cadastrar");
+		 $(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id'));
 		 
 	})
 }
@@ -258,6 +325,9 @@ function excluir(id)
 			type: "DELETE",
 			url: "api/servicos/deletar/" + id,
 			cache: false,
+			beforeSend: function (request) {
+				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+		    },
 			error: function error(data)
 			{
 				console.log(data)
@@ -268,7 +338,7 @@ function excluir(id)
 			{
 				$('#modal-excluir').modal('hide');
 				$('.modal-loading').modal('show');
-				lancarToastr("success",`Serviço excluido com sucesso.`);
+				lancarToastr("success",`Serviço excluido com sucesso.`, true);
 
 			}
 		});
@@ -343,4 +413,45 @@ function validarForm()
 		}
 
 	});
+	
+	$("#form-promocao").validate({
+		// Rules for form validation
+		rules:
+		{
+			dataInicio: {
+				required: true
+			},
+			dataFim: {
+				required: true
+			},
+			valor: {
+				required: true,
+				minlength: 4
+			}
+		},
+		messages:
+		{
+			
+			dataInicio:
+			{
+				required: 'Data início é obrigatória.'
+			},
+			dataFim: 
+			{
+				required: 'Data Final é obrigatória'
+			},
+			valor:
+			{
+				required: 'Campo obrigatório'
+			},
+		},
+		submitHandler: function submitHandler(form)
+		{
+
+			enviarFormPromocao($(".btn-salvar-promocao").attr("acao"), $(".btn-salvar-promocao").attr("data-id"))
+
+		}
+
+	})
+	
 }
