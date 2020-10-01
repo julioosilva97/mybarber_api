@@ -49,11 +49,11 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public Promocao buscarPorIdServico(int idBarbearia) {
-		String buscarPorId = "select * from promocao where id_barbearia = ?";
+	public Promocao buscarPorIdServico(int idServico) {
+		String buscarPorId = "select * from promocao where id_servico = ?";
 		try {
-		return jdbcTemplate.queryForObject(buscarPorId, new Object[] {idBarbearia}, 
-				(rs, rowNum) -> new Promocao(rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"), new Servico(rs.getInt("id_servico"))));
+		return jdbcTemplate.queryForObject(buscarPorId, new Object[] {idServico}, 
+				(rs, rowNum) -> new Promocao(rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor"), new Servico(rs.getInt("id_servico"))));
 
 		}catch (Exception e) {
 			return null;

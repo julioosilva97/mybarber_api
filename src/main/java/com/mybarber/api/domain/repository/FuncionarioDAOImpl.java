@@ -32,7 +32,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 			 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
 			 b.id id_barbearia
 			 from funcionario f 
-			 inner join endereco e on f.id_endereco = e.id 
+			 left join endereco e on f.id_endereco = e.id 
 			 inner join gerenciar_usuario gu on gu.id_funcionario = f.id 
 			 inner join usuario u on gu.id_usuario = u.id
 	         inner join usuario_perfil up on up.id_usuario = u.id

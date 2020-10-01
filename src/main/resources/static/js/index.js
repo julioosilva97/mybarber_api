@@ -53,7 +53,9 @@
 	if(dia && mes && ano){
 		return new Date(ano,mes,dia, ...time);
 
-	}
+	}else{
+    	return new Date(now.getFullYear(), now.getMonth(), now.getDate(), ...time);
+    }
 	}
 	
 	function parseJwt(token) {

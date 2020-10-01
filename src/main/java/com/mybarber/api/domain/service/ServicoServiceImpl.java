@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
-<<<<<<< HEAD
+
 import com.mybarber.api.domain.repository.PromocaoDAO;
-=======
+
 import com.mybarber.api.domain.repository.BarbeariaDAO;
->>>>>>> d42f37647784cb51500b25deb4d133d5a58c673c
+
 import com.mybarber.api.domain.repository.ServicoDAO;
 
 
@@ -23,11 +23,10 @@ public class ServicoServiceImpl implements ServicoService{
 	ServicoDAO dao;
 	
 	@Autowired
-<<<<<<< HEAD
 	PromocaoDAO promocaoDAO;
-=======
+
+	@Autowired
     BarbeariaDAO daoBarbearia;
->>>>>>> d42f37647784cb51500b25deb4d133d5a58c673c
 	
 	@Override
 	public List<Servico> listar(Barbearia barbearia) {
@@ -36,8 +35,10 @@ public class ServicoServiceImpl implements ServicoService{
 		servicos.forEach(servico -> {
 			var promocao = promocaoDAO.buscarPorIdServico(servico.getId());
 			if(promocao!= null && promocao.isStatus() ) {
-				
+				servico.setValor(promocao.getValor());
+				System.out.println("show");
 			}
+		  System.out.println(servico.getTempo());
 		});
 		return servicos;
 	}
@@ -59,7 +60,7 @@ public class ServicoServiceImpl implements ServicoService{
 	@Override
 	public void excluir(int id) {
 		
-		var servico = buscarPorId(id);
+		var servico = dao.buscarPorId(id);
 		
 		var barbearia = daoBarbearia.buscarPorId(servico.getBarbearia().getId());
 		

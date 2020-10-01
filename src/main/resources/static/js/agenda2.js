@@ -60,6 +60,9 @@ function pegarDiaGlobal(){
 }
 
 function listarBarbeiros() {
+	
+	console.log(getIdBarbearia(getToken()))
+	
     $.ajax({
         type: "GET",
         url: `api/funcionarios/listarPorCargo/BARBEIRO/${getIdBarbearia(getToken())}`,
@@ -71,7 +74,7 @@ function listarBarbeiros() {
         	lancarToastr('error','Sem barbearia na sessão.')
         },
         success: function(data) {
-
+        	console.log(data)
             for (var i in data) {
                 if (i == 0) {
                     $(".nav-underline").append(`<a class="nav-link active" href="#" idBarbeiro=${data[i].id}> ${data[i].nome}</a>`);
@@ -210,7 +213,7 @@ function listarServicos(){
 	        success: function(data) {
 
 	                for (var i in data) {
-	                    $("#servicos").append(`<option value='${data[i].id}' preco='${data[i].valor}' tempo='${data[i].tempo}' >${data[i].descricao}</option>`);
+	                    $("#servicos").append(`<option value='${data[i].id}' preco='${data[i].valor}' tempo='${data[i].tempo}' >${data[i].descricao} (R$${data[i].valor})  </option>`);
 	                }
 
 	                calcularValor();
@@ -352,6 +355,7 @@ function clickBarbeiro() {
 function carregarHorarioAtendimento() {
 
     var idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
+    console.log(idBarbeiro)
     var inicioAtendimento;
     var finalAtendimento;
     var dias = new Array();

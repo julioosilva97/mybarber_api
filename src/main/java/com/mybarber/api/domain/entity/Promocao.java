@@ -78,11 +78,12 @@ public class Promocao {
 	
 	
 	
-	public Promocao(LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status, Servico servico) {
+	public Promocao(LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status,float valor,  Servico servico) {
 		this.dataInicio = dataInicio;
 		this.dataFim = dataFim;
 		this.descricao = descricao;
 		this.status = status;
+		this.valor=valor;
 		this.servico = servico;
 	}
 	public Promocao(boolean status) {
