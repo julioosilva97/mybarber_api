@@ -62,10 +62,10 @@ public class ClienteController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
-	@DeleteMapping("{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
+	@DeleteMapping("{id}/{idBarbearia}")
+	public ResponseEntity<Void> excluir(@PathVariable("id") int id,@PathVariable("idBarbearia") int idBarbearia) {
 
-		service.excluir(id);
+		service.excluir(id,idBarbearia);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 

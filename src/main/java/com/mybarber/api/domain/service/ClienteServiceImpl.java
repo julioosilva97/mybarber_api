@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Cliente;
 import com.mybarber.api.domain.exception.NegocioException;
+import com.mybarber.api.domain.repository.BarbeariaDAO;
 import com.mybarber.api.domain.repository.ClienteDAO;
 import com.mybarber.api.domain.repository.UsuarioDAO;
 
@@ -24,15 +25,24 @@ public class ClienteServiceImpl implements ClienteService {
 	@Autowired
 	UsuarioDAO usuarioDAO;
 	
+	@Autowired
+	BarbeariaDAO barbeariaDAO;
 
 	
 	@Override
 	public void cadastrar(Cliente cliente,int idBarbearia) {
 		
+		//cadastrar sem barbearia quando for a parte de cliente 
 		if (!usuarioDAO.verificarLogin(cliente.getUsuario().getLogin())) {
 		cliente.getUsuario().getPerfil().setId(4);
 		usuarioDAO.salvar(cliente.getUsuario());
 		clienteDAO.cadastrar(cliente,idBarbearia);
+		
+		var barbearia = barbeariaDAO.buscarPorId(idBarbearia);
+		
+		barbearia.setQtdCliente(barbearia.getQtdCliente()+1);
+		
+		barbeariaDAO.alterar(barbearia);
 		
 		//enviar email para o cliente se cadastrar 
 		
@@ -68,6 +78,7 @@ public class ClienteServiceImpl implements ClienteService {
     					usuarioDAO.alterar(cliente.getUsuario());
     					clienteDAO.editar(cliente);
     					
+    					
     				}else {
     					throw new NegocioException("Já existe um usuário com email : "+usuarioEdicao.getEmail());
     				}
@@ -93,8 +104,16 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public void excluir(int id) {
+	public void excluir(int id,int idBarbearia) {
 		
+		if(idBarbearia!=0) {
+			
+			var barbearia = barbeariaDAO.buscarPorId(idBarbearia);
+			
+			barbearia.setQtdCliente(barbearia.getQtdCliente()-1);
+			
+			barbeariaDAO.alterar(barbearia);
+		}
 		
 		clienteDAO.excluir(id);
 		

@@ -252,7 +252,7 @@ function excluir(id)
 		$.ajax(
 		{
 			type: "DELETE",
-			url: "api/clientes/" + id,
+			url: `api/clientes/${id}/${getIdBarbearia(getToken())}`,
 			cache: false,
 			beforeSend: function (request) {
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
