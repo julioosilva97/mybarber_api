@@ -1,5 +1,7 @@
 $(document).ready(function ()
 {
+	$(".app-menu__item").removeClass('active')
+	$(".app-menu__item.servicos").addClass('active')
 
 	 $('.modal-loading').modal('hide');
 	 

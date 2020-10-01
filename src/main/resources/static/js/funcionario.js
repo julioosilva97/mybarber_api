@@ -1,6 +1,7 @@
 $(document).ready(function ()
 {
-	
+	$(".app-menu__item").removeClass('active')
+	$(".app-menu__item.funcionarios").addClass('active')
 	var emailEdicao;
 	var loginEdicao;
 	

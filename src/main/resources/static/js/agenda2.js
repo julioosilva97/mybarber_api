@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+	$(".app-menu__item").removeClass('active')
+	$(".app-menu__item.agenda").addClass('active')
 
 	var diasGlobal = []; // horários de atendimento do barbeiro
 
