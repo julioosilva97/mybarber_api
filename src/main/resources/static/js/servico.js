@@ -1,6 +1,7 @@
 $(document).ready(function ()
 {
 
+	console.log("river");
 	$(".app-menu__item").removeClass('active')
 	$(".app-menu__item.servicos").addClass('active')
 
