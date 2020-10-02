@@ -1,5 +1,7 @@
 $(document).ready(function ()
 {
+
+	console.log('show');
 	$(".app-menu__item").removeClass('active')
 	$(".app-menu__item.servicos").addClass('active')
 

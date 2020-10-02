@@ -815,12 +815,15 @@ function alterarStatus(id, status) {
 
 function verificarHorarioComercial(parametros){
 	
+	let resposta = [];
+	if(diasGlobal.length<1) return resposta.push(true);
     const agora = moment(new Date());
 	
 	let horarioComercial = pegarHorarioComercial();//pega os horarios do dia que está no input de data 
 
+	console.log(horarioComercial)
 	pegarDiaGlobal();
-	let resposta = [];
+	
 	
     if(!horarioComercial.aberto){
     	resposta.push(false);
