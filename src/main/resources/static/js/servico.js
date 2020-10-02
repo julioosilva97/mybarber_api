@@ -162,6 +162,7 @@ function montarDataTable()
 	$('.modal-loading').modal('show');
 	
 	let token = localStorage.getItem("accessToken");
+	console.log(token);
 	let json = parseJwt(token);
 	let idBarbearia = json.dadosUsuario.idBarbearia;
 
