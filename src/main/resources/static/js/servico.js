@@ -1,7 +1,6 @@
 $(document).ready(function ()
 {
 
-	console.log('show');
 	$(".app-menu__item").removeClass('active')
 	$(".app-menu__item.servicos").addClass('active')
 
@@ -161,11 +160,7 @@ function montarDataTable()
 
 	$('.modal-loading').modal('show');
 	
-	let token = localStorage.getItem("accessToken");
-	console.log(token);
-	let json = parseJwt(token);
-	let idBarbearia = json.dadosUsuario.idBarbearia;
-
+	
 	
 	var table = $('#table-servicos').DataTable(
 	{
