@@ -89,6 +89,31 @@ public class Promocao {
 	public Promocao(boolean status) {
 		this.status = status;
 	}
+	
+	public Promocao(LocalDate dataFim, boolean status) {
+		this.dataFim = dataFim;
+		this.status = status;
+	}
+	
+	
+	public Promocao(int id,LocalDate dataInicio, LocalDate dataFim, String descricao,float valor, boolean status ) {
+		this.id = id;
+		this.dataInicio = dataInicio;
+		this.dataFim = dataFim;
+		this.descricao = descricao;
+		this.valor = valor;
+		this.status = status;
+	}
+	
+	
+	public Promocao(int id, LocalDate dataInicio, LocalDate dataFim, String descricao, boolean status, float valor) {
+		this.id = id;
+		this.dataInicio = dataInicio;
+		this.dataFim = dataFim;
+		this.descricao = descricao;
+		this.status = status;
+		this.valor = valor;
+	}
 	public Promocao() {
 	}
 	

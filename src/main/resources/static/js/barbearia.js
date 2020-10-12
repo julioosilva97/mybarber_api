@@ -89,6 +89,9 @@ function enviarForm(acao, id)
 	{
 		type : 'PUT',
 		url: `api/barbearia/editar`,
+		'beforeSend': function (request) {
+	        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
 		error: function error(data)

@@ -88,7 +88,7 @@ var verbo;
 		success: function success(data)
 		{
            
-			lancarToastr("success",`Promoção ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
+			lancarToastr("success",`Promoção ${acao == "cadastrar" ? "cadastrada" : "editado"} com sucesso.`,true);
 			
 
 		}
@@ -268,8 +268,47 @@ function iniciarEdicao(tabelaBody)
 	});
 }
 
+
+function buscarPromocao(id) {
+	
+	var data;
+	
+	   $.ajax({
+		url: 'api/promocao/' + id,
+		'beforeSend': function (request) {
+	        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
+	    async: false,
+
+		type: 'GET',
+		success: function(response) {
+		  data = response;
+		},
+		error: function(error){
+            console.log(error);
+            alert("Error -> " + error);
+        }
+	});
+	   
+	   return data;
+}
+
+
+
 function cadastrarPromocao(tabelaBody) {
 	tabelaBody.on("click", "a.btn-promocao", function (e) {
+		
+		
+		let id = $(this).attr('data-id');
+			
+
+	   data = buscarPromocao(id);
+	   
+	   console.log(data);
+	   
+			
+		if(data.id==null){
+		
 		$('.promocao-form').slideDown('slow');
 		 $(".listagem").slideUp('slow');
 		 $('#form-promocao')[0].reset();
@@ -279,6 +318,17 @@ function cadastrarPromocao(tabelaBody) {
 		 $("#valor").val($(this).closest("tr").find('td:eq(1)').text());
 		 $(".btn-salvar-promocao").attr("acao", "cadastrar");
 		 $(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id'));
+		 
+		}else {
+			$('.promocao-form').slideDown('slow');
+			$(".listagem").slideUp('slow');
+			$("#dataInicio").val(data.dataInicio);
+			$("#dataFim").val(data.dataFim);
+			$("#descricaoPromocao").val(data.descricao);
+			$("#valorPromocao").val(data.valor.toFixed(2));
+			$(".btn-salvar-promocao").attr("acao", "editar");
+		    $(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id'));
+		}
 		 
 	})
 }

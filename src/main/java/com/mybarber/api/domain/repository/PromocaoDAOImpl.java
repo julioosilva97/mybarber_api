@@ -3,6 +3,7 @@ package com.mybarber.api.domain.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,9 +21,10 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	private JdbcTemplate jdbcTemplate;
 	
 	private String save = "insert into promocao (dataInicio, dataFim, descricao,status,valor, id_servico) values (?, ?, ?,?,?,?) ";
-	private String delete = "delte from promocao where id = ?";
-	private String update = "update promocao dataInicio = ?, dataFim = ?, descricao= ?, id_servico = ? where id =?";
+	private String delete = "delete from promocao where id = ?";
+	private String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=? where id_servico =?";
     private String status = "select status from promocao where id_servico=?";
+  
     
 	@Override
 	public void salvar(Promocao promocao) {
@@ -32,8 +34,8 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 
 	@Override
 	public void editar(Promocao promocao) {
-		// TODO Auto-generated method stub
 		
+		jdbcTemplate.update(update,promocao.getDataInicio(), promocao.getDataFim(), promocao.getDescricao(), promocao.getValor(), promocao.getServico().getId());
 	}
 
 	@Override
@@ -53,11 +55,24 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 		String buscarPorId = "select * from promocao where id_servico = ?";
 		try {
 		return jdbcTemplate.queryForObject(buscarPorId, new Object[] {idServico}, 
-				(rs, rowNum) -> new Promocao(rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor"), new Servico(rs.getInt("id_servico"))));
+				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor"), new Servico(rs.getInt("id_servico"))));
 
 		}catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public void inativarPromocao(int idPromocao) {
+		 String inativarPromocao = "update promocao set status =? where id = ?";
+		jdbcTemplate.update(inativarPromocao, false, idPromocao);
+	}
+
+	@Override
+	public List <Promocao> buscarPromocoesAtivas() {
+		 String ativas = "select * from promocao where status = ?";
+		return jdbcTemplate.query(ativas, new Object[] {true},
+				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor")));
 	}
 
 	

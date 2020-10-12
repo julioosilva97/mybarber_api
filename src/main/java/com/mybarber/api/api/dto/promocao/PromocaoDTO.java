@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class PromocaoDTO {
 
 	private int id;
-
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataInicio;
-	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataFim;
 	private String descricao;
 	private float valor;
