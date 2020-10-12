@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -16,11 +13,10 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -30,7 +26,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @EnableConfigurationProperties(SecurityProperties.class)
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    private static final String ROOT_PATTERN = "/**";
+    //private static final String ROOT_PATTERN = "/**";
 
     private final SecurityProperties securityProperties;
 
@@ -47,6 +43,10 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+    	CharacterEncodingFilter filter = new CharacterEncodingFilter(); 
+    	filter.setEncoding("UTF-8"); filter.setForceEncoding(true);
+    	http.addFilterBefore(filter, CsrfFilter.class);
+    	
     	 http
 	        .authorizeRequests()
 	        .antMatchers("/css/**", "/js/**", "/imagens/**","/pluginsAdd/**","/compiler/**","/img/**","/resources/**", "/webjars/**",
@@ -62,15 +62,15 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	        		"/api/usuarios/buscar-token/{token}",
 	        		"/api/usuarios/alterar-senha",
 	        		"/login",
-	        		"email/redefinir-senha**",
-	        		"email/ativar-conta**",
+	        		"/redefinir-senha**",
+	        		"/ativar-conta**",
 	        		"/funcionarios/salvar-primeiro-funcionario",
 	        		"/servicos",
                     "/funcionarios",
                     "/clientes",
                     "/agenda",
                     "/usuarios/reset",
-                    "/teste",
+                    "/horario-atendimento",
                     "/",
                     "/api/agendamentos/listarFullCalendar/{idBarbeiro}").permitAll()
 	        .antMatchers("/thymeleaf/").hasRole("LISTAR_SERVICO")
@@ -113,5 +113,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             throw new RuntimeException(e);
         }
     }
+    
+ 
 
 }

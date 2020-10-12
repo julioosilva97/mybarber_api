@@ -148,13 +148,6 @@ function enviarForm(acao, id)
 		{
 			
 			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
-			
-		/*setTimeout(function () {
-			$('.modal-loading').modal('toggle');
-			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
-       	
-       }, 1000);*/
-			
 
 		}
 		

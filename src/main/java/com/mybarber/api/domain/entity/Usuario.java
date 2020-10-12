@@ -2,7 +2,7 @@ package com.mybarber.api.domain.entity;
 
 
 import org.modelmapper.ModelMapper;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
@@ -45,7 +45,7 @@ public class Usuario {
 
     public void setSenha(String senha) {
         if (senha != null) {
-            //this.senha = new BCryptPasswordEncoder().encode(senha);
+            this.senha = new BCryptPasswordEncoder().encode(senha);
         } else {
             this.senha = senha;
         }

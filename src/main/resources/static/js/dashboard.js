@@ -3,8 +3,18 @@ $(document).ready(function (){
 	$(".app-menu__item").removeClass('active')
 	$(".app-menu__item.dashboard").addClass('active')
 	
+	var hoje = moment().format('MM/YYYY');
+	
+	$(".titulo-grafico-mensal").text(`Agendamentos ${hoje}`);
+	
+	var dadosUsuario = getAtributoUsuarioJWT().dadosUsuario;
+	console.log(dadosUsuario)
+	$("#desc-barbearia").text(`Barbearia ${dadosUsuario.nomeBarbearia}`)
+	
 	graficoAnual();
-	preencherInformacoes()
+	preencherInformacoes();
+	graficoStatusAgendamentosMensal();
+	
 	
 
 });  
@@ -12,7 +22,6 @@ $(document).ready(function (){
 function preencherInformacoes(){
 	
 
-	
 	$.ajax(
 			{
 				type: "GET",
@@ -36,6 +45,47 @@ function preencherInformacoes(){
 			});
 }
 
+function graficoStatusAgendamentosMensal(){
+	
+	$.ajax({
+		url: `api/agendamentos/dados-grafico-status-mensal/${getIdBarbearia(getToken())}`,
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+	    },
+		error: function error(data)
+		{
+			console.log(data)
+			
+		},
+		success: function(result){
+			
+			console.log(result)
+			
+			var pdata = [ {
+				value : result.CONCLUIDO,
+				color : "#2874A6",
+				//highlight : "#5AD3D1",
+				label : "Concluido"
+			}, {
+				value : result.AGENDADO,
+				color : "#F1C40F",
+				//highlight : "#FF5A5E",
+				label : "Agendado"
+			} ,
+			 {
+				value : result.CANCELADO,
+				color : "#EC7063",
+				//highlight : "#FF5A5E",
+				label : "Cancelado"
+			}]  
+			
+	
+			var ctxp = $("#pieChartDemo").get(0).getContext("2d");
+			var pieChart = new Chart(ctxp).Pie(pdata);
+		}
+		
+	});
+}
 
 function graficoAnual(){
 	
@@ -50,10 +100,11 @@ function graficoAnual(){
 			
 		},
 		success: function(result){
-			
-			console.log(result)
-			
-			var meses = {
+
+		  var labels = [];
+		  var data = [];
+
+		   var mesValor = {
 					1: 0,
 					2: 0,
 					3: 0,
@@ -68,49 +119,47 @@ function graficoAnual(){
 					12: 0
 				} ; 
 			
-			function teste(int,valor){
-				
-				meses[int] = valor;
-				return meses;
-			};
-			
 			
 			result.forEach(function(e){
 				
-				teste(e.mes,e.valor)
+				mesValor[e.mes] = e.valor;
 				
 			});
-			
-			;
-			
-			var mesesGrafico = [];
-			var valores = [];
-			
-			Object.entries(meses).forEach(function(e){
-				mesesGrafico.push(converterMeses(e[0]));
-				valores.push(e[1]);
+
+
+			Object.entries(mesValor).forEach(function(e){
+				labels.push(converterMeses(e[0]));
+				data.push(e[1].toFixed(2));
 			});
 			
-			new Chart(document.getElementById("lucro-anual").getContext("2d"), {
-			    type: 'bar',
-			    data: {
-			      labels: mesesGrafico,
-			      datasets: [
-			        {
-			          label: "Faturamento (reais)",
-			          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-			          data: valores
-			        }
-			      ]
-			    },
-			    options: {
-			      legend: { display: false },
-			      title: {
-			        display: true,
-			        text: 'Em reais R$'
-			      }
-			    }
-			});
+
+		   var dataGraficoAnual = {
+			      	labels: labels,
+			      	datasets: [
+			      		{
+			      			fillColor: "rgba(151,187,205,0.2)",
+			      			strokeColor: "rgba(151,187,205,1)",
+			      			pointColor: "rgba(151,187,205,1)",
+			      			pointStrokeColor: "#fff",
+			      			pointHighlightFill: "#fff",
+			      			pointHighlightStroke: "rgba(151,187,205,1)",
+			      			data: data
+			      		}
+			      	]
+			      };
+			
+		   
+		    
+			var ctxb = $("#lucro-anual").get(0).getContext("2d");
+			
+			var options = {
+				    animation: false,
+				    scaleLabel:
+				    function(label){return 'R$' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");}
+				};
+			
+		    var barChart = new Chart(ctxb).Bar(dataGraficoAnual);
+	
 			
 		}
 });
@@ -135,6 +184,18 @@ function converterMeses(mesInt){
 	}
 	
 	return meses[mesInt];
+};
+
+
+function getCorMes(mes){
+	
+	cores = {
+		'AGENDADO':'#F1C40F',
+		'CANCELADO':'#EC7063',
+		'CONCLUIDO': '#2874A6'
+	}
+	
+	return cores[mes];
 };
 
 

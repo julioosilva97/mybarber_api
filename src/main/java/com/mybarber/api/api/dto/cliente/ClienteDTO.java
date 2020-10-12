@@ -2,11 +2,8 @@ package com.mybarber.api.api.dto.cliente;
 
 import java.time.LocalDate;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 
 public class ClienteDTO {

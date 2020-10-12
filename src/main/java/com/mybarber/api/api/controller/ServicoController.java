@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Servico;
 import com.mybarber.api.domain.service.ServicoService;
-import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
 import com.mybarber.api.api.dto.servico.ServicoInput;
 

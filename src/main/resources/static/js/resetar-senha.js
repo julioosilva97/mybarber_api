@@ -173,7 +173,7 @@ function enviarForm(){
 	if($('.btn-resetar').attr('idUsuario')){
 		
 		var usuario  = { id : $('.btn-resetar').attr('idUsuario'), senha : $('#senha').val() };
-		
+		console.log(usuario)
 		$.ajax(
 				{
 					type: 'POST',

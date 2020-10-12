@@ -5,34 +5,16 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
-import com.mybarber.api.domain.entity.Funcionario;
-import com.mybarber.api.domain.entity.Usuario;
-import com.mybarber.api.domain.service.BarbeariaService;
-import com.mybarber.api.domain.service.FuncionarioService;
-import com.mybarber.api.domain.service.UsuarioService;
+
 
 @Controller
 public class HtmlController {
 
-	@Autowired
-	private UsuarioService usuarioService;
-	
-	@Autowired
-	private FuncionarioService funcionarioService;
-	
-	@Autowired
-	private BarbeariaService barbeariaService;
+
 	
 	@GetMapping("/")
 	public String index(HttpServletRequest request,Principal principal){
@@ -85,7 +67,7 @@ public class HtmlController {
 		return "barbearia/barbearia";
 	}
 	
-	@GetMapping("registro")
+	@GetMapping("/registro")
 	public String registro() {
 		return"registro/registro";
 	}
@@ -94,11 +76,7 @@ public class HtmlController {
 	public String mensal() {
 		return "relatorio/barGraph";
 	}
-	
-	/*@GetMapping("teste")
-	public String teste() {
-		return "email/notificar-agendamento";
-	}*/
+
 	
 	@GetMapping("resetar-senha")
 	public String resetarSenha() {
@@ -110,6 +88,11 @@ public class HtmlController {
 	@GetMapping("ativar-conta")
 	public String ativarConta() {
 		return "senha/resetar-senha";
+	}
+	
+	@GetMapping("horario-atendimento")
+	public String horararioAtendimento() {
+		return "horarioatendimento/horario-atendimento";
 	}
 
 }

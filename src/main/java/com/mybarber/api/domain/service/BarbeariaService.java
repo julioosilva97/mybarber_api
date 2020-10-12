@@ -2,7 +2,6 @@ package com.mybarber.api.domain.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 
 import com.mybarber.api.domain.entity.Barbearia;
 

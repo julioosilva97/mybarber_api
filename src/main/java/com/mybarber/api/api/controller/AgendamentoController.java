@@ -3,9 +3,9 @@ package com.mybarber.api.api.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.mybarber.api.api.util.ConverterDTO;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.agendamento.AgendamentoDTO;
@@ -122,6 +121,13 @@ public class AgendamentoController {
                 .collect(Collectors.toList());
 
         return new ResponseEntity<List<RelatorioDTO>>(valoresDTO, HttpStatus.OK);
+
+    }
+    
+    @GetMapping("dados-grafico-status-mensal/{idBarbearia}")
+    public ResponseEntity<Map<String, Integer>> countStatusAgendamentoMes(@PathVariable("idBarbearia") int idBarbearia) {
+
+        return new ResponseEntity<Map<String, Integer>>(service.countStatusAgendamentoMes(idBarbearia), HttpStatus.OK);
 
     }
 

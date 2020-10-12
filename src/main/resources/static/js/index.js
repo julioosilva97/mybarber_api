@@ -2,14 +2,22 @@
 
 	$(document).ready(function() {
 		
-		
-		$(window).on("beforeunload", function(e) {
-		    alert("call");
-		    console.log("this will be triggered");
-		});
-		
 		checkLogin();
 		
+
+		$("#logout").on('click',function(){
+			
+			sessionStorage.clear();
+		});
+		
+		if(getToken()){
+			var dadosUsuario = getAtributoUsuarioJWT().dadosUsuario;
+			
+			$("#nome-usuario-sidbar").text(`${dadosUsuario.nomeFuncionario} ( ${dadosUsuario.usuario} )`);
+			$("#cargo-sidbar").text(`${dadosUsuario.cargo}`);
+		}
+		
+	
 	});
 	
 	 function checkLogin(){
@@ -68,6 +76,14 @@
 	    return JSON.parse(jsonPayload);
 	};
 	
+	function getAtributoUsuarioJWT(){
+		
+		if(getToken()){
+			let json = parseJwt(getToken());
+			return json;
+		}
+	
+	}
 	
 
 	function getIdBarbearia(token){

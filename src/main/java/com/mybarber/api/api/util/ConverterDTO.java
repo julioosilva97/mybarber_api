@@ -1,13 +1,11 @@
 package com.mybarber.api.api.util;
 
-import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
-import com.mybarber.api.domain.entity.Funcionario;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mybarber.api.domain.entity.Agendamento;
 import com.mybarber.api.domain.entity.Relatorio;
@@ -206,6 +208,34 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 		var alterarNotificado = "update agendamento set notificado = true where id =?";
 		jdbcTemplate.update(alterarNotificado,idAgendamento);
 		
+	}
+
+	@Override
+	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia, String MM) {
+		
+		var countStatusAgendamentoMes = """
+				select a.status, count(a.status) 
+				from agendamento a 
+				inner join funcionario f on f.id = a.id_barbeiro
+				where to_char(a.datahorainicio,'MM') = ? 
+				and f.id_barbearia = ?
+				GROUP by a.status
+				""";
+		
+		HashMap<String, Integer> results = new HashMap<>();
+		
+		jdbcTemplate.query(countStatusAgendamentoMes,  new Object[] { MM,idBarbearia},
+				(rs,rowNum)->{
+					
+					 results.put(rs.getString("status"), rs.getInt("count"));
+					 
+					 return results;
+					
+				});
+			
+		return results;
+				
+				
 	}
 	
 	

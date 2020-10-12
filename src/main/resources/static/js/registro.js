@@ -324,58 +324,68 @@ function verificarUsuario(){
 	
 	var existe;
 	let login = $('#login').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `api/usuarios/verificarUsuario/${login}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					console.log(data)
-					existe = data;
-				}
-			});
 	
-	return existe;
+	
+		
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarUsuario/${login}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }
 
 function verificarEmail(){
 	
+	
+	
 	var existe;
 	let email = $('#email').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `funcionarios/verificarEmail/${email}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					existe = data;
-				}
-			});
 	
-	return existe;
+	
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarEmail/${email}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }
 
