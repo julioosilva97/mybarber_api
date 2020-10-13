@@ -42,6 +42,20 @@ public class FuncionarioController {
     }
     
     
+    @PostMapping("cadastro-primeiro-funcionario")
+    public ResponseEntity<Void> primeiroCadastro(@Valid @RequestBody FuncionarioInput funcionarioDto) {
+
+        var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("funcionario", funcionario);
+        map.put("primeiroFuncionario", funcionarioDto.getPrimeiroFuncionario());
+
+        service.salvar(map);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
+    
+    
 
     @PatchMapping("/{id}")
     public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {

@@ -108,7 +108,7 @@ function enviarForm(acao, id)
 				     login: $("#login").val(),
 				     idPerfil :$("#perfilAcesso").val(),
 				     email : $("#email").val()},
-			idBarbearia: getIdBarbearia(getToken()),
+			barbearia: {id:getIdBarbearia(getToken())},
 			primeiroFuncionario : false
 	}
 	

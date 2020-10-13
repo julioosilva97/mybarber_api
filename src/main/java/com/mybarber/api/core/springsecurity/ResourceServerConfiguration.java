@@ -64,7 +64,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	        		"/login",
 	        		"/redefinir-senha**",
 	        		"/ativar-conta**",
-	        		"/funcionarios/salvar-primeiro-funcionario",
+	        		"/api/funcionarios/cadastro-primeiro-funcionario",
 	        		"/servicos",
                     "/funcionarios",
                     "/clientes",
