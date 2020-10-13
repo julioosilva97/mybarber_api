@@ -61,7 +61,7 @@ function pegarDiaGlobal(){
 
 function listarBarbeiros() {
 	
-	console.log(getIdBarbearia(getToken()))
+
 	
     $.ajax({
         type: "GET",
@@ -149,6 +149,7 @@ function carregarAgenda(dias){
            var diaClick = moment(info.start);
            
            diaGlobal = diaClick;
+           calcularTermino();
        },
        eventLimit: true, // allow "more" link when too many events
        eventSources: [
@@ -215,58 +216,52 @@ function listarServicos(){
 	                for (var i in data) {
 	                    $("#servicos").append(`<option value='${data[i].id}' preco='${data[i].valor}' tempo='${data[i].tempo}' >${data[i].descricao} (R$${data[i].valor})  </option>`);
 	                }
-
-	                calcularValor();
-	                calcularTermino();
-
+	                
 	        }
 	    });
 }
 
 function calcularValor(){
 	
-	$('#servicos').on("change", function() {
-
-
-        var total = 0;
-        	
-       	 $('option:selected', this).each(function(e,i){
-       		 let preco = $(this).attr('preco');
-       		 total = total + parseInt(preco) ;
-       	});
-       	 
-            $('#valor').val(total);
-
-        });
+	var total = 0;
+    
+    
+  	 $('option:selected', '#servicos').each(function(e,i){
+  		
+  		 let preco = $(this).attr('preco');
+  		 total = total + parseInt(preco) ;
+  	});
+  	 
+     $('#valor').val(total);
+	
+	
 }
 
 function calcularTermino(){
 	
-	$('#servicos').on("change", function() {
+	var durations  = [];
+  	 
+  	 let inicio = $("#horarioInicio").val();
+  	 
+  	 durations.push(inicio);
+  	 
+  	 
+     	 $('option:selected', '#servicos').each(function(e,i){
+     		 let tempo = $(this).attr('tempo');
+     		durations.push(tempo);
+     	});
+     	 
 
-    	
-   	 var durations  = [];
-   	 
-   	 let inicio = $("#horarioInicio").val();
-   	 
-   	 durations.push(inicio);
-   	 
-   	 
-      	 $('option:selected', this).each(function(e,i){
-      		 let tempo = $(this).attr('tempo');
-      		durations.push(tempo);
-      	});
-      	 
+      const totalDurations = durations.slice(1)
+          .reduce((prev, cur) => moment.duration(cur).add(prev),
+              moment.duration(durations[0]))
 
-       const totalDurations = durations.slice(1)
-           .reduce((prev, cur) => moment.duration(cur).add(prev),
-               moment.duration(durations[0]))
-
-       $("#horarioTermino").val(moment.utc(totalDurations.asMilliseconds()).format("HH:mm"));
        
+      $("#horarioTermino").val(moment.utc(totalDurations.asMilliseconds()).format("HH:mm"));
+      
        $('#form-agendamento').validate().element("#horarioTermino");
        $('#form-agendamento').validate().element("#horarioInicio");
-	});
+	
 }
 
 function autoCompleteCliente(){
@@ -339,14 +334,17 @@ function autoCompleteCliente(){
 
 function clickBarbeiro() {
 
-    // toda vez que trocar de barbeiro
+	
     $(".nav-link").on("click", function() {
         $(".nav-underline").find(".active").removeClass("active");
         $(this).addClass("active");
 
         $('#calendar').html('');
+        $("#form-agendamento")[0].reset();
+    	$(".erro-agendamento").hide();
         
-        carregarAgenda(dias);
+        carregarHorarioAtendimento()
+        //carregarAgenda(dias);
 
     });
 }
@@ -397,7 +395,7 @@ function carregarHorarioAtendimento() {
                             });
                     		
                     	}else{
-                    		
+                    		console.log(element)
                     		dias.push({
                                 daysOfWeek: [element.dia]==7?[0]:[element.dia],
                                 startTime: element.entrada,
@@ -419,6 +417,8 @@ function carregarHorarioAtendimento() {
             }
         }
     });
+    
+    console.log(dias)
     
     $('.modal-loading').modal('show');
     setTimeout(function() {
@@ -447,6 +447,7 @@ function validarForm(){
 	
 	jQuery.validator.addMethod("validarHorarioComercial", function(value, element,parametros) {
 		
+		if(diasGlobal.length<1) return true;
 		var resposta = verificarHorarioComercial(parametros);
 		return resposta[0];
 	},function(parametros){
@@ -573,8 +574,16 @@ function enviarForm(acao, id) {
 			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
         error: function error(data) {
-            console.log(data)
-            lancarToastr("error", data.responseJSON);
+        	fecharModalLoading();
+        	
+        	
+            if(data.status == 400){
+            	$(".erro-agendamento").show();
+            	$(".erro-agendamento > div > strong").text(data.responseJSON.message).focus();
+            }else{
+            	lancarToastr("error", "Erro ao salvar agendamento");
+            }
+            
 
         },
         // dataType: 'json',
@@ -684,14 +693,35 @@ function btns(){
 	
 	$(".btn-editar").on('click', function() {
 		
-		
         iniciarEdicao($(".btn-editar").attr('idAgendamento'));
     });
 	
-    $(".form-btn-cancelar").on('click', function() {
+	$('#servicos').on("change", function(e) {
+
+        var Elem = e.target;
 		
-    	
-    	
+	    calcularValor();
+	    calcularTermino();
+	       
+		
+
+    });
+	
+	$('#horarioInicio').on("blur", function(e) {
+
+		calcularTermino();
+		
+		/*var Elem = e.target;
+
+		if (Elem.nodeName=='td'){
+			console.log('aqui')
+			 calcularTermino();
+	       }*/
+		
+    });
+	
+    $(".form-btn-cancelar").on('click', function() {
+
     	$('.').html('Novo agendamento');
     	$('.form-agendamento').removeClass('form-select-agendamento');
     	$('#cliente').removeAttr('idCliente');
@@ -717,7 +747,6 @@ function btns(){
     	if($(this).is(":checked")){
     		$("#cliente").removeAttr('idCliente');
     		$("#cliente").autocomplete("destroy");
-    		$("#cliente").val('');
     		$("#cliente").removeAttr('idCliente');
     		$('#cliente').parent().removeClass("state-error");
             $('#cliente').siblings(".invalid").remove();
@@ -816,12 +845,11 @@ function alterarStatus(id, status) {
 function verificarHorarioComercial(parametros){
 	
 	let resposta = [];
-	if(diasGlobal.length<1) return resposta.push(true);
+	
     const agora = moment(new Date());
 	
 	let horarioComercial = pegarHorarioComercial();//pega os horarios do dia que está no input de data 
 
-	console.log(horarioComercial)
 	pegarDiaGlobal();
 	
 	

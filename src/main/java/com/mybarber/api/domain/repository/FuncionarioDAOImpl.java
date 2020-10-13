@@ -167,7 +167,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 
 		String alterar = """
 				UPDATE funcionario SET nome=?, sobrenome=?, telefone=?, data_nascimento=?, id_endereco=?, cargo=?
-				WHERE id = ?
+				WHERE id = ?;
 				""";
 
 		jdbcTemplate.update(alterar,funcionario.getNome(),
@@ -187,8 +187,14 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 		
 		jdbcTemplate.update(excluirGerenciarUsuario,funcionario.getId());
 
+		var desativarFKAgendamento = "ALTER TABLE funcionario DISABLE TRIGGER ALL";
+		jdbcTemplate.execute(desativarFKAgendamento);
+		
 		String excluir = "delete from funcionario where id = ?";
 		jdbcTemplate.update(excluir, funcionario.getId());
+		
+		var ativarFKAgendamento = "ALTER TABLE funcionario ENABLE TRIGGER ALL";
+		jdbcTemplate.execute(ativarFKAgendamento);
 	}
 
 	@Override

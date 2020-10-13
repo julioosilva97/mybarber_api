@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
-import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.domain.util.Cargo;
 
 @Component

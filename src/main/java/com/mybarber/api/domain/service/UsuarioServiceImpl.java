@@ -1,12 +1,12 @@
 package com.mybarber.api.domain.service;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mybarber.api.domain.entity.Usuario;
+import com.mybarber.api.domain.exception.NegocioException;
 import com.mybarber.api.domain.repository.ClienteDAO;
 import com.mybarber.api.domain.repository.FuncionarioDAO;
 import com.mybarber.api.domain.repository.TokenDeVerificacaoDAO;
@@ -61,20 +61,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public void esqueceuSenha(String email) {
 
-		/*if (funcionarioDAO.verificarEmail(email)) {
-
-			var funcionario = funcionarioDAO.buscarPorEmail(email);
+		if(verificarEmail(email)) {
+	
+			var funcionario = funcionarioDAO.buscarPorIdUsuario(usuarioDAO.buscarPorEmail(email).getId());
 			var token = tokenService.criarToken(funcionario);
 			
 			enviarEmail.resetarSenha(funcionario,token);
-			
-
-		} else if (clienteDAO.verificarEmail(email)) {
-
-		} else {
-
-			// lan�ar execpition
-		}*/
+		}else {
+			throw new NegocioException("Email "+email+" não cadastrado");
+		}
 	}
 
 	@Override

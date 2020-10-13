@@ -1,8 +1,5 @@
 package com.mybarber.api.domain.util;
 
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -10,8 +7,6 @@ import java.util.Map;
 
 
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,7 +16,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.mybarber.api.domain.entity.Agendamento;
-import com.mybarber.api.domain.entity.Cliente;
 import com.mybarber.api.domain.entity.Email;
 import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.TokenDeVerificacao;
@@ -44,8 +38,8 @@ public class EnviarEmail {
 	public void ativarConta(Pessoa pessoa,TokenDeVerificacao token) {
 		
 			var email  = gerarEmail(pessoa,token);
-			email.setAssunto("Ativa��o de conta MyBarber");
-			email.getMap().put("resetUrl","http://localhost:8080/ativar-conta?token=" + token.getToken()+"&ativacao");
+			email.setAssunto("Ativação de conta MyBarber");
+			email.getMap().put("resetUrl","http://localhost:8081/ativar-conta?token=" + token.getToken()+"&ativacao");
 			enviarEmail(email,"email/ativar-conta.html");
 		
 	}
@@ -55,8 +49,8 @@ public class EnviarEmail {
 		
 
 		var email  = gerarEmail(pessoa,token);
-		email.setAssunto("Redefini��o de senha MyBarber");
-		email.getMap().put("resetUrl","http://localhost:8080/resetar-senha?token=" + token.getToken());
+		email.setAssunto("Redefinição de senha MyBarber");
+		email.getMap().put("resetUrl","http://localhost:8081/resetar-senha?token=" + token.getToken());
 		
 		enviarEmail(email,"email/redefinir-senha.html");
 	}
@@ -87,7 +81,7 @@ public class EnviarEmail {
 			if(token!=null) {
 				map.put("token", token.getToken());
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:m");
-				map.put("validadeToken", "Token v�lido at� " + token.getDataHoraExpiracao().format(formatter)+".");
+				map.put("validadeToken", "Token válido até " + token.getDataHoraExpiracao().format(formatter)+".");
 			}
 			
 			map.put("pessoa", pessoa);

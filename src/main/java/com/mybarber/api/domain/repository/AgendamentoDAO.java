@@ -5,6 +5,7 @@ import com.mybarber.api.domain.entity.Relatorio;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 public interface AgendamentoDAO {
@@ -24,5 +25,7 @@ public interface AgendamentoDAO {
 	public List<Relatorio> somaValorMensal(int idBarbearia, LocalDate data);
 	
 	public void alterarNotificado(int idAgendamento);
+	
+	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia,String MM);
 	
 }

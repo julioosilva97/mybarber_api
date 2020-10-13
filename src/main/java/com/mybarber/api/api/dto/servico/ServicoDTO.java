@@ -2,17 +2,9 @@ package com.mybarber.api.api.dto.servico;
 
 import java.time.LocalTime;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import com.mybarber.api.api.util.FlexibleFloatDeserializer;
-
-//RM = represetation Model
 
 public class ServicoDTO {
 	

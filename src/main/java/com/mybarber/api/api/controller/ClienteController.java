@@ -4,7 +4,7 @@ package com.mybarber.api.api.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.cliente.ClienteDTO;
 import com.mybarber.api.api.dto.cliente.ClienteInput;
-import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Cliente;
 import com.mybarber.api.domain.service.ClienteService;

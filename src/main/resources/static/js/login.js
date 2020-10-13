@@ -1,18 +1,33 @@
 $(document).ready(function() 
 {
 	
+	var urlParams = new URLSearchParams(window.location.search);
+	
+	if(urlParams.has('ativacao')){
+		
+		$('.login-box').addClass('box-logout');
+		$("#alert-sucesso").show().text('Conta ativada com sucesso.');
+	}else if(urlParams.has('logout')){
+		$("#alert-sucesso").show().text('Você foi desconectado.');
+		$('.login-box').addClass('box-logout');
+	}else if(urlParams.has('senha')){
+		$("#alert-sucesso").show().text('Senha alterada com sucesso.');
+		$('.login-box').addClass('box-logout');
+	}else{
+		$("#alert-sucesso").hide();
+		$('.login-box').removeClass('box-logout');
+	}
 	
 	$('.flip').on('click', function() {
 
 		if ($('.login-box').hasClass('box-error')) {
 			$('.login-box').removeClass('box-error');
-			localStorage.setItem('classe', 'box-error');
+			$("#alert-error").hide();
+			
 
 		} else if ($('.login-box').hasClass('box-logout')) {
 			$('.login-box').removeClass('box-logout');
-			localStorage.setItem('classe', 'box-logout');
-		} else {
-			localStorage.removeItem('classe')
+			$("#alert-sucesso").hide();
 		}
 
 	});
@@ -59,7 +74,7 @@ function validarForm(){
 	});
 
   jQuery.validator.addMethod("verificarEmail", function(value, element,parametros) {
-	return verificarEmailFuncionario()||verificarEmailCliente();
+	return verificarEmail();
 	
    },'e-mail não cadastrado.');
   
@@ -101,68 +116,42 @@ function validarForm(){
         			},
         			submitHandler: function submitHandler()
         			{
-						login()
+						login();
 
         			}
         		});
 
 }
 
-function verificarEmailFuncionario(){
+function verificarEmail(){
+	
 	
 	var existe;
 	let email = $('#email').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `funcionarios/verificarEmail/${email}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
+	
+		$.ajax(
+				
 				{
-					console.log(data)
-					lancarToastr("error",data);
+					type: 'GET',
+					url: `api/usuarios/verificarEmail/${email}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						console.log(data);
 
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					existe = data;
-				}
-			});
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
 	
-	return existe;
-	
-}
-
-function verificarEmailCliente(){
-	
-	var existe;
-	let email = $('#email').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `api/clientes/verificarEmail/${email}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					existe = data;
-				}
-			});
-	
-	return existe;
 	
 }
 

@@ -1,7 +1,6 @@
 package com.mybarber.api.api.dto.barbearia;
 
 import com.mybarber.api.api.dto.endereco.EnderecoDTO;
-import com.mybarber.api.domain.entity.Endereco;
 
 public class BarbeariaDTO {
 

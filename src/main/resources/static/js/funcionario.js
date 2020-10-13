@@ -108,7 +108,7 @@ function enviarForm(acao, id)
 				     login: $("#login").val(),
 				     idPerfil :$("#perfilAcesso").val(),
 				     email : $("#email").val()},
-			idBarbearia: getIdBarbearia(getToken()),
+			barbearia: {id:getIdBarbearia(getToken())},
 			primeiroFuncionario : false
 	}
 	
@@ -148,13 +148,6 @@ function enviarForm(acao, id)
 		{
 			
 			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
-			
-		/*setTimeout(function () {
-			$('.modal-loading').modal('toggle');
-			lancarToastr("success",`Funcionário ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true);
-       	
-       }, 1000);*/
-			
 
 		}
 		

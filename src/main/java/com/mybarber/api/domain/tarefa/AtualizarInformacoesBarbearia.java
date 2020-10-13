@@ -31,7 +31,7 @@ public class AtualizarInformacoesBarbearia {
 	//segundos , minutos, hora, dia , mes, ano // * = qualquer um // /x (valor numérico) ex : */1 indica que se qualquer valor do campo segundo mudar será acionado
 	//link = https://www.alura.com.br/artigos/agendando-tarefas-com-scheduled-do-spring
 	//todos os dias, 06 horas da manha, execute a rotina
-	@Scheduled(cron = "0 27 19 * * *",zone = TIME_ZONE)
+	@Scheduled(cron = "0 00 06 * * *",zone = TIME_ZONE)
 	@Transactional
 	private void atualizarInformacoes() {
 		
@@ -47,7 +47,6 @@ public class AtualizarInformacoesBarbearia {
 			 
 			 barbeariaDAO.alterar(barbearia);
 			 
-			 System.out.print("Foi");
 			 
 		});
 	}
