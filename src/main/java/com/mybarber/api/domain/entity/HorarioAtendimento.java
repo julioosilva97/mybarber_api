@@ -3,7 +3,6 @@ package com.mybarber.api.domain.entity;
 import java.time.LocalTime;
 
 import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTO;
-import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTOInput;
 import com.mybarber.api.domain.util.DiaDaSemana;
 
 public class HorarioAtendimento {
@@ -85,6 +84,7 @@ public class HorarioAtendimento {
 		this.saidaAlmoco = saidaAlmoco;
 		this.almoco = almoco;
 	}
+	
 	public HorarioAtendimentoDTO toDTO() {
 		
 		var horarioAtendimentoDTO = new HorarioAtendimentoDTO();
@@ -98,6 +98,8 @@ public class HorarioAtendimento {
 		
 		return horarioAtendimentoDTO;
 	}
+	
+
 	public boolean isAlmoco() {
 		return almoco;
 	}

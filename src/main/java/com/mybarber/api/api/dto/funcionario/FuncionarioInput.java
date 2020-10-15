@@ -1,9 +1,9 @@
 package com.mybarber.api.api.dto.funcionario;
 
+import com.mybarber.api.api.dto.barbearia.BarbeariaDTO;
 import com.mybarber.api.api.dto.endereco.EnderecoDTO;
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ public class FuncionarioInput {
     private String cargo;
     private UsuarioDTO usuario;
     @NotNull
-    private Long idBarbearia;
+    private BarbeariaDTO barbearia;
 
     @NotNull
     private Boolean primeiroFuncionario;
@@ -93,19 +93,20 @@ public class FuncionarioInput {
         this.sobrenome = sobrenome;
     }
 
-    public Long getIdBarbearia() {
-        return idBarbearia;
-    }
+   
+    public BarbeariaDTO getBarbearia() {
+		return barbearia;
+	}
 
-    public void setIdBarbearia(Long idBarbearia) {
-        this.idBarbearia = idBarbearia;
-    }
+	public void setBarbearia(BarbeariaDTO barbearia) {
+		this.barbearia = barbearia;
+	}
 
-    public Boolean getPrimeiroFuncionario() {
-        return primeiroFuncionario;
-    }
+	public Boolean getPrimeiroFuncionario() {
+		return primeiroFuncionario;
+	}
 
-    public void setPrimeiroFuncionario(Boolean primeiroFuncionario) {
+	public void setPrimeiroFuncionario(Boolean primeiroFuncionario) {
         this.primeiroFuncionario = primeiroFuncionario;
     }
 }

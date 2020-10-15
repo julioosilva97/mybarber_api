@@ -1,9 +1,8 @@
 package com.mybarber.api.domain.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.Map;
 
 import com.mybarber.api.domain.entity.Agendamento;
 import com.mybarber.api.domain.entity.Barbearia;
@@ -20,4 +19,5 @@ public interface AgendamentoService {
 	public void alterarStatus(int idAgendamento, SituacaoAgendamento status);
 	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro);
 	public List<Relatorio>somaValorMensal(Barbearia barbearia, LocalDate data);
+	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia);
 }

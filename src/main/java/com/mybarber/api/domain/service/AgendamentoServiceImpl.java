@@ -2,8 +2,10 @@ package com.mybarber.api.domain.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,48 +184,90 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 		var horariosFuncionario = horarioAtendimentoDAO.buscarPorFuncionario(agendamento.getFuncionario().getId());
 
-		var diaAtendimentoFuncionario = horariosFuncionario.stream().filter(
+		var diaAtendimentoFuncionarioList = horariosFuncionario.stream().filter(
 				e -> e.getDia().getNumeroSemana() == agendamento.getDataHorarioInicio().getDayOfWeek().getValue())
-				.collect(Collectors.toList()).get(0);
+				.collect(Collectors.toList());
+		
+		if(diaAtendimentoFuncionarioList.size()<1) {
+			
+			return;
+		}
+		
+		var diaAtendimentoFuncionario =  diaAtendimentoFuncionarioList.get(0);
 
 		if (diaAtendimentoFuncionario.isAberto()) {
-
-			var horarioInicio = agendamento.getDataHorarioInicio().toLocalTime();
-			var horarioFim = agendamento.getDataHorarioFim().toLocalTime();
-
+			
 			var entrada = diaAtendimentoFuncionario.getEntrada();
 			var saida = diaAtendimentoFuncionario.getSaida();
-			var saidaAlmoco = diaAtendimentoFuncionario.getSaidaAlmoco();
-			var entradaAlmoco = diaAtendimentoFuncionario.getEntradaAlmoco();
+			
+			var horarioInicio = agendamento.getDataHorarioInicio().toLocalTime();
+			var horarioFim = agendamento.getDataHorarioFim().toLocalTime();
+			
+			if(diaAtendimentoFuncionario.isAlmoco()) {
+				
+				var saidaAlmoco = diaAtendimentoFuncionario.getSaidaAlmoco();
+				var entradaAlmoco = diaAtendimentoFuncionario.getEntradaAlmoco();
 
-			if (!horarioInicio.isBefore(entrada) && !horarioInicio.isAfter(saida)) {
+				if (verificarHorario(entrada,saida,horarioInicio)) {
 
-				if (!horarioInicio.isBefore(saidaAlmoco) && !horarioInicio.isAfter(entradaAlmoco)) {
+					if (verificarHorario(saidaAlmoco,entradaAlmoco,horarioInicio)) {
 
-					throw new NegocioException("Horário de inicio  " + horarioInicio
-							+ " fora do horário de atendimento, horário de almoço");
+						throw new NegocioException("Horário de inicio  " + horarioInicio
+								+ " fora do horário de atendimento, horário de almoço");
+					}
+
+				} else {
+					throw new NegocioException("Horário de inicio  " + horarioInicio + " fora do horário de atendimento");
 				}
 
-			} else {
-				throw new NegocioException("Horário de inicio  " + horarioInicio + " fora do horário de atendimento");
-			}
+				if (verificarHorario(entrada,saida,horarioFim)) {
 
-			if (!horarioFim.isBefore(entrada) && !horarioFim.isAfter(saida)) {
+					if (verificarHorario(saidaAlmoco,entradaAlmoco,horarioFim)) {
 
-				if (!horarioFim.isBefore(saidaAlmoco) && !horarioFim.isAfter(entradaAlmoco)) {
+						throw new NegocioException(
+								"Horário de término  " + horarioFim + " fora do horário de atendimento, horário de almoço");
+					}
 
-					throw new NegocioException(
-							"Horário de término  " + horarioFim + " fora do horário de atendimento, horário de almoço");
+				} else {
+					throw new NegocioException("Horário de término  " + horarioFim + " fora do horário de atendimento");
 				}
+				
+				
+			}else {
+				
+				if (!verificarHorario(entrada,saida,horarioInicio)) 
+					throw new NegocioException("Horário de inicio  " + horarioInicio + " fora do horário de atendimento");
+				
 
-			} else {
-				throw new NegocioException("Horário de término  " + horarioFim + " fora do horário de atendimento");
+				if (!verificarHorario(entrada,saida,horarioFim)) 
+					throw new NegocioException("Horário de término  " + horarioFim + " fora do horário de atendimento");
+				
 			}
-
+			
 		} else {
 			throw new NegocioException("Dia " + agendamento.getDataHorarioInicio().format(formatter) + " está fechado");
 		}
 
 	}
+	
+	private boolean verificarHorario(LocalTime entrada, LocalTime saida, LocalTime horario) {
+		
+		 return !horario.isBefore(entrada) && !horario.isAfter(saida) ?  true :  false;
+		
+	}
+
+	@Override
+	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM");
+		
+		 String MM = LocalDateTime.now().format(formatter);
+		
+		 return agendamentoDAO.countStatusAgendamentoMes(idBarbearia, MM);
+		
+		
+	}
 
 }
+
+

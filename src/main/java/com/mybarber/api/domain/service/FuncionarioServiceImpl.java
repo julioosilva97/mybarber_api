@@ -8,7 +8,6 @@ import java.util.Map;
 import com.mybarber.api.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,16 +82,16 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                 
                 var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
         		
-        		barbearia.setQtdCliente(barbearia.getQtdFuncionario()+1);
+        		barbearia.setQtdFuncionario(barbearia.getQtdFuncionario()+1);
         		
         		daoBarbearia.alterar(barbearia);
                 daoUsuario.salvar(funcionario.getUsuario());
                 daoFuncionario.salvar(funcionario);
                 
 
-               // var token = tokenService.criarToken(funcionario);
+                 var token = tokenService.criarToken(funcionario);
 
-                //enviarEmail.ativarConta(funcionario, token);
+                enviarEmail.ativarConta(funcionario, token);
 
             } else {
                 throw new NegocioException("Email já existente.");
@@ -199,7 +198,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                 
                  var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
         		
-        		barbearia.setQtdCliente(barbearia.getQtdFuncionario()-1);
+        		barbearia.setQtdFuncionario(barbearia.getQtdFuncionario()-1);
         		
         		daoBarbearia.alterar(barbearia);
 
@@ -256,7 +255,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento) {
 		
 		List<HorarioAtendimento> horarios = horarioAtendimentoDAO
-				.buscarPorFuncionario(horarioAtendimento.get(0).getId());
+				.buscarPorFuncionario(horarioAtendimento.get(0).getFuncionario().getId());
 
 		if (horarios.size() > 0) {
 

@@ -15,9 +15,6 @@ import com.mybarber.api.domain.repository.PromocaoDAO;
 import com.mybarber.api.domain.repository.BarbeariaDAO;
 
 
-import com.mybarber.api.domain.repository.PromocaoDAO;
-import com.mybarber.api.domain.repository.BarbeariaDAO;
-
 import com.mybarber.api.domain.repository.ServicoDAO;
 
 
@@ -55,7 +52,7 @@ public class ServicoServiceImpl implements ServicoService{
 		
 		var barbearia = daoBarbearia.buscarPorId(servico.getBarbearia().getId());
 		
-		barbearia.setQtdCliente(barbearia.getQtdServico()+1);
+		barbearia.setQtdServico(barbearia.getQtdServico()+1);
 		
 		daoBarbearia.alterar(barbearia);
 		
@@ -69,7 +66,7 @@ public class ServicoServiceImpl implements ServicoService{
 		
 		var barbearia = daoBarbearia.buscarPorId(servico.getBarbearia().getId());
 		
-		barbearia.setQtdCliente(barbearia.getQtdServico()-1);
+		barbearia.setQtdServico(barbearia.getQtdServico()-1);
 		
 		daoBarbearia.alterar(barbearia);
 		

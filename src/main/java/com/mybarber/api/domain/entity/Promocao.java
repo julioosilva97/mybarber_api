@@ -1,7 +1,6 @@
 package com.mybarber.api.domain.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 

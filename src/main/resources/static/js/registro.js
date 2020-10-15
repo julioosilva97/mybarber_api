@@ -324,84 +324,93 @@ function verificarUsuario(){
 	
 	var existe;
 	let login = $('#login').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `api/usuarios/verificarUsuario/${login}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					console.log(data)
-					existe = data;
-				}
-			});
 	
-	return existe;
+	
+		
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarUsuario/${login}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }
 
 function verificarEmail(){
 	
+	
+	
 	var existe;
 	let email = $('#email').val();
-	$.ajax(
-			
-			{
-				type: 'GET',
-				url: `funcionarios/verificarEmail/${email}`,
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				error: function error(data)
-				{
-					console.log(data)
-					lancarToastr("error",data);
-
-				},
-				//dataType: 'json',
-				success: function success(data)
-				{
-					
-					existe = data;
-				}
-			});
 	
-	return existe;
+	
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarEmail/${email}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }
 
 function enviarForm(button){
 	
-	
-	
-	
-	
+
 
 		var sendInfo = {
 				nome : $("#nomeBarbeiro").val(),
 				telefone : $("#telefone").val(),
-				email : $("#email").val(),
+				cargo : "BARBEIRO",
 				endereco : {logradouro: $("#rua").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()},
-				usuario:{login: $("#login").val(), senha:$("#senha").val(),perfil:{id:$("#perfilAcesso").val(),descricao:null}},
-				barbearia:{nome: $("#barbearia").val(),endereco : {logradouro: $("#logradouro").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()}}
-				
+				usuario:{login: $("#login").val(), 
+					senha:$("#senha").val(),
+					idPerfil:1,
+					email : $("#email").val()},
+				barbearia:{nome: $("#barbearia").val(),endereco : {logradouro: $("#logradouro").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()}},
+				primeiroFuncionario : true
 		}
 		
 		
-	
 		$.ajax(
 		{
 			type: 'POST',
-			url: `funcionarios/salvar-primeiro-funcionario`,
+			url: `api/funcionarios/cadastro-primeiro-funcionario`,
 			contentType: "application/json; charset=utf-8",
 			data: JSON.stringify(sendInfo),
 			error: function error(data)

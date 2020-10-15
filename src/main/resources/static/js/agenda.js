@@ -716,6 +716,7 @@ function enviarForm(acao, id) {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(sendInfo),
         error: function error(data) {
+        	fecharModalLoading();
             console.log(data)
             lancarToastr("error", data.responseJSON);
 

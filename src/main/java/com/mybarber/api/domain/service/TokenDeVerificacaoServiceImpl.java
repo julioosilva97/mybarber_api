@@ -2,13 +2,10 @@ package com.mybarber.api.domain.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mybarber.api.api.exceptionhandler.ApiExceptionHandler;
 import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import com.mybarber.api.domain.exception.NegocioException;
@@ -55,7 +52,7 @@ public class TokenDeVerificacaoServiceImpl implements TokenDeVerificacaoService 
 
 		} else {
 
-			throw new NegocioException("Token inv�lido.");
+			throw new NegocioException("Token inválido.");
 		}
 
 	}

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.mybarber.api.api.dto.funcionario.FuncionarioDTO;
 import com.mybarber.api.domain.entity.Funcionario;
-import com.mybarber.api.domain.entity.HorarioAtendimento;
 import com.mybarber.api.domain.service.FuncionarioService;
 
 @RestController
@@ -31,6 +30,20 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<Void> salvar(@Valid @RequestBody FuncionarioInput funcionarioDto) {
+
+        var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("funcionario", funcionario);
+        map.put("primeiroFuncionario", funcionarioDto.getPrimeiroFuncionario());
+
+        service.salvar(map);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
+    
+    
+    @PostMapping("cadastro-primeiro-funcionario")
+    public ResponseEntity<Void> primeiroCadastro(@Valid @RequestBody FuncionarioInput funcionarioDto) {
 
         var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
 
@@ -100,11 +113,15 @@ public class FuncionarioController {
         return new ResponseEntity<List<FuncionarioDTO>>(funcionariosDTO,HttpStatus.OK);
     }
     
-    @PostMapping("/horarioAtendimento")
-    public ResponseEntity<Void> defirnirHorarioAtendimento(@RequestBody List<HorarioAtendimentoDTOInput> horarios) {
+    @PostMapping("/horario-atendimento")
+    public ResponseEntity<Void> defirnirHorarioAtendimento(@RequestBody List<HorarioAtendimentoDTOInput> horariosDTO) {
 
-    	//converter
-        //service.salvarHorarioAtendimento(horarios);
+  
+    	var horarios = horariosDTO.stream()
+    			.map(dto -> dto.toDoMain(dto))
+    			.collect(Collectors.toList());
+    	
+    	service.salvarHorarioAtendimento(horarios);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
