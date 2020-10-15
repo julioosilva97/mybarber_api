@@ -407,7 +407,6 @@ function enviarForm(button){
 		}
 		
 		
-	
 		$.ajax(
 		{
 			type: 'POST',

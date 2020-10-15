@@ -34,3 +34,7 @@
   content:"*";
   color:red;
 }
+
+.nome-sobrenome {
+	style="text-transform: capitalize;"
+}
