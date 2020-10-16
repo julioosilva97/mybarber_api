@@ -2,6 +2,8 @@ package com.mybarber.api.api.dto.promocao;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class PromocaoDTO {
 
 	private int id;

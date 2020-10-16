@@ -76,11 +76,10 @@ var verbo;
 		error: function error(data)
 		{
 			fecharModalLoading();
-			console.log(data);
 			if(data.status == 400){
-				lancarToastr("error",`${data.responseJSON.titulo}`);
+				lancarToastr("error",`${data.responseJSON.message}`);
 			}else{
-				lancarToastr("error",`${data.responseJSON.error_description}`);
+				lancarToastr("error","ERRO AO CADASTRAR PROMOÇÃO");
 			}
 
 		},
