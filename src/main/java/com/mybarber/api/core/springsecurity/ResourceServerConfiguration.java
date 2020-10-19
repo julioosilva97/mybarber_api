@@ -69,6 +69,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                     "/funcionarios",
                     "/clientes",
                     "/agenda",
+                    "/barbearia",
                     "/usuarios/reset",
                     "/horario-atendimento",
                     "/",

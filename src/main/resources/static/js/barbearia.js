@@ -1,21 +1,59 @@
 $(document).ready(function (){
+	$.ajax(
+			{
+				type : 'PATCH',
+				url: `api/barbearia/${getIdBarbearia(getToken())}`,
+				'beforeSend': function (request) {
+			        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+			    },
+				contentType: "application/json; charset=utf-8",
+				error: function error(data)
+				{
+					if(data.status == 400){
+						lancarToastr("error",`${data.responseJSON.message}`);
+					}else{
+						lancarToastr("error","Erro ao buscar barbearia");
+					}
+
+				},
+				//dataType: 'json',
+				success: function success(data)
+				{
+					console.log(data)
+					$("#descricao").val(data.descricao)
+					
+					$("input").each(function(i,v){
+						let currAttr = $(v).attr('id');
 	
-	$('#form-barbearia')[0].reset();
+						if(currAttr!="nome"){
+							$(`#${currAttr}`).val(`${data.endereco[currAttr]}`)
+						}else{
+							$(`#${currAttr}`).val(`${data[currAttr]}`)
+						}
+						
+					});
+
+				}
+	  });
+	
 	validarForm();
-	$('.modal-loading').modal('hide');
-	
-	$('.btn-salvar').attr('acao','editar');
 	
 	
-	function limpa_formulário_cep() {
-        // Limpa valores do formulário de cep.
-        $("#logradouro").val("");
-        $("#bairro").val("");
-        $("#cidade").val("");
-        $("#uf").val("");
-    }
-    
-	$("#cep").mask("99999-999");
+	
+
+});
+
+function limpa_formulário_cep() {
+    // Limpa valores do formulário de cep.
+    $("#logradouro").val("");
+    $("#bairro").val("");
+    $("#cidade").val("");
+    $("#uf").val("");
+}
+
+function viaCep(){
+	
+$("#cep").mask("99999-999");
 	
     //Quando o campo cep perde o foco.
     $(".btn-buscar").on('click',function() {
@@ -68,27 +106,26 @@ $(document).ready(function (){
             limpa_formulário_cep();
         }
     });
+ }
 
-});
-
-function enviarForm(acao, id)
+function enviarForm()
 {
-	$('.modal-loading').modal('show');
        
 	var sendInfo = {
-			id : id,
+			id : getIdBarbearia(getToken()),
 			nome : $("#nome").val(),
 			descricao : $("#descricao").val(),
 			endereco : {logradouro: $("#logradouro").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()}
 			
 	}
-
-	console.log(sendInfo)
 	
+	
+
+	waitingDialog.show('Salvando informações barbearia ...');
 	$.ajax(
 	{
 		type : 'PUT',
-		url: `api/barbearia/editar`,
+		url: `api/barbearia`,
 		'beforeSend': function (request) {
 	        request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 	    },
@@ -96,54 +133,18 @@ function enviarForm(acao, id)
 		data: JSON.stringify(sendInfo),
 		error: function error(data)
 		{
-			toastr.options = {
-					"closeButton": true,
-					"debug": false,
-					"newestOnTop": true,
-					"progressBar": true,
-					"positionClass": "toast-top-right",
-					"preventDuplicates": true,
-					"onclick": null,
-					"showDuration": "300",
-					"hideDuration": "1000",
-					"timeOut": "2000",
-					"extendedTimeOut": "3000",
-					"showEasing": "swing",
-					"hideEasing": "linear",
-					"showMethod": "fadeIn",
-					"hideMethod": "fadeOut"
-				}
-				toastr["error"](`${data.responseText}`)
-
+			waitingDialog.hide();
+			lancarToastr("error", `Erro ao salvar informações`,true);
 		},
 		//dataType: 'json',
 		success: function success(data)
 		{
-			$('#modal-funcionario').modal('hide');
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": true,
-				"progressBar": true,
-				"positionClass": "toast-top-right",
-				"preventDuplicates": true,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "2000",
-				"extendedTimeOut": "3000",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut",
-				"onHidden": function ()
-				{
-					window.location.reload();
-				}
-			}
-			toastr["success"](`Barbearia ${acao == "salvar" ? "salvo" : "editado"} com sucesso.`);
+			lancarToastr("success", `Informações alterada com sucesso`,true);
+			//getNewToken("/barbearia");
 
 		}
+		
+		
 	});
 }
 
@@ -187,7 +188,7 @@ function validarForm()
 		submitHandler: function submitHandler(form)
 		{
 
-			enviarForm($(".btn-salvar").attr("acao"), $(".btn-salvar").attr("data-id"))
+			enviarForm()
 
 		}
 	});

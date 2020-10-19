@@ -53,6 +53,7 @@ function buscarHorarioAtendimento(){
 	$("#nome-barbeiro").text($(".nav-link.active").text());
 	let idBarbeiro = $(".nav-link.active").attr('idBarbeiro');
 	
+	waitingDialog.show('Carregando...');
 	$.ajax({
         type: "GET",
         url: `api/funcionarios/buscarHorarioAtendimento/${idBarbeiro}`,
@@ -67,11 +68,12 @@ function buscarHorarioAtendimento(){
         success: function(data) {
         	
         	$("#form-horario-atendimento")[0].reset();
-        	$(`.entrada`).prop("disabled", false);
-        	$(`.saida`).prop("disabled", false);
-        	$(`.entrada-almoco`).prop("disabled", false);
-        	$(`.saida-almoco`).prop("disabled", false);
-        	$(`.almoco`).prop("disabled", false);
+        	$(`.aberto`).prop("checked", false);
+        	$(`.entrada`).prop("disabled", true);
+        	$(`.saida`).prop("disabled", true);
+        	$(`.entrada-almoco`).prop("disabled", true);
+        	$(`.saida-almoco`).prop("disabled", true);
+        	$(`.almoco`).prop("disabled", true);
         	
         	
         	if(data.length < 1 )
@@ -81,7 +83,6 @@ function buscarHorarioAtendimento(){
         		return;
         		
         	}
-        	console.log(data)
         	
         	function diaIntParaString(dia) {
                 var dias = {
@@ -100,6 +101,12 @@ function buscarHorarioAtendimento(){
         	
         	data.forEach(function(e){
         		
+        		$(`.${diaIntParaString(e.dia)}`).find(".aberto").prop('checked', false);
+        		$(`.${diaIntParaString(e.dia)}`).find(".entrada").val('').prop("disabled", true);
+        		$(`.${diaIntParaString(e.dia)}`).find(".saida").val('').prop("disabled", true);
+        		$(`.${diaIntParaString(e.dia)}`).find(".almoco").prop('checked', false).prop("disabled", true);
+        		$(`.${diaIntParaString(e.dia)}`).find(".saida-almoco").val('').prop("disabled", true);
+        		$(`.${diaIntParaString(e.dia)}`).find(".entrada-almoco").val('').prop("disabled", true);
         		
         		if(e.aberto){
         			$(`.${diaIntParaString(e.dia)}`).find(".aberto").prop('checked', true);
@@ -126,9 +133,10 @@ function buscarHorarioAtendimento(){
         		}
         	});
         	
+        	
         }
     });
-    
+	waitingDialog.hide();
 }
 
 function btns(){
@@ -225,7 +233,7 @@ function validarForm(){
 				},
 				submitHandler: function submitHandler(form)
 				{
-
+					
 					 var dias = [{
 					        segunda: 1
 					    }, {
@@ -287,9 +295,7 @@ function validarForm(){
 
 			            });
 
-
-			            console.log(horarioAtendimento)
-			            
+			            waitingDialog.show('Salvando horários...');
 			            $.ajax({
 			                type: 'POST',
 			                url: `api/funcionarios/horario-atendimento`,
@@ -299,14 +305,12 @@ function validarForm(){
 			        			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 			        	    },
 			                error: function error(data) {
-
-			                	console.log(data)
-			                    lancarToastr("error", data.responseJSON)
+			                	waitingDialog.hide();
+			                    lancarToastr("error", data.message)
 
 			                },
 			                // dataType: 'json',
 			                success: function success(data) {
-
 
 			                    lancarToastr("success", "Horários de atendimento salvo.",true)
 

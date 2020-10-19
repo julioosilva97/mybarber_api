@@ -29,7 +29,7 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 			" where p.id_endereco = e.id" +
 			" and p.id = ? "; //tirar isso aqui, se for buscar de uma barbearia ? 
 
-	String atualizar = "update endereco set logradouro=?, bairro=?, numero = ?, cep = ?, cidade= ?, uf=? where id = ?";
+	
 	String deletar = "delete from endereco where id=? ";
 	
 	
@@ -65,7 +65,9 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 	@Override
 	public void alterar(Endereco endereco) {
 		
-		jdbcTemplate.update(atualizar, endereco.getLogradouro(),endereco.getBairro(), endereco.getNumero(), endereco.getCep(), endereco.getCidade(),endereco.getUf(), endereco.getId() );
+		String atualizar = "update endereco set logradouro=?, bairro=?, numero = ?, cep = ?, cidade= ?, uf=? where id = ?";
+		jdbcTemplate.update(atualizar, endereco.getLogradouro(),endereco.getBairro(),
+				endereco.getNumero(), endereco.getCep(), endereco.getCidade(),endereco.getUf(), endereco.getId() );
 	
 	}
 

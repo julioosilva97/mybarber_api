@@ -6,8 +6,6 @@ $(document).ready(function ()
 	var loginEdicao;
 	
 	
-	$('.modal-loading').modal('hide');
-	
 	$(function () {
 		  $('[data-toggle="popover"]').popover();
 	});
@@ -121,9 +119,8 @@ function enviarForm(acao, id)
 	}else{
 		var verbo = "PUT";
 	}
-	console.log(acao)
-	console.log(verbo)
 
+	waitingDialog.show('Salvando funcionário ...');
 	$.ajax(
 	{
 		type: verbo,
@@ -135,9 +132,9 @@ function enviarForm(acao, id)
 	    },
 		error: function error(data)
 		{
-			fecharModalLoading();
+			waitingDialog.hide();
 			if(data.status == 400){
-				lancarToastr("error",`${data.responseJSON.titulo}`);
+				lancarToastr("error",`${data.responseJSON.message}`);
 			}else{
 				lancarToastr("error",`${data.responseJSON.error_description}`);
 			}
@@ -157,7 +154,8 @@ function enviarForm(acao, id)
 
 function montarDataTable()
 {
-	$('.modal-loading').modal('show');
+	
+	waitingDialog.show('Carregando ...');
 	
 	
 	var table = $('#table-funcionarios').DataTable(
@@ -259,7 +257,7 @@ function montarDataTable()
 			}
 		},
 		"fnDrawCallback": function(oSettings){
-			fecharModalLoading()
+			waitingDialog.hide();
         },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-funcionarios_wrapper .col-md-6:eq(0)' );
@@ -364,7 +362,7 @@ function inciarExclusao(tabelaBody)
 function excluir(id)
 {
 	    swal.close();
-	    $('.modal-loading').modal('hide');
+	    waitingDialog.show('Excluindo ...');
 	
 		$.ajax(
 		{
@@ -472,7 +470,6 @@ jQuery.validator.addMethod("verificarEmail", function(value, element,parametros)
 		},
 		submitHandler: function submitHandler(form)
 		{
-			$('.modal-loading').modal('show');
 			enviarForm($(".btn-salvar").attr("acao"), $(".btn-salvar").attr("data-id"))
 
 		}

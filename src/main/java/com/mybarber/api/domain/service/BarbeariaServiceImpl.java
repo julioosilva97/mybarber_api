@@ -39,8 +39,14 @@ public class BarbeariaServiceImpl implements BarbeariaService {
 	@Override
 	public void alterar(Barbearia barbearia) {
 	
-	daoEndereco.alterar(barbearia.getEndereco());
-	dao.alterar(barbearia);
+		var barbeariaAtual = buscarPorId(barbearia.getId());
+		
+		barbearia.getEndereco().setId(barbeariaAtual.getEndereco().getId());
+		barbearia.setQtdCliente(barbeariaAtual.getQtdCliente());
+		barbearia.setQtdFuncionario(barbeariaAtual.getQtdFuncionario());
+		barbearia.setQtdServico(barbeariaAtual.getQtdServico());
+		daoEndereco.alterar(barbearia.getEndereco());
+		dao.alterar(barbearia);
 		
 	}
 

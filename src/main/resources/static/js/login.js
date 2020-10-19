@@ -159,7 +159,7 @@ function enviarForm(){
 	
 	let email = $('#email').val();
 	
-	$('.modal-loading').modal('show');
+	waitingDialog.show('Enviando e-mail ...');
 	
      $.ajax(
 			
@@ -169,6 +169,8 @@ function enviarForm(){
 				contentType: "application/json; charset=utf-8",
 				error: function error(data)
 				{
+					waitingDialog.hide();
+					lancarToastr("error","Erro ao enviar e-mail");
 					console.log(data);
 
 				},
@@ -177,7 +179,7 @@ function enviarForm(){
 				{
 					
 					$('#form-esqueci-senha')[0].reset();
-					$('.modal-loading').modal('hide');
+					waitingDialog.hide();
 					$(".flipped").addClass("box-esqueci-senha");
 					var alert = $( "#form-esqueci-senha" ).find( "div.alert");
 					alert.show();
@@ -201,7 +203,6 @@ function login(){
 			},
 			error: function error(data)
 			{
-				console.log(data)
 				$('.login-box').addClass('box-error');
 				$("#alert-erro").show().text(data.responseJSON.error_description);
 
@@ -212,8 +213,35 @@ function login(){
 				$('.login-box').removeClass('box-error');
 				$("#alert-erro").hide();
 				sessionStorage.setItem('accessToken', data.access_token);
+				sessionStorage.setItem('refreshToken', data.refresh_token);
 				window.location.href = "/";
 			}
 		});
 	
+}
+
+function lancarToastr(acao,mensagem,reload=false){
+	
+	toastr.options = {
+				"closeButton": true,
+				"debug": false,
+				"newestOnTop": true,
+				"progressBar": true,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": true,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "300",
+				"timeOut": "2000",
+				"extendedTimeOut": "3000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut",
+				"onHidden": function ()
+  				{
+  					if(reload)window.location.reload();
+  				}
+			}
+			toastr[acao](mensagem);
 }

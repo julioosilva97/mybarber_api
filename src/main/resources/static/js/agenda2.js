@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
 	$(".app-menu__item").removeClass('active')
 	$(".app-menu__item.agenda").addClass('active')
 
@@ -10,19 +9,19 @@ $(document).ready(function() {
 	
 	
 	
-	$('#data').datepicker({
-		format : "dd/mm/yyyy",
-		autoclose : true,
-		todayHighlight : true,
-		 dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
-		
-	}).datepicker('setDate', 'today');
+	
 	 var diaGlobal = moment(new Date()); // recebe o dia do select ou clickEnven do fullCalendar receber o dia quando alterar o dataPicker
-	 var now = new Date();
-     $('#horarioInicio').val(moment(now).format('HH:mm'))
+	 
 	
 	
-	
+
+	   $('#data').datepicker({
+			format : "dd/mm/yyyy",
+			autoclose : true,
+			todayHighlight : true,
+			 dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
+			
+		}).datepicker();
 	 $('#servicos').select2();
 	 
 	 $(".btn-salvar").attr("acao", "cadastrar");
@@ -91,8 +90,7 @@ function listarBarbeiros() {
 
 function carregarAgenda(dias){
 	
-	
-	$('.modal-loading').modal('hide');
+
    var calendarEl = document.getElementById('calendar');
    let idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
    
@@ -191,6 +189,7 @@ function carregarAgenda(dias){
 
    calendar.render();
    
+   waitingDialog.hide();
    //eventoData();
 
 }
@@ -353,12 +352,12 @@ function clickBarbeiro() {
 function carregarHorarioAtendimento() {
 
     var idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
-    console.log(idBarbeiro)
     var inicioAtendimento;
     var finalAtendimento;
     var dias = new Array();
     var result = new Array();
 
+    waitingDialog.show('Carregando...');
     $.ajax({
         type: "GET",
         url: `api/funcionarios/buscarHorarioAtendimento/${idBarbeiro}`,
@@ -417,10 +416,7 @@ function carregarHorarioAtendimento() {
             }
         }
     });
-    
-    console.log(dias)
-    
-    $('.modal-loading').modal('show');
+ 
     setTimeout(function() {
         carregarAgenda(dias);
     }, 1000);
@@ -445,8 +441,9 @@ function validarForm(){
 	});
 	
 	
+
+	
 	jQuery.validator.addMethod("validarHorarioComercial", function(value, element,parametros) {
-		
 		if(diasGlobal.length<1) return true;
 		var resposta = verificarHorarioComercial(parametros);
 		return resposta[0];
@@ -474,6 +471,31 @@ function validarForm(){
 		
 	},'Horário termino não pode ser antes ou igual ao horário de inicio.');
 	
+     jQuery.validator.addMethod("validarAgora", function(value, element,parametros) {
+    	 
+    	 
+    	 let agora = moment(new Date());
+    	 
+    	 var dataEscolhida = moment(formataStringData($('#data').val()));
+
+    	 var month = dataEscolhida.format('M');
+    	 var day   = dataEscolhida.format('D');
+    	 var year  = dataEscolhida.format('YYYY');
+    	 
+    	 $(`#horarioInicio`).trigger('change');
+    			let horarioInicio = moment(getDateFromHours($(`#horarioInicio`).val(),day,month,year));
+ 
+    			if(horarioInicio.isBefore(agora)){
+    				 return false;
+    				
+    			 }else{
+    				 return true;
+    			 }
+		
+	},'Horário inicio não pode ser antes ou igual agora.');
+	
+	
+	
 	
 
 $("#form-agendamento").validate({
@@ -492,6 +514,7 @@ $("#form-agendamento").validate({
             },
             horarioInicio: {
                 required: true,
+                validarAgora : true,
                 validarHorarioComercial : ['inicio'],
                 validarHorarioAgendamentos : ['inicio']
             },
@@ -536,7 +559,7 @@ $("#form-agendamento").validate({
 
 function enviarForm(acao, id) {
 
-	$('.modal-loading').modal('show');
+	
 	var servicoSelect = $('#servicos').val();
 	var servicos = [];
 	servicoSelect.forEach(function(e){
@@ -564,7 +587,7 @@ function enviarForm(acao, id) {
     }
  
     
-    
+    waitingDialog.show('Salvando agendamento ...');
     $.ajax({
         type: verbo,
         url: `/api/agendamentos`,
@@ -810,12 +833,13 @@ function iniciarEdicao(id) {
 
 function alterarStatus(id, status) {
 
-	$('.modal-loading').modal('show');
+	
     var sendInfo = {
         id: id,
         status: status
     }
-
+    
+    waitingDialog.show('Carregando...');
     $.ajax({
         type: 'POST',
         url: `/api/agendamentos/alterarStatus`,
@@ -1002,7 +1026,9 @@ function verficarAgendamentos(parametros){
     var idBarbeiro = $(".nav-underline").find(".active").attr('idBarbeiro');
     
     var agendamentosDia = [];
-	
+    pegarDiaGlobal();
+    console.log(diaGlobal);
+    
 	$.ajax({
 	       type: "GET",
 	       url: `api/agendamentos/buscarPorData/${diaGlobal.format('YYYY-MM-DD')}/${idBarbeiro}`,
