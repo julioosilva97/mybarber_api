@@ -24,8 +24,8 @@ function preencherInformacoes(){
 
 	$.ajax(
 			{
-				type: "GET",
-				url: `api/barbearias/buscarPorId/${getIdBarbearia(getToken())}`,
+				type: "Patch",
+				url: `api/barbearia/${getIdBarbearia(getToken())}`,
 				cache: false,
 				beforeSend: function (request) {
 					request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -62,18 +62,18 @@ function graficoStatusAgendamentosMensal(){
 			console.log(result)
 			
 			var pdata = [ {
-				value : result.CONCLUIDO,
+				value : result.CONCLUIDO ? result.CONCLUIDO : 0,
 				color : "#2874A6",
 				//highlight : "#5AD3D1",
 				label : "Concluido"
 			}, {
-				value : result.AGENDADO,
+				value : result.AGENDADO ? result.AGENDADO : 0,
 				color : "#F1C40F",
 				//highlight : "#FF5A5E",
 				label : "Agendado"
 			} ,
 			 {
-				value : result.CANCELADO,
+				value : result.CANCELADO ? result.CANCELADO : 0,
 				color : "#EC7063",
 				//highlight : "#FF5A5E",
 				label : "Cancelado"

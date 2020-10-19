@@ -47,7 +47,7 @@ function enviarForm(acao, id)
 			usuario : {id:$("#email").attr('idusuario'), email : $("#email").val()!=""?$("#email").val():null}
 	}
 	
-	console.log(sendInfo);
+	
 	let verbo;
 	if(acao == "editar"){
 		verbo = 'PUT';
@@ -55,7 +55,7 @@ function enviarForm(acao, id)
 		verbo= 'POST';
 	}
 
-	console.log(sendInfo)
+	waitingDialog.show('Salvando cliente ...');
 	$.ajax(
 	{
 		type : verbo,
@@ -67,7 +67,7 @@ function enviarForm(acao, id)
 	    },
 		error: function error(data)
 		{
-			fecharModalLoading();
+			waitingDialog.hide();
 			if(data.status == 400){
 				lancarToastr("error",`${data.responseJSON.titulo}`);
 			}else{
@@ -89,7 +89,7 @@ function enviarForm(acao, id)
 
 function montarDataTable()
 {
-	$('.modal-loading').modal('show');
+	waitingDialog.show('Carregando ...');
 
 	var table = $('#table-cliente').DataTable(
 	{
@@ -163,7 +163,7 @@ function montarDataTable()
 			}
 		},
 		"fnDrawCallback": function(oSettings){
-			fecharModalLoading()
+			waitingDialog.hide();
         },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-cliente_wrapper .col-md-6:eq(0)' );
@@ -193,7 +193,7 @@ function iniciarEdicao(tabelaBody)
 				    },
 					error: function error(data)
 					{	
-					    fecharModalLoading();
+						waitingDialog.hide();
 					    if(data.status == 400){
 							lancarToastr("error",`${data.responseJSON.titulo}`);
 						}else{
@@ -247,9 +247,8 @@ function excluir(id)
 {
 	   
         swal.close();
-        $('.modal-loading').modal('show');
+        waitingDialog.show('Carregando ...');
 	
-		$(".spiner-carregando").modal('show');
 		
 		$.ajax(
 		{
@@ -261,7 +260,7 @@ function excluir(id)
 		    },
 			error: function error(data)
 			{
-				fecharModalLoading();
+				waitingDialog.hide();
 				lancarToastr("error",data)
 
 			},
@@ -341,7 +340,6 @@ function validarForm()
 		},
 		submitHandler: function submitHandler(form)
 		{
-			$('.modal-loading').modal('show');
 			enviarForm($(".btn-salvar").attr("acao"), $(".btn-salvar").attr("data-id"))
 
 		}
