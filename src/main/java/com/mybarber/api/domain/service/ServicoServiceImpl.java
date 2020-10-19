@@ -39,6 +39,8 @@ public class ServicoServiceImpl implements ServicoService{
 			if(promocao!= null && promocao.isStatus() ) {
 				servico.setValor(promocao.getValor());
 				System.out.println("show");
+			}else {
+				servico.setValor(servico.getValor());
 			}
 		  System.out.println(servico.getTempo());
 		});

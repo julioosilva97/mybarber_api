@@ -194,6 +194,9 @@ function montarDataTable()
             }
 		},
 		{
+			"data": "servico.promocao.descricao"
+		},
+		{
 			'mRender': function (data, type, row)
 			{
 				return `<a sec:authorize="hasRole('EDITAR_SERVICO')" type="button" class="btn btn-secondary btn-sm btn-editar" title="Editar serviço" data-id="${row.id}" data-toggle="modal" ><i class="fa fa-lg fa-edit"></i></a>
