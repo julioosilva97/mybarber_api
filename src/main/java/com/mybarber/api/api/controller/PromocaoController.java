@@ -69,4 +69,17 @@ public class PromocaoController {
 		
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+	
+	@PutMapping("/alterar-status/{idPromocao}/{status}")
+	public ResponseEntity<Void>alterarStatus(@PathVariable boolean status, @PathVariable("idPromocao") int idPromocao) {
+		
+		var promocao = new Promocao();
+		
+		promocao.setStatus(status);
+		promocao.setId(idPromocao);
+		
+		service.alterarStatus(promocao);
+		
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
 }

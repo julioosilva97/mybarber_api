@@ -52,4 +52,11 @@ public class PromocaoServiceImpl implements PromocaoService {
 	}
 
 
+	@Override
+	public void alterarStatus(Promocao promocao) {
+		dao.alterarStatus(promocao);
+	}
+	
+
+
 }
