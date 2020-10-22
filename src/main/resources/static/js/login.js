@@ -212,6 +212,7 @@ function login(){
 			{
 				$('.login-box').removeClass('box-error');
 				$("#alert-erro").hide();
+				console.log(data)
 				sessionStorage.setItem('accessToken', data.access_token);
 				sessionStorage.setItem('refreshToken', data.refresh_token);
 				window.location.href = "/";

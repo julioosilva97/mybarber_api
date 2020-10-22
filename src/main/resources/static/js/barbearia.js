@@ -140,7 +140,7 @@ function enviarForm()
 		success: function success(data)
 		{
 			lancarToastr("success", `Informações alterada com sucesso`,true);
-			//getNewToken("/barbearia");
+			getNewToken("/barbearia");
 
 		}
 		

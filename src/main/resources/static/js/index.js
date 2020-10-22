@@ -142,6 +142,7 @@
 					//dataType: 'json',
 					success: function success(data)
 					{
+						console.log(data)
 						sessionStorage.setItem('accessToken', data.access_token);
 						sessionStorage.setItem('refreshToken', data.refresh_token);
 						window.location.reload(pageName)
