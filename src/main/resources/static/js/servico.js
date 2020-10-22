@@ -153,6 +153,59 @@ var verbo;
 	});
 }
 
+
+
+function alterarStatusPromocao(idPromocao, status, elemento) {
+	
+	swal({
+  		title: "Deseja alterar o status da promoção?",
+  		//text: "You will not be able to recover this imaginary file!",
+  		type: "warning",
+  		showCancelButton: true,
+  		confirmButtonText: "Sim",
+  		cancelButtonText: "Não",
+  		closeOnConfirm: false,
+  		closeOnCancel: false
+  	}, function(isConfirm) {
+  		if (isConfirm) {
+  		   swal.close();
+  			$.ajax(
+  					{
+  						type: 'PUT',
+  						url: `api/promocao/alterar-status/${idPromocao}/${status}`,
+  						contentType: "application/json; charset=utf-8",
+  						beforeSend: function (request) {
+  							request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+  					    },
+  						error: function error(data)
+  						{
+  							fecharModalLoading();
+  							console.log(data);
+  							if(data.status == 400){
+  								lancarToastr("error",`${data.responseJSON.titulo}`);
+  							}else{
+  								lancarToastr("error",`${data.responseJSON.error_description}`);
+  							}
+
+  						},
+  						//dataType: 'json',
+  						success: function success(data)
+  						{
+  				           $(elemento).prop('checked',status);
+  						}
+  					});
+  			
+  		} else {
+  		   swal.close();
+  			$(elemento).prop('checked',!status);
+  		
+  	       
+  		}
+  	});
+	
+	
+}
+
 function montarDataTable()
 {
 	
@@ -193,6 +246,40 @@ function montarDataTable()
                 return moment(getDateFromHours(data)).format('HH:mm')
             }
 		},
+		   {
+			'mRender': function (data, type, row)
+			{
+				
+				 if (row.promocao) {
+					 if(row.promocao.status){
+						 return `<div class="toggle-flip" style=""">
+		                  <label>
+		                    <input type="checkbox" class="status-promocao"  data-id="${row.promocao.id}" checked><span class="flip-indecator" data-toggle-on="ATIVA" data-toggle-off="INATIVA" style="width: 80px!important"></span>
+		                  </label>
+		                </div>`
+					 }else {
+						 return `<div class="toggle-flip" style=""">
+		                  <label>
+		                    <input type="checkbox" class="status-promocao"  data-id="${row.promocao.id}"><span class="flip-indecator" data-toggle-on="ATIVA" data-toggle-off="INATIVA" style="width: 80px!important"></span>
+		                  </label>
+		                </div>`
+					 }
+				 } else {
+					 return 'SEM PROMOÇÃO'
+				 }  
+			},
+	    },
+	    {
+			'mRender': function (data, type, row)
+			{
+				
+				 if (row.promocao) {
+					return row.promocao.valor
+				 } else {
+					 return '-'
+				 }  
+			},
+	    },
 		{
 			'mRender': function (data, type, row)
 			{
@@ -240,7 +327,18 @@ function montarDataTable()
 			}
 		},
 		"fnDrawCallback": function(oSettings){
-			fecharModalLoading()
+			fecharModalLoading(),
+			$(".status-promocao").on("change",function(e, x) {
+				e.preventDefault();
+				let id = $(this).attr('data-id');
+				if(!$(this).is(":checked")){
+					alterarStatusPromocao(id, false, $(this));
+				}else {
+					alterarStatusPromocao(id, true, $(this));
+				}
+				
+			})
+			
         },
 		initComplete : function(){
 			table.buttons().container().appendTo( '#table-servicos_wrapper .col-md-6:eq(0)' );

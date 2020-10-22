@@ -61,9 +61,9 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public void inativarPromocao(int idPromocao) {
+	public void alterarStatus(Promocao promocao) {
 		 String inativarPromocao = "update promocao set status =? where id = ?";
-		jdbcTemplate.update(inativarPromocao, false, idPromocao);
+		jdbcTemplate.update(inativarPromocao, promocao.isStatus(), promocao.getId());
 	}
 
 	@Override

@@ -25,7 +25,8 @@ public class ServicoDAOImpl implements ServicoDAO {
 	@Override
 	public List<Servico> listar(int id) {
 		
-		String selectall = "select * from servico where id_barbearia = ?";
+		String selectall = "select s.*,  p.id id_promocao, p.valor valor_promocao, p.descricao descricao_promocao,p.datainicio, p.datafim, p.status from\r\n" + 
+				"servico s left join promocao p on s.id = p.id_servico where id_barbearia =?";
 		return jdbcTemplate.query(selectall, new Object[] { id }, new ServicoMapper());
 
 	}

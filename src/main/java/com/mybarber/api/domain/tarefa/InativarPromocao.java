@@ -21,7 +21,7 @@ public class InativarPromocao {
 	private static final String TIME_ZONE = "America/Sao_Paulo";
 
 	
-	@Scheduled(cron = "0 21 20 * * *",zone = TIME_ZONE)
+	@Scheduled(cron = "0 44 22 * * *",zone = TIME_ZONE)
 	@Transactional
 	private void inativarPromocoesVencidas() {
 	   var promocoes = promocaoDAO.buscarPromocoesAtivas();
@@ -30,8 +30,8 @@ public class InativarPromocao {
 	   promocoes.forEach(promocao -> {
 		   
 		   if(promocao.getDataFim().isBefore(LocalDate.now())) {
-		   var idPromocao = promocao.getId();
-		   promocaoDAO.inativarPromocao(idPromocao);
+		   promocao.setStatus(false);
+		   promocaoDAO.alterarStatus(promocao);
 		   System.out.println("foi");
 		   }else {
 			   System.out.println("Nada");

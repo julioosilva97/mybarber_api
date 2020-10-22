@@ -33,16 +33,8 @@ public class ServicoServiceImpl implements ServicoService{
 	@Override
 	public List<Servico> listar(Barbearia barbearia) {
 		
-		var servicos = dao.listar(barbearia.getId());
-		servicos.forEach(servico -> {
-			var promocao = promocaoDAO.buscarPorIdServico(servico.getId());
-			if(promocao!= null && promocao.isStatus() ) {
-				servico.setValor(promocao.getValor());
-				System.out.println("show");
-			}
-		  System.out.println(servico.getTempo());
-		});
-		return servicos;
+		return dao.listar(barbearia.getId());
+		
 	}
 
 	@Override
