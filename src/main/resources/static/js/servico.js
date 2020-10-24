@@ -236,7 +236,7 @@ function montarDataTable()
 		},
 		{
 			"data": "valor",render: function (data, type, row) {
-                return data.toFixed(2);
+                return `R$ ${data.toFixed(2)}`;
                 }
 		},
 		{
@@ -274,7 +274,7 @@ function montarDataTable()
 			{
 				
 				 if (row.promocao) {
-					return row.promocao.valor
+					return `R$ ${row.promocao.valor.toFixed(2)}`
 				 } else {
 					 return '-'
 				 }  

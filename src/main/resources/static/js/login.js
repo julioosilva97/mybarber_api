@@ -204,6 +204,8 @@ function login(){
 			error: function error(data)
 			{
 				$('.login-box').addClass('box-error');
+				$("#alert-erro").hide();
+				$("#alert-sucesso").hide();
 				$("#alert-erro").show().text(data.responseJSON.error_description);
 
 			},
@@ -212,9 +214,11 @@ function login(){
 			{
 				$('.login-box').removeClass('box-error');
 				$("#alert-erro").hide();
-				console.log(data)
-				sessionStorage.setItem('accessToken', data.access_token);
-				sessionStorage.setItem('refreshToken', data.refresh_token);
+				$("#alert-erro").hide();
+				
+				localStorage.checkBoxValidation =  $('#lembrar').is(":checked");
+				localStorage.setItem('accessToken', data.access_token);
+				localStorage.setItem('refreshToken', data.refresh_token);
 				window.location.href = "/";
 			}
 		});

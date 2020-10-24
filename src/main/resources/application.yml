@@ -28,3 +28,8 @@ spring:
 security:
   jwt:
     public-key: classpath:public.txt
+  oauth2:    client:      registration:
+          github:
+             client-id: 30ff98ea4df427e3d711
+             client-secret: 18b797d6dc828b401475488ecc2f3afa836798bf
+              

@@ -13,7 +13,46 @@
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="js/jquery-3.3.1.min.js"></script>
+<script  type="text/javascript">
 
+
+
+window.unload = () => {
+	   // Clear the local storage
+	window.localStorage.clear();
+	}
+
+if(!localStorage.getItem("accessToken")){
+	window.location.href = "/login";
+}
+
+
+
+
+
+
+/*var ajax = new XMLHttpRequest();
+
+//Seta tipo de requisição: Post e a URL da API
+ajax.open("POST", "http://localhost:8080/oauth/token", true);
+ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ajax.setRequestHeader("Authorization", `Basic ${btoa("servidorAuthMyBarber:123")}`);
+
+//Seta paramêtros da requisição e envia a requisição
+ajax.send("refresh_token="+localStorage.getItem("refreshToken")+"&grant_type=refresh_token");
+
+//Cria um evento para receber o retorno.
+ajax.onreadystatechange = function(data) {
+// Caso o state seja 4 e o http.status for 200, é porque a requisiçõe deu certo.
+	if (ajax.readyState == 4 && ajax.status == 200) {
+		let data = JSON.parse(ajax.response)
+		localStorage.setItem('accessToken', data.access_token);
+		localStorage.setItem('refreshToken', data.refresh_token);
+ 	}
+}*/
+
+</script>
 
 <!-- toastr -->
 <link href="pluginsAdd/toastr/toastr.min.css" rel="stylesheet" />
@@ -60,7 +99,6 @@
 
 
 	<!-- Essential javascripts for application to work-->
-	<script src="js/jquery-3.3.1.min.js"></script>
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="pluginsAdd/jquery.mask.min.js"></script>

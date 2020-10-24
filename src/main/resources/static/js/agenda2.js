@@ -211,9 +211,22 @@ function listarServicos(){
 
 	        },
 	        success: function(data) {
-
+	        	
+	        	data.forEach(function(e){
+	        		
+	        		let valor = e.valor;
+	        		if(e.promocao && e.promocao.status){
+	        			
+	        			valor = e.promocao.valor 
+	        		}
+	        		console.log(valor)
+	        		  $("#servicos")
+	        		  .append(`<option value='${e.id}' preco='${valor}' tempo='${e.tempo}' >${e.descricao} (R$${valor.toFixed(2)})  </option>`);
+	        	})
+	        	   
 	                for (var i in data) {
-	                    $("#servicos").append(`<option value='${data[i].id}' preco='${data[i].valor}' tempo='${data[i].tempo}' >${data[i].descricao} (R$${data[i].valor})  </option>`);
+	                	
+	                  
 	                }
 	                
 	        }
