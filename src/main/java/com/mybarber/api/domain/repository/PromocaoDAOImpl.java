@@ -1,8 +1,6 @@
 package com.mybarber.api.domain.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,7 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	private JdbcTemplate jdbcTemplate;
 	
 	private String save = "insert into promocao (dataInicio, dataFim, descricao,status,valor, id_servico) values (?, ?, ?,?,?,?) ";
-	private String delete = "delete from promocao where id = ?";
+	//private String delete = "delete from promocao where id = ?";
 	private String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=? where id_servico =?";
     private String status = "select status from promocao where id_servico=?";
   

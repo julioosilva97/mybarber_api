@@ -72,5 +72,12 @@ public class UsuarioController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
+	@GetMapping("{tipo}")
+	public ResponseEntity<Object> buscar(@PathVariable("tipo") String tipo){
+		
+		return new ResponseEntity<Object>(service.buscarUsuarioLogado(tipo) , HttpStatus.OK);
+		
+	}
+	
 	
 }

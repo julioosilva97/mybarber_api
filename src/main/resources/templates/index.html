@@ -17,22 +17,12 @@
 <script  type="text/javascript">
 
 
-
-window.unload = () => {
-	   // Clear the local storage
-	window.localStorage.clear();
-	}
-
 if(!localStorage.getItem("accessToken")){
 	window.location.href = "/login";
 }
 
 
-
-
-
-
-/*var ajax = new XMLHttpRequest();
+var ajax = new XMLHttpRequest();
 
 //Seta tipo de requisição: Post e a URL da API
 ajax.open("POST", "http://localhost:8080/oauth/token", true);
@@ -50,7 +40,7 @@ ajax.onreadystatechange = function(data) {
 		localStorage.setItem('accessToken', data.access_token);
 		localStorage.setItem('refreshToken', data.refresh_token);
  	}
-}*/
+}
 
 </script>
 
@@ -79,7 +69,9 @@ ajax.onreadystatechange = function(data) {
 
 </head>
 
-<body class="app sidebar-mini">
+<body class="app sidebar-mini" >
+
+
 	<!-- NavBar -->
 	<header th:replace="fragments/navbar :: navbar"> </header>
 	<!-- Sidebar -->

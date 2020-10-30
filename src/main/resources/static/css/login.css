@@ -1,9 +1,20 @@
+.login-box {
+	    min-height: 350px!important;
+}
+.login-box.flipped {
+	    min-height: 300px!important;
+}
+
+/* só por enquanto não tem login social */
+
 .box-error {
-	min-height: 450px !important;
+	/*min-height: 450px !important;*/
+	min-height: 400px !important;
 }
 
 .box-logout {
-	min-height: 450px !important;
+	/*min-height: 450px !important;*/
+	min-height: 400px !important;
 }
 
 .login-or {

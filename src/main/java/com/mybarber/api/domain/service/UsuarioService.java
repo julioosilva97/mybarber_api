@@ -16,5 +16,5 @@ public interface UsuarioService {
 	
 	public void esqueceuSenha(String email);
 	
-
+	public Object buscarUsuarioLogado(String tipo);
 }

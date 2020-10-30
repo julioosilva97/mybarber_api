@@ -37,6 +37,7 @@ public class NotificarAgendamento {
     		
     		var agora = LocalDateTime.now();
     		
+    		
     		var minutos = agora.until(agendamento.getDataHorarioInicio(), ChronoUnit.MINUTES);
     		
     		if(minutos>0 && minutos<=60) {

@@ -129,8 +129,12 @@ function validarForm(button,next)
 		success: "valid",
 		errorElement: 'div',
 	    errorPlacement: function (error, element) {
+	    	
 	        error.addClass('invalid-feedback');
-	    	$(element).after(error);
+	        if ($(element)[0].id != "cep"){
+	        	$(element).after(error);
+	        }
+	    	
 	    },
 	    highlight: function (element, errorClass, validClass) {
 	        $(element).addClass('is-invalid');
@@ -182,6 +186,9 @@ function validarForm(button,next)
 			},
 			cidade:
 			{
+				required: true
+			},
+			cep : {
 				required: true
 			},
 			uf:

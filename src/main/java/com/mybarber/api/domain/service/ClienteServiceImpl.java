@@ -17,8 +17,6 @@ import com.mybarber.api.domain.repository.UsuarioDAO;
 @Service @Transactional
 public class ClienteServiceImpl implements ClienteService {
 
-	
-	
 	@Autowired
 	ClienteDAO clienteDAO;
 	
@@ -34,7 +32,7 @@ public class ClienteServiceImpl implements ClienteService {
 		
 		//cadastrar sem barbearia quando for a parte de cliente 
 		if (!usuarioDAO.verificarLogin(cliente.getUsuario().getLogin())) {
-		cliente.getUsuario().getPerfil().setId(4);
+		cliente.getUsuario().getPerfil().setId(2);
 		usuarioDAO.salvar(cliente.getUsuario());
 		clienteDAO.cadastrar(cliente,idBarbearia);
 		
@@ -123,6 +121,12 @@ public class ClienteServiceImpl implements ClienteService {
 	public List<Cliente> listar(Barbearia barbearia) {
 		
 		return clienteDAO.listar(barbearia);
+	}
+
+	@Override
+	public List<Cliente> autoCompleteNome(String nome) {
+		
+		return clienteDAO.autoCompleteNome(nome);
 	}
 
 }

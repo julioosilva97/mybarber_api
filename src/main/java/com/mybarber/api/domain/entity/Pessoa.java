@@ -5,14 +5,13 @@ import java.time.LocalDate;
 public abstract class Pessoa {
 
 	
-private int id;
+   private int id;
 	
 	protected String nome;
 	
 	protected String sobrenome;
 	
 	protected String telefone;
-	
 
 	protected LocalDate dataNascimento;
 	

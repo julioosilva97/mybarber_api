@@ -1,4 +1,7 @@
 $(document).ready(function (){
+	
+	$(".app-menu__item").removeClass('active')
+	$(".app-menu__item.barbearia").addClass('active')
 	$.ajax(
 			{
 				type : 'PATCH',

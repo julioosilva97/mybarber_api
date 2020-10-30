@@ -72,6 +72,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                     "/barbearia",
                     "/usuarios/reset",
                     "/horario-atendimento",
+                    "/perfil",
                     "/",
                     "/api/agendamentos/listarFullCalendar/{idBarbeiro}").permitAll()
 	        .antMatchers("/thymeleaf/").hasRole("LISTAR_SERVICO")

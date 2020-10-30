@@ -22,7 +22,14 @@ $(document).ready(function() {
 			 dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
 			
 		}).datepicker();
-	 $('#servicos').select2();
+	 $('#servicos').select2({
+		 
+		 language: {
+	            noResults: function () {
+	                 return "Nenhum serviço cadastrado";
+	            }
+	        }
+	 });
 	 
 	 $(".btn-salvar").attr("acao", "cadastrar");
 	 
@@ -278,12 +285,15 @@ function calcularTermino(){
 
 function autoCompleteCliente(){
 	
+
     $("#cliente").autocomplete({
         minLength: 0,
         source: function(request, response) {
+        	let nome = $("#cliente").val();
+        	console.log(nome)
             $.ajax({
                 type: "GET",
-                url: `api/clientes/${getIdBarbearia(getToken())}`,
+                url: `api/clientes/autocomplete/${nome}`,
                 dataType: "json",
                 beforeSend: function (request) {
         			request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -292,6 +302,7 @@ function autoCompleteCliente(){
                     console.log(data);
                 },
                 success: function success(data) {
+                	console.log(data)
                     var clientes = [];
                     data.forEach(function(d, i) {
                         clientes.push({
@@ -306,26 +317,7 @@ function autoCompleteCliente(){
         },
         change: function change(e, ui) {
         	
-        	/*
-        	jQuery.validator.setDefaults({
-        		errorElement: 'div',
-        	    errorPlacement: function (error, element) {
-        	    	error.addClass('invalid-feedback');
-        	    	console.log(error);
-        	    	$(element).after(error);
-        	    },
-        	    highlight: function (element, errorClass, validClass) {
-        	        $(element).addClass('is-invalid');
-        	        $(element).removeClass('is-valid');
-        	    },
-        	    unhighlight: function (element, errorClass, validClass) {
-        	        $(element).removeClass('is-invalid');
-        	        $(element).addClass('is-valid');
-        	    }
-        	});*/
-        	
-        	
-            if (ui.item == null) {
+           if (ui.item == null) {
                 $(e.target).siblings(".invalid").remove();
                 $(e.target).addClass("state-error").after('<div class="invalid">Nome inválido</div	>');
                 $('#cliente').val("").focus();
@@ -852,6 +844,7 @@ function alterarStatus(id, status) {
         status: status
     }
     
+    $('#detalhes').modal('hide');
     waitingDialog.show('Carregando...');
     $.ajax({
         type: 'POST',

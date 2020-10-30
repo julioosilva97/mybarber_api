@@ -22,9 +22,8 @@ $(document).ready(function()
 
 		if ($('.login-box').hasClass('box-error')) {
 			$('.login-box').removeClass('box-error');
-			$("#alert-error").hide();
+			$("#alert-erro").hide();
 			
-
 		} else if ($('.login-box').hasClass('box-logout')) {
 			$('.login-box').removeClass('box-logout');
 			$("#alert-sucesso").hide();
@@ -42,6 +41,7 @@ $(document).ready(function()
 	});
 	
 	$('.login-content [data-toggle="flip"]').click(function () {
+		
         $(".login-box").toggleClass("flipped");
         $(".login-box").removeClass("box-esqueci-senha");
         $("#form-esqueci-senha").find('.is-invalid').removeClass("is-invalid");
@@ -216,10 +216,10 @@ function login(){
 				$("#alert-erro").hide();
 				$("#alert-erro").hide();
 				
-				localStorage.checkBoxValidation =  $('#lembrar').is(":checked");
+				//localStorage.checkBoxValidation =  $('#lembrar').is(":checked");
 				localStorage.setItem('accessToken', data.access_token);
 				localStorage.setItem('refreshToken', data.refresh_token);
-				window.location.href = "/";
+				window.location.href = "/"; //fazer redirect uri no servidor de autenticação
 			}
 		});
 	

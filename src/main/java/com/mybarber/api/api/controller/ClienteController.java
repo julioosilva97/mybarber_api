@@ -81,4 +81,19 @@ public class ClienteController {
 		return new ResponseEntity<List<ClienteInput>>(clienteDTO,HttpStatus.OK);
 	}
 	
+	@GetMapping("autocomplete/{nome}")
+	public ResponseEntity<List<ClienteDTO>> autocompleteNome(@PathVariable ("nome") String nome) {
+		
+		
+		var clientes = service.autoCompleteNome(nome);
+		
+	
+		var clienteDTO = clientes.stream()
+                .map(doMain -> (ClienteDTO) ConverterDTO.toDTO(doMain, ClienteDTO.class))
+                .collect(Collectors.toList());
+		
+		return new ResponseEntity<List<ClienteDTO>>(clienteDTO,HttpStatus.OK);
+	}
+	
+	
 }

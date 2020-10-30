@@ -14,6 +14,4 @@ public class HorarioController {
     @Autowired
     FuncionarioService service;
 
-    
-
 }

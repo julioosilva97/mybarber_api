@@ -43,8 +43,7 @@ $(document).ready(function ()
 });
 
 function enviarFormPromocao(acao, id) {
-	$('.modal-loading').modal('show');
-	
+
 	var data = {
 			id: id,
 			dataInicio: $("#dataInicio").val(),
@@ -54,7 +53,6 @@ function enviarFormPromocao(acao, id) {
 			idServico: $(".btn-salvar-promocao").attr("data-id-servico")
 		}
 	
-	console.log(data);
 	
 var verbo;
 	
@@ -63,7 +61,7 @@ var verbo;
 	}else{
 		var verbo = "PUT";
 	}
-	console.log(verbo)
+	waitingDialog.show('Carregando ...');
 	$.ajax(
 	{
 		type: verbo,
@@ -75,7 +73,7 @@ var verbo;
 	    },
 		error: function error(data)
 		{
-			fecharModalLoading();
+			waitingDialog.hide();
 			if(data.status == 400){
 				lancarToastr("error",`${data.responseJSON.message}`);
 			}else{
@@ -99,7 +97,7 @@ var verbo;
 
 function enviarForm(acao, id)
 {
-	$('.modal-loading').modal('show');
+	
 	
 
 
@@ -120,8 +118,7 @@ var verbo;
 	}else{
 		var verbo = "PUT";
 	}
-	console.log(verbo)
-	console.log(data)
+	waitingDialog.show('Carregando ...');
 	$.ajax(
 	{
 		type: verbo,
@@ -133,7 +130,7 @@ var verbo;
 	    },
 		error: function error(data)
 		{
-			fecharModalLoading();
+			waitingDialog.hide();
 			console.log(data);
 			if(data.status == 400){
 				lancarToastr("error",`${data.responseJSON.titulo}`);
@@ -179,7 +176,7 @@ function alterarStatusPromocao(idPromocao, status, elemento) {
   					    },
   						error: function error(data)
   						{
-  							fecharModalLoading();
+  							waitingDialog.hide();
   							console.log(data);
   							if(data.status == 400){
   								lancarToastr("error",`${data.responseJSON.titulo}`);
@@ -211,9 +208,7 @@ function montarDataTable()
 	
 	
 
-	$('.modal-loading').modal('show');
-	
-	
+	waitingDialog.show('Carregando ...');
 	
 	var table = $('#table-servicos').DataTable(
 	{
@@ -236,7 +231,7 @@ function montarDataTable()
 		},
 		{
 			"data": "valor",render: function (data, type, row) {
-                return `R$ ${data.toFixed(2)}`;
+                return data.toFixed(2);
                 }
 		},
 		{
@@ -274,7 +269,7 @@ function montarDataTable()
 			{
 				
 				 if (row.promocao) {
-					return `R$ ${row.promocao.valor.toFixed(2)}`
+					return row.promocao.valor.toFixed(2);
 				 } else {
 					 return '-'
 				 }  
@@ -293,6 +288,8 @@ function montarDataTable()
             className: 'btn-primary btn-novo',
             title: 'Clique para cadastrar um novo serviço',
             action: function ( e, dt, node, config ) {
+            	
+            	$(".titulo-form-servico").text("Novo serviço");
                 $('.servico-form').slideDown('slow');
                 $(".listagem").slideUp('slow');
                 $(".btn-salvar").removeAttr('data-id');
@@ -327,7 +324,7 @@ function montarDataTable()
 			}
 		},
 		"fnDrawCallback": function(oSettings){
-			fecharModalLoading(),
+			waitingDialog.hide();
 			$(".status-promocao").on("change",function(e, x) {
 				e.preventDefault();
 				let id = $(this).attr('data-id');
@@ -354,6 +351,7 @@ function iniciarEdicao(tabelaBody)
 {
 	tabelaBody.on("click", "a.btn-editar", function (e)
 	{
+		$(".titulo-form-servico").text("Editar serviço");
 		$('.servico-form').slideDown('slow');
         $(".listagem").slideUp('slow');
 		$('#form-servico')[0].reset();;
@@ -407,6 +405,7 @@ function cadastrarPromocao(tabelaBody) {
 		if(data.id==null){
 		
 		$('.promocao-form').slideDown('slow');
+		$(".titulo-form-promocao").text("Nova promoção");
 		 $(".listagem").slideUp('slow');
 		 $('#form-promocao')[0].reset();
 		 $("#dataInicio").val($(this).closest("tr").find('td:eq(0)').text());
@@ -418,6 +417,7 @@ function cadastrarPromocao(tabelaBody) {
 		 
 		}else {
 			$('.promocao-form').slideDown('slow');
+			$(".titulo-form-promocao").text("Editar promoção");
 			$(".listagem").slideUp('slow');
 			$("#dataInicio").val(data.dataInicio);
 			$("#dataFim").val(data.dataFim);
@@ -464,7 +464,7 @@ function excluir(id)
 	   
         swal.close();
 	
-		$(".spiner-carregando").modal('show');
+        waitingDialog.show('Carregando ...');
 		
 		$.ajax(
 		{
@@ -483,7 +483,7 @@ function excluir(id)
 			success: function ()
 			{
 				$('#modal-excluir').modal('hide');
-				$('.modal-loading').modal('show');
+
 				lancarToastr("success",`Serviço excluido com sucesso.`, true);
 
 			}

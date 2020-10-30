@@ -2,6 +2,7 @@ package com.mybarber.api.domain.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +81,39 @@ public class UsuarioServiceImpl implements UsuarioService {
 		
 	}
 
+	@Override
+	public Object buscarUsuarioLogado(String tipo) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+		String login = principal.toString();
+		
+		var usuario = buscarPorLogin(login);
+		
+		var gerenciarUsuario = usuarioDAO.buscarGerenciarUsuario(usuario);
+
+		if(tipo.equals("cliente")) {
+			
+			var idCliente = gerenciarUsuario.get("id_cliente");
+			if(idCliente!=null) {
+				return clienteDAO.buscarPorid(idCliente);
+			}else {
+				throw new NegocioException("Não existe cliente com o usuario logado");
+			}
+			
+		} else if(tipo.equals("funcionario")) {
+			
+			var idFuncionario = gerenciarUsuario.get("id_funcionario");
+			if(idFuncionario!=null) {
+				return funcionarioDAO.buscar(idFuncionario);
+			}else {
+				throw new NegocioException("Não existe funcionario com o usuario logado");
+			}
+			
+		}else {
+			throw new NegocioException("Tipo : "+tipo+" inválido");
+		}
 	
+	}
 
 }

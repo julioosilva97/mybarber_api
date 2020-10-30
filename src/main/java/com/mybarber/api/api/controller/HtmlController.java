@@ -95,4 +95,8 @@ public class HtmlController {
 		return "horarioatendimento/horario-atendimento";
 	}
 
+	@GetMapping("perfil")
+	public String perfil() {
+		return "perfil/perfil";
+	}
 }

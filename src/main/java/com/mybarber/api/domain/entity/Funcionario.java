@@ -3,6 +3,7 @@ package com.mybarber.api.domain.entity;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,8 @@ public class Funcionario extends Pessoa {
 	private Cargo cargo;
 	
 	private Barbearia barbearia;
+	
+	private List<HorarioAtendimento> horariosAtendimento;
 	
 
 	public Cargo getCargo() {
@@ -62,6 +65,16 @@ public class Funcionario extends Pessoa {
 
 	public Funcionario(int id) {
 		super(id);
+	}
+
+
+	public List<HorarioAtendimento> getHorariosAtendimento() {
+		return horariosAtendimento;
+	}
+
+
+	public void setHorariosAtendimento(List<HorarioAtendimento> horariosAtendimento) {
+		this.horariosAtendimento = horariosAtendimento;
 	}
 
 }

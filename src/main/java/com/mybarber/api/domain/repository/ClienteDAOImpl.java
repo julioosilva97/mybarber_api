@@ -153,4 +153,25 @@ public class ClienteDAOImpl implements ClienteDAO {
 		
 	}
 
+	@Override
+	public List<Cliente> autoCompleteNome(String nome) {
+		
+		String autoCompleteNome = """
+				select c.* , u.email
+				from cliente c 
+				inner join cliente_barbearia cb on cb.id_cliente = c.id 
+				inner join gerenciar_usuario gu on gu.id_cliente = c.id
+				inner join usuario u on u.id = gu.id_usuario
+                where c.nome LIKE ? """;
+		
+		
+ 
+		return jdbcTemplate.query(autoCompleteNome,  new Object[] {"%" + nome +"%"},
+				(rs, rowNum) -> 
+		
+		new Cliente(rs.getInt("id"), 
+				rs.getString("nome")
+				) ) ;
+	}
+
 }

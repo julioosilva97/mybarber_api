@@ -1,11 +1,9 @@
 
 
 	$(document).ready(function() {
-		
-		$(window).unload(function(){
-			localStorage.removeItem("accessToken");
-			});
 
+		
+	
 		$("#logout").on('click',function(){
 			
 			localStorage.clear();

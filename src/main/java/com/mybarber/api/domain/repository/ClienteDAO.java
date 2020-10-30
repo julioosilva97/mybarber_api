@@ -14,5 +14,6 @@ public interface ClienteDAO {
 	public List<Cliente> listar(Barbearia barbearia);
 	public boolean verificarEmail(String email);
 	public int countPorBarbearia(int idBarbearia);
+	public List<Cliente> autoCompleteNome(String nome);
 
 }

@@ -3,6 +3,8 @@ package com.mybarber.api.domain.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -155,6 +157,26 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public Map<String, Integer> buscarGerenciarUsuario(Usuario usuario) {
+		
+		var buscarGerenciarUsuario = """
+				select * from gerenciar_usuario where id_usuario = ?           
+                """;
+		
+		return jdbcTemplate.queryForObject(buscarGerenciarUsuario, new Object[]{usuario.getId()},
+                (rs, rowNum) -> {
+                    Map<String, Integer> results = new HashMap<>();
+                    
+                    results.put("id_funcionario", (Integer)  rs.getObject("id_funcionario"));
+                    results.put("id_cliente", (Integer) rs.getObject("id_cliente"));
+                    
+                    return results;
+                }
+        );
+		
 	}
 
 }

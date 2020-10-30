@@ -13,7 +13,6 @@ public class ServicoMapper implements RowMapper<Servico>{
 	@Override
 	public Servico mapRow(ResultSet rs, int rowNum) throws SQLException {
 		
-		var promocao = new Promocao();
 		
 		if(rs.getObject("id_promocao") != null) {
 		

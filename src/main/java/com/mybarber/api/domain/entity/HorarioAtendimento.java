@@ -15,6 +15,7 @@ public class HorarioAtendimento {
 	private LocalTime entradaAlmoco;
 	private LocalTime saidaAlmoco;
 	private boolean almoco;
+	private Funcionario funcionario;
 	
 	public LocalTime getEntrada() {
 		return entrada;
@@ -41,7 +42,7 @@ public class HorarioAtendimento {
 		this.saidaAlmoco = saidaAlmoco;
 	}
 
-	private Funcionario funcionario;
+	
 	
 	public int getId() {
 		return id;

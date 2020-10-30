@@ -21,7 +21,7 @@ public class InativarPromocao {
 	private static final String TIME_ZONE = "America/Sao_Paulo";
 
 	
-	@Scheduled(cron = "0 44 22 * * *",zone = TIME_ZONE)
+	@Scheduled(cron = "0 00 00 * * *",zone = TIME_ZONE)
 	@Transactional
 	private void inativarPromocoesVencidas() {
 	   var promocoes = promocaoDAO.buscarPromocoesAtivas();
