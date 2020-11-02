@@ -19,5 +19,5 @@ public interface PromocaoDAO {
 	
 	public void alterarStatus(Promocao promocao);
 	
-	public List <Promocao> buscarPromocoesAtivas();
+	public List <Promocao> promocoesDataInicioMaiorIgualHoje();
 }
