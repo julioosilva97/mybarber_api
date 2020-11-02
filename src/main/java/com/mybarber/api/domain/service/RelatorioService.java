@@ -12,9 +12,6 @@ import com.mybarber.api.domain.entity.Usuario;
 
 @Service
 public class RelatorioService {
-	
-	
-	
 
 	public static List<Usuario> getStudents() {
 

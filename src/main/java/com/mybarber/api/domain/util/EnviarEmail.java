@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.lowagie.text.DocumentException;
 import com.mybarber.api.domain.entity.Agendamento;
 import com.mybarber.api.domain.entity.Email;
 import com.mybarber.api.domain.entity.Pessoa;
@@ -113,7 +112,7 @@ public class EnviarEmail {
 		   email.setAnexo(pdf);
 		   enviarEmail(email, "email/redefinir-senha");
 		}
-		
+
 		private  void enviarEmail(Email email,String template) {
 			
 			try {
