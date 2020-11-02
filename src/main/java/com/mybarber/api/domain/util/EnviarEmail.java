@@ -1,5 +1,6 @@
 package com.mybarber.api.domain.util;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.lowagie.text.DocumentException;
 import com.mybarber.api.domain.entity.Agendamento;
 import com.mybarber.api.domain.entity.Email;
 import com.mybarber.api.domain.entity.Pessoa;
@@ -33,6 +35,9 @@ public class EnviarEmail {
 
     @Autowired
     private SpringTemplateEngine templateEngine;
+    
+    @Autowired
+    GerarPdf gerarPDF;
 
 	
 	public void ativarConta(Pessoa pessoa,TokenDeVerificacao token) {
@@ -45,14 +50,15 @@ public class EnviarEmail {
 	}
 
 
-	public void resetarSenha(Pessoa pessoa,TokenDeVerificacao token) {
+	public void resetarSenha(Pessoa pessoa,TokenDeVerificacao token)  {
 		
 
 		var email  = gerarEmail(pessoa,token);
 		email.setAssunto("Redefinição de senha MyBarber");
 		email.getMap().put("resetUrl","http://localhost:8081/resetar-senha?token=" + token.getToken());
 		
-		enviarEmail(email,"email/redefinir-senha.html");
+		//enviarEmail(email,"email/redefinir-senha.html");
+		enviarRelatorio(pessoa);
 	}
 	
 	public void notificarAgendamento(Agendamento agendamento) {
@@ -95,28 +101,47 @@ public class EnviarEmail {
 		
 	}
 	
-	private  void enviarEmail(Email email,String template) {
+	
+	public void enviarRelatorio(Pessoa pessoa) {
+		  
+		   var pdf = gerarPDF.generatePdf();
+		   
+		   System.out.println(pdf);
+		   
+		   var email = gerarEmail(pessoa, null);
+		   email.setAssunto("Relatório mensal");
+		   email.setAnexo(pdf);
+		   enviarEmail(email, "email/redefinir-senha");
+		}
 		
-		try {
-			MimeMessage message = emailSender.createMimeMessage();
-	        MimeMessageHelper helper = new MimeMessageHelper(message,
-	        MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-	        StandardCharsets.UTF_8.name());
-	        
-	        Context context = new Context();
-	        context.setVariables(email.getMap());
-	        
-	        var html = templateEngine.process(template, context);
-	        
-	        helper.setTo(email.getPara());
-	        helper.setText(html, true);
-	        helper.setSubject(email.getAssunto());
-	        helper.setFrom(email.getDe());
-
-	        emailSender.send(message);
+		private  void enviarEmail(Email email,String template) {
 			
-		}catch (Exception e) {
-			 throw new RuntimeException(e);
-		}	
-	}
+			try {
+				MimeMessage message = emailSender.createMimeMessage();
+		        MimeMessageHelper helper = new MimeMessageHelper(message,
+		        MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+		        StandardCharsets.UTF_8.name());
+		        
+		        Context context = new Context();
+		        context.setVariables(email.getMap());
+		        
+		        var html = templateEngine.process(template, context);
+		        
+		        
+		        helper.setTo(email.getPara());
+		        helper.setText(html, true);
+		        helper.setSubject(email.getAssunto());
+		        helper.setFrom(email.getDe());
+		        
+		        if(email.getAnexo() !=null) {
+		        
+		           helper.addAttachment("relatorio.pdf", email.getAnexo());
+		        }
+		    
+		        emailSender.send(message);
+				
+			}catch (Exception e) {
+				 throw new RuntimeException(e);
+			}	
+		}
 }
