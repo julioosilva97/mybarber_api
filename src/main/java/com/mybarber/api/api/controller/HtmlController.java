@@ -28,6 +28,11 @@ public class HtmlController {
 		
 	}
 	
+	@GetMapping("/teste")
+	public String teste() {
+		return "relatorio";
+	}
+	
 	
 	@GetMapping("/servicos")
 	public String servicos(){
