@@ -135,15 +135,6 @@ public class ClienteDAOImpl implements ClienteDAO {
 	}
 
 	@Override
-	public boolean verificarEmail(String email) {
-		
-		String verificarEmail = "SELECT EXISTS(SELECT FROM cliente WHERE email = ?)";
-		
-		
-		return jdbcTemplate.queryForObject( verificarEmail , new Object[] { email }, Boolean.class);
-	}
-
-	@Override
 	public int countPorBarbearia(int idBarbearia) {
 		
 		String countPorBarbearia = """

@@ -12,7 +12,6 @@ public interface ClienteDAO {
 	public void editar(Cliente cliente);
 	public void excluir(int id);
 	public List<Cliente> listar(Barbearia barbearia);
-	public boolean verificarEmail(String email);
 	public int countPorBarbearia(int idBarbearia);
 	public List<Cliente> autoCompleteNome(String nome);
 
