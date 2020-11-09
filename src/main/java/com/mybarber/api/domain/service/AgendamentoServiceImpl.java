@@ -3,6 +3,7 @@ package com.mybarber.api.domain.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -266,6 +267,12 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		 return agendamentoDAO.countStatusAgendamentoMes(idBarbearia, MM);
 		
 		
+	}
+
+	@Override
+	public List<Map<String, String>> relatorioServicosMes(int idBarbearia) {
+
+		return agendamentoDAO.relatorioServicosMes(idBarbearia);
 	}
 
 }

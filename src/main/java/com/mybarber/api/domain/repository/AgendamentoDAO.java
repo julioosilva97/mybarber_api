@@ -27,5 +27,7 @@ public interface AgendamentoDAO {
 	public void alterarNotificado(int idAgendamento);
 	
 	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia,String MM);
+
+	public List<Map<String, String>> relatorioServicosMes(int idBarbearia);
 	
 }

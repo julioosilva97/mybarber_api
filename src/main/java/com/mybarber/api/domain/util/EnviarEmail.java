@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import com.mybarber.api.domain.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,10 +17,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.mybarber.api.domain.entity.Agendamento;
-import com.mybarber.api.domain.entity.Email;
-import com.mybarber.api.domain.entity.Pessoa;
-import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import com.mybarber.api.domain.exception.NegocioException;
 import com.mybarber.api.domain.repository.TokenDeVerificacaoDAO;
 
@@ -56,8 +53,8 @@ public class EnviarEmail {
 		email.setAssunto("Redefinição de senha MyBarber");
 		email.getMap().put("resetUrl","http://localhost:8081/resetar-senha?token=" + token.getToken());
 		
-		//enviarEmail(email,"email/redefinir-senha.html");
-		enviarRelatorio(pessoa);
+		enviarEmail(email,"email/redefinir-senha.html");
+		//enviarRelatorio(pessoa);
 	}
 	
 	public void notificarAgendamento(Agendamento agendamento) {
@@ -101,16 +98,16 @@ public class EnviarEmail {
 	}
 	
 	
-	public void enviarRelatorio(Pessoa pessoa) {
+	public void enviarRelatorio(Pessoa pessoa, int idBarbearia) {
 		  
-		   var pdf = gerarPDF.generatePdf();
+		   var pdf = gerarPDF.generatePdf(idBarbearia);
 		   
 		   System.out.println(pdf);
 		   
 		   var email = gerarEmail(pessoa, null);
 		   email.setAssunto("Relatório mensal");
 		   email.setAnexo(pdf);
-		   enviarEmail(email, "email/redefinir-senha");
+		   enviarEmail(email, "email/relatorio");
 		}
 
 		private  void enviarEmail(Email email,String template) {

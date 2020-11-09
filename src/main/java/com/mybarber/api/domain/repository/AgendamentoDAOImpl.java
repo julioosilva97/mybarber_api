@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,6 +238,39 @@ public class AgendamentoDAOImpl implements AgendamentoDAO{
 				
 				
 	}
-	
-	
+
+	@Override
+	public List<Map<String, String>> relatorioServicosMes(int idBarbearia) {
+		var servicosMes = "select  s.descricao, count(s.id) as quantidade, sum (s.valor) as total from agendamento a\n" +
+				"inner join funcionario f on f.id = a.id_barbeiro\n" +
+				"inner join barbearia b on b.id = f.id_barbearia \n" +
+				"inner join agendamento_servico ags on ags.id_agendamento = a.id\n" +
+				"inner join servico s on ags.id_servico = s.id\n" +
+				"where \n" +
+				"f.id_barbearia = ? and\n" +
+				"a.status = 'CONCLUIDO' and\n" +
+				"extract (month from a.datahorainicio) = extract(month from now()) \n" +
+				"group by  s.id\n" +
+				"";
+
+		List< Map<String, String >> resultados = new ArrayList<>();
+
+		 jdbcTemplate.query(servicosMes, new Object[] {idBarbearia}, (rs, rowNum)-> {
+			HashMap<String, String> map= new HashMap<>();
+			map.put("descricao", rs.getString("descricao"));
+			map.put("quantidade", rs.getString("quantidade").toString());
+			map.put("total", rs.getString("total").toString());
+
+			resultados.add(map);
+
+			 return resultados;
+		});
+
+
+		 return resultados;
+
+
+	}
+
+
 }

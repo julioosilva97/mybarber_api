@@ -30,7 +30,7 @@ public class HtmlController {
 	
 	@GetMapping("/teste")
 	public String teste() {
-		return "email/relatorio";
+		return "relatorio";
 	}
 	
 	

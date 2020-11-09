@@ -20,4 +20,5 @@ public interface AgendamentoService {
 	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro);
 	public List<Relatorio>somaValorMensal(Barbearia barbearia, LocalDate data);
 	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia);
+	public List<Map<String, String>> relatorioServicosMes(int idBarbearia);
 }
