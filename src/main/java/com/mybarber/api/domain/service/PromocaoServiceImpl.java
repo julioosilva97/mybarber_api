@@ -21,6 +21,11 @@ public class PromocaoServiceImpl implements PromocaoService {
 
 	    if (!promocao.getDataInicio().isAfter(promocao.getDataFim())) {
 	        if (!promocao.getDataInicio().isBefore(LocalDate.now())) {
+	        	if(promocao.getDataInicio().isAfter(LocalDate.now())) {
+	        		promocao.setStatus(false);
+	        	}else {
+	        		promocao.setStatus(true);
+	        	}
 		        dao.salvar(promocao);
 		    } else {
 		        throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
@@ -36,7 +41,14 @@ public class PromocaoServiceImpl implements PromocaoService {
 	public void editar(Promocao promocao) {
 		 if (!promocao.getDataInicio().isAfter(promocao.getDataFim())) {
 		        if (!promocao.getDataInicio().isBefore(LocalDate.now())) {
-			        dao.editar(promocao);
+		        	if(promocao.getDataInicio().isAfter(LocalDate.now())) {
+		        		promocao.setStatus(false);
+		        	}else {
+		        		promocao.setStatus(true);
+		        	}
+		        	
+		        	dao.editar(promocao);
+			        
 			    } else {
 			        throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
 			    }

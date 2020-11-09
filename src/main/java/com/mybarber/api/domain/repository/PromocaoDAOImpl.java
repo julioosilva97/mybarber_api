@@ -18,20 +18,23 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	
 	private String save = "insert into promocao (dataInicio, dataFim, descricao,status,valor, id_servico) values (?, ?, ?,?,?,?) ";
 	//private String delete = "delete from promocao where id = ?";
-	private String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=? where id_servico =?";
+	
     private String status = "select status from promocao where id_servico=?";
   
     
 	@Override
 	public void salvar(Promocao promocao) {
 
-		jdbcTemplate.update(save,promocao.getDataInicio(), promocao.getDataFim(),promocao.getDescricao(),true,promocao.getValor(), promocao.getServico().getId());
+		jdbcTemplate.update(save,promocao.getDataInicio(), promocao.getDataFim(),promocao.getDescricao(),promocao.isStatus(),promocao.getValor(), promocao.getServico().getId());
 	}
 
 	@Override
 	public void editar(Promocao promocao) {
 		
-		jdbcTemplate.update(update,promocao.getDataInicio(), promocao.getDataFim(), promocao.getDescricao(), promocao.getValor(), promocao.getServico().getId());
+		String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=?, status = ? where id_servico =?";
+		
+		jdbcTemplate.update(update,promocao.getDataInicio(), promocao.getDataFim(), promocao.getDescricao(),
+				promocao.getValor(),promocao.isStatus(),promocao.getServico().getId());
 	}
 
 	@Override
@@ -65,9 +68,9 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public List <Promocao> buscarPromocoesAtivas() {
-		 String ativas = "select * from promocao where status = ?";
-		return jdbcTemplate.query(ativas, new Object[] {true},
+	public List <Promocao> promocoesDataInicioMaiorIgualHoje() {
+		 String promocoes = "select * from promocao where datainicio >= to_date(to_char(now(), 'YYYY-MM-DD'),'YYYY-MM-DD')";
+		return jdbcTemplate.query(promocoes,
 				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor")));
 	}
 
