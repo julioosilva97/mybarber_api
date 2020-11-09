@@ -38,12 +38,6 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public void excluir(int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Promocao status(int idServico) {
 	
 	   return jdbcTemplate.queryForObject(status, new Object[] {idServico}, (rs, rowNum) -> new Promocao(rs.getBoolean("status")));	
