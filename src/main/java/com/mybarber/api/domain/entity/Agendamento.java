@@ -20,7 +20,6 @@ public abstract class Agendamento {
 	protected SituacaoAgendamento status;
 	private Cliente cliente;
 	private Funcionario funcionario;
-	private Barbearia barbearia;
 	private List<Servico> servicos;
 	
 	
@@ -70,12 +69,7 @@ public abstract class Agendamento {
 	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
-	public Barbearia getBarbearia() {
-		return barbearia;
-	}
-	public void setBarbearia(Barbearia barbearia) {
-		this.barbearia = barbearia;
-	}
+
 	public Agendamento() {
 	}
 	public int getId() {
