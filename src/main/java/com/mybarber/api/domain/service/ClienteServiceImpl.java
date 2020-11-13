@@ -118,9 +118,9 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public List<Cliente> listar(Barbearia barbearia) {
+	public List<Cliente> listar(int  idBarbearia) {
 		
-		return clienteDAO.listar(barbearia);
+		return clienteDAO.listar(idBarbearia);
 	}
 
 	@Override

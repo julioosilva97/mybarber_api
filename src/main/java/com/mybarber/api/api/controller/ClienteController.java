@@ -70,10 +70,9 @@ public class ClienteController {
 
 	@GetMapping("{idBarbearia}")
 	public ResponseEntity<List<ClienteInput>> listar(@PathVariable ("idBarbearia") int idBarbearia) {
-		var barbearia = new Barbearia();
-		barbearia.setId(idBarbearia);
+
 		
-		var clientes = service.listar(barbearia);
+		var clientes = service.listar(idBarbearia);
 		var clienteDTO = clientes.stream()
 				                 .map(doMain -> (ClienteInput) ConverterDTO.toDTO(doMain, ClienteInput.class))
 				                 .collect(Collectors.toList());
