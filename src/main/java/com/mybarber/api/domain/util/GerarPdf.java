@@ -69,7 +69,7 @@ public class GerarPdf {
         var mes = data.getMonth().getValue();
         var ano = data.getYear();
         context.setVariable("mes", mes);
-       context.setVariable("ano", ano);
+        context.setVariable("ano", ano);
         context.setVariable("relatorio", agendamentoService.relatorioServicosMes(idBarbearia));
         return context;
     }

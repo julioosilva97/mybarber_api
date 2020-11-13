@@ -35,7 +35,7 @@ public class RelatorioMensal {
 
         barbearias.forEach(barbearia -> {
             var funcionarios = funcionarioDAO.listar(barbearia.getId());
-            agendamentoService.relatorioServicosMes(barbearia.getId());
+            //agendamentoService.relatorioServicosMes(barbearia.getId());
             funcionarios.forEach(funcionario-> {
 
                  if(funcionario.getCargo()== Cargo.BARBEIRO) {
