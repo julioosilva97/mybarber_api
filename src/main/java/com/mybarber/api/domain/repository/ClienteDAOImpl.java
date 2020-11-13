@@ -110,7 +110,7 @@ public class ClienteDAOImpl implements ClienteDAO {
 	}
 
 	@Override
-	public List<Cliente> listar(Barbearia barbearia) {
+	public List<Cliente> listar(int idBarbearia) {
 		
 		String listar = """
 				select c.* , u.email
@@ -122,7 +122,7 @@ public class ClienteDAOImpl implements ClienteDAO {
 		
 		
  
-		return jdbcTemplate.query(listar,  new Object[] { barbearia.getId() },
+		return jdbcTemplate.query(listar,  new Object[] { idBarbearia },
 				(rs, rowNum) -> 
 		
 		new Cliente(rs.getInt("id"), 

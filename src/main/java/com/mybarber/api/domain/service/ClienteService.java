@@ -15,7 +15,7 @@ public interface ClienteService {
 
 	public void excluir(int id, int idBarbearia);
 
-	public List<Cliente> listar(Barbearia barbearia);
+	public List<Cliente> listar(int idBarbearia);
 	
 	public List<Cliente> autoCompleteNome(String nome);
 
