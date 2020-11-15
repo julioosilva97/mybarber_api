@@ -16,11 +16,7 @@ import java.time.LocalDate;
 
 @Component
 public class GerarPdf {
-	
-	
-	
-	@Autowired
-	private EnviarEmail enviar;
+
 
 	private static final String PDF_RESOURCES = "/pdf-resources/";
   

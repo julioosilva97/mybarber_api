@@ -31,9 +31,9 @@ public class ServicoServiceImpl implements ServicoService{
     BarbeariaDAO daoBarbearia;
 	
 	@Override
-	public List<Servico> listar(Barbearia barbearia) {
+	public List<Servico> listar(int idBarbearia) {
 		
-		return dao.listar(barbearia.getId());
+		return dao.listar(idBarbearia);
 		
 	}
 
@@ -71,13 +71,5 @@ public class ServicoServiceImpl implements ServicoService{
 		dao.atualizar(servico);
 		
 	}
-
-	@Override
-	public Servico buscarPorIdServico(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 
 }

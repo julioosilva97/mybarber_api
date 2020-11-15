@@ -43,18 +43,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		// 3- não pode fora do dia e hora de atendimento do barbeiro
 		// 4 - não pode estar entre um inicio e fim de um agendamento do dia
 
-		var dataHorarioInicio = agendamento.getDataHorarioInicio();
-		var dataHorarioFim = agendamento.getDataHorarioFim();
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-		if (dataHorarioInicio.isAfter(dataHorarioFim))
-			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
-					+ " maior que data e horário de término " + dataHorarioFim.format(formatter));
-
-		if (dataHorarioInicio.isBefore(LocalDateTime.now()))
-			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
-					+ " não pode ser anterior ao horário atual");
+		validarHorarios(agendamento);
 
 		verificarHorarioAtendimento(agendamento);
 		verificarAgendamentos(agendamento);
@@ -86,24 +75,17 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 	@Override
 	public void editar(Agendamento agendamento) {
 
-		var dataHorarioInicio = agendamento.getDataHorarioInicio();
-		var dataHorarioFim = agendamento.getDataHorarioFim();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-		if (dataHorarioInicio.isAfter(dataHorarioFim))
-			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
-					+ " maior que data e horário de término " + dataHorarioFim.format(formatter));
+		validarHorarios(agendamento);
 
-		if (dataHorarioInicio.isBefore(LocalDateTime.now()))
-			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
-					+ " não pode ser anterior ao horário atual");
 
-		agendamento.setStatus(SituacaoAgendamento.valueOf("AGENDADO"));
 
 		verificarHorarioAtendimento(agendamento);
 		verificarAgendamentos(agendamento);
 
+		agendamento.setStatus(SituacaoAgendamento.valueOf("AGENDADO"));
 		agendamentoDAO.editar(agendamento);
 
 	}
@@ -113,6 +95,14 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 		var agendamento = buscarPorId(idAgendamento);
 
+		validarAlteracaoStatus(agendamento,status);
+
+		agendamento.setStatus(status);
+		agendamentoDAO.alterarStatus(agendamento);
+	}
+
+	private void validarAlteracaoStatus(Agendamento agendamento, SituacaoAgendamento status){
+
 		if (agendamento.getStatus() == SituacaoAgendamento.CONCLUIDO)
 			throw new NegocioException("Você não pode alterar um agendamento já concluído");
 		if (agendamento.getStatus() == SituacaoAgendamento.CANCELADO)
@@ -120,9 +110,6 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 		if (status == SituacaoAgendamento.CONCLUIDO && agendamento.getDataHorarioFim().isAfter(LocalDateTime.now()))
 			throw new NegocioException("Você não pode concluir um agendamento fora da data e horário agendado");
-
-		agendamento.setStatus(status);
-		agendamentoDAO.alterarStatus(agendamento);
 	}
 
 	@Override
@@ -138,6 +125,27 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 		return agendamentoDAO.somaValorMensal(barbearia.getId(), data);
 	}
+
+	@Override
+	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia) {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM");
+
+		String MM = LocalDateTime.now().format(formatter);
+
+		return agendamentoDAO.countStatusAgendamentoMes(idBarbearia, MM);
+
+
+	}
+
+	@Override
+	public List<Map<String, String>> relatorioServicosMes(int idBarbearia) {
+
+		return agendamentoDAO.relatorioServicosMes(idBarbearia);
+	}
+
+
+
 
 	private void verificarAgendamentos(Agendamento agendamento) {
 
@@ -257,23 +265,25 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		
 	}
 
-	@Override
-	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia) {
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM");
-		
-		 String MM = LocalDateTime.now().format(formatter);
-		
-		 return agendamentoDAO.countStatusAgendamentoMes(idBarbearia, MM);
-		
-		
+	private void validarHorarios(Agendamento agendamento){
+
+
+		var dataHorarioInicio = agendamento.getDataHorarioInicio();
+		var dataHorarioFim = agendamento.getDataHorarioFim();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+		if (dataHorarioInicio.isAfter(dataHorarioFim))
+			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
+					+ " maior que data e horário de término " + dataHorarioFim.format(formatter));
+
+		if (dataHorarioInicio.isBefore(LocalDateTime.now()))
+			throw new NegocioException("Data e horário de inicio " + dataHorarioInicio.format(formatter)
+					+ " não pode ser anterior ao horário atual");
+
 	}
 
-	@Override
-	public List<Map<String, String>> relatorioServicosMes(int idBarbearia) {
 
-		return agendamentoDAO.relatorioServicosMes(idBarbearia);
-	}
 
 }
 

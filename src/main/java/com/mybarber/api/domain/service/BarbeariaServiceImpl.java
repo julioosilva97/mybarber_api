@@ -12,55 +12,33 @@ import com.mybarber.api.domain.repository.BarbeariaDAO;
 import com.mybarber.api.domain.repository.EnderecoDAO;
 
 
-
-@Service @Transactional
+@Service
+@Transactional
 public class BarbeariaServiceImpl implements BarbeariaService {
 
-	
-	@Autowired
-	EnderecoDAO daoEndereco;
-	
-	@Autowired
-	BarbeariaDAO dao;
-	
-	@Override
-	public void salvar(Barbearia barbearia) {
-		barbearia.setEndereco(daoEndereco.salvar(barbearia.getEndereco()));
-		dao.salvar(barbearia);
-		
-	}
+    @Autowired
+    EnderecoDAO daoEndereco;
 
-	@Override
-	public List<Barbearia> listar() {
-		// TODO Auto-generated method stub
-		return dao.listar();
-	}
+    @Autowired
+    BarbeariaDAO dao;
 
-	@Override
-	public void alterar(Barbearia barbearia) {
-	
-		var barbeariaAtual = buscarPorId(barbearia.getId());
-		
-		barbearia.getEndereco().setId(barbeariaAtual.getEndereco().getId());
-		barbearia.setQtdCliente(barbeariaAtual.getQtdCliente());
-		barbearia.setQtdFuncionario(barbeariaAtual.getQtdFuncionario());
-		barbearia.setQtdServico(barbeariaAtual.getQtdServico());
-		daoEndereco.alterar(barbearia.getEndereco());
-		dao.alterar(barbearia);
-		
-	}
+    @Override
+    public void alterar(Barbearia barbearia) {
 
-	@Override
-	public void excluir(int id) {
-		dao.excluir(id);
-		
-	}
+        var barbeariaAtual = buscarPorId(barbearia.getId());
 
-	@Override
-	public Barbearia buscarPorId(int id) {
-		// TODO Auto-generated method stub
-		return dao.buscarPorId(id);
-	}
+        barbearia.setQtdCliente(barbeariaAtual.getQtdCliente());
+        barbearia.setQtdFuncionario(barbeariaAtual.getQtdFuncionario());
+        barbearia.setQtdServico(barbeariaAtual.getQtdServico());
+        daoEndereco.alterar(barbearia.getEndereco());
+        dao.alterar(barbearia);
 
-	
+    }
+
+    @Override
+    public Barbearia buscarPorId(int id) {
+        // TODO Auto-generated method stub
+        return dao.buscarPorId(id);
+    }
+
 }

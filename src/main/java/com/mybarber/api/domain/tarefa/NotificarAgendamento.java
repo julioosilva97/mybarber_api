@@ -31,7 +31,7 @@ public class NotificarAgendamento {
     @Transactional
     public void notificarClientes() {
     	
-    	var agendamentos = agendamentoDAO.buscarPorData(LocalDate.now(), 0);
+    	var agendamentos = agendamentoDAO.buscarNaoNotificadosDiaAtual();
     	
     	agendamentos.forEach(agendamento -> {
     		

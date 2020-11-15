@@ -41,23 +41,13 @@ public class PromocaoController {
 	
 	@GetMapping("{idServico}")
 	public ResponseEntity<PromocaoDTO> buscarPromocao(@PathVariable("idServico") int idServico){
-		
-	
-		
-		var servico = new Servico();
-		servico.setId(idServico);
-		
+
 		var promocao = service.buscarPromocao(idServico);
-		
-		if(promocao!= null) {
+
 		var promocaoDTO = (PromocaoDTO) ConverterDTO.toDTO(promocao, PromocaoDTO.class);
-		
+
 		return new ResponseEntity<PromocaoDTO>(promocaoDTO, HttpStatus.OK);
-		
-		}else {
-			return null;
-		}
-		
+
 	}
 	
 	@PutMapping

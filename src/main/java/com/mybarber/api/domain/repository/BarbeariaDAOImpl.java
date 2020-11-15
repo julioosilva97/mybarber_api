@@ -25,9 +25,7 @@ public class BarbeariaDAOImpl implements BarbeariaDAO {
 	String salvar = "insert into barbearia (nome,descricao,id_endereco) values(?,?,?)";
 	String salvarSemDescricao = "insert into barbearia(nome,id_endereco) values(?,?)";
 	
-	
-	String deletar = "delete from barbearia where id= ?";
-	
+
 	
 
 	@Override
@@ -90,10 +88,6 @@ public class BarbeariaDAOImpl implements BarbeariaDAO {
 				barbearia.getQtdServico(),barbearia.getId());
 	}
 
-	@Override
-	public void excluir(int id) {
-		this.jdbcTemplate.update(deletar,id);
-	}
 
 	@Override
 	public Barbearia buscarPorId(int id) {

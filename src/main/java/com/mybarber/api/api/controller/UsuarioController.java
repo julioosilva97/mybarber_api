@@ -2,6 +2,8 @@ package com.mybarber.api.api.controller;
 
 
 
+import com.mybarber.api.api.dto.servico.ServicoDTO;
+import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,7 @@ public class UsuarioController {
 	@Autowired
 	UsuarioService service;
 	
-	 @Autowired
-	 private TokenDeVerificacaoService tokenService;
+
 	
 	@GetMapping("verificarUsuario/{login}")
 	public ResponseEntity<Boolean> verificarUsuario(@PathVariable("login") String login) {
@@ -51,21 +52,19 @@ public class UsuarioController {
 	
 	@GetMapping("buscar-token/{token}")
 	public ResponseEntity<TokenDeVerificacao> buscarToken(@PathVariable("token") String token) throws Exception{
-		
-		 var mToken = tokenService.validarToken(token);
-	     
-		
-		return new ResponseEntity<TokenDeVerificacao>(mToken , HttpStatus.OK);
+
+
+		return new ResponseEntity<TokenDeVerificacao>(service.buscarToken(token) , HttpStatus.OK);
 		
 	}
-	
-	
+
 	@PostMapping("alterar-senha")
 	public ResponseEntity<Void> alterarSenha(@RequestBody UsuarioDTO usuarioDTO){
-		
-		var usuario = new Usuario();
-		
-		usuario = usuario.toDoMain(usuarioDTO);
+
+		//segurança : trazer token junto , e verificar se está batendo
+
+
+		var usuario = (Usuario) ConverterDTO.toDTO(usuarioDTO, Usuario.class);
 		
 		service.alterarSenha(usuario);
 		

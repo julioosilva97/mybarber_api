@@ -7,16 +7,13 @@ import com.mybarber.api.domain.entity.Servico;
 
 public interface ServicoService {
 
-	public List<Servico> listar(Barbearia barbearia);
+    List<Servico> listar(int idBarbearia);
 
-	public void salvar(Servico servico);
+    void salvar(Servico servico);
 
-	public void excluir(int id);
+    void excluir(int id);
 
-	public void atualizar(Servico servico);
+    void atualizar(Servico servico);
 
-	public Servico buscarPorIdServico(int id);
-	
-	
 
 }

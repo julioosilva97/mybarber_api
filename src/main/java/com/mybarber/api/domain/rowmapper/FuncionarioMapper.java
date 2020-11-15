@@ -21,13 +21,13 @@ public class FuncionarioMapper implements RowMapper<Funcionario> {
 		if(rs.getDate("data_nascimento")!=null) {
 		return new Funcionario(rs.getInt("id_funcionario"),rs.getString("nome"),rs.getString("telefone"),rs.getDate("data_nascimento").toLocalDate() ,
 				new Endereco(rs.getInt("id_endereco"),rs.getString("logradouro"),rs.getString("bairro"),rs.getInt("numero"),rs.getString("cep"),rs.getString("cidade"),rs.getString("uf")),
-				new Usuario(rs.getInt("id_usuario"),rs.getString("login"),"",rs.getBoolean("ativo"),new Perfil(rs.getInt("id_perfil"),rs.getString("descricao_perfil")),rs.getString("email")), 
+				new Usuario(rs.getInt("id_usuario"),rs.getString("login"),rs.getBoolean("ativo"),new Perfil(rs.getInt("id_perfil"),rs.getString("descricao_perfil")),rs.getString("email")),
 				Cargo.valueOf(rs.getString("cargo")),
 				new Barbearia(rs.getInt("id_barbearia")));
 		}else {
 			return new Funcionario(rs.getInt("id_funcionario"),rs.getString("nome"),rs.getString("telefone"),
 					new Endereco(rs.getInt("id_endereco"),rs.getString("logradouro"),rs.getString("bairro"),rs.getInt("numero"),rs.getString("cep"),rs.getString("cidade"),rs.getString("uf")),
-					new Usuario(rs.getInt("id_usuario"),rs.getString("login"),"",rs.getBoolean("ativo"),new Perfil(rs.getInt("id_perfil"),rs.getString("descricao_perfil")),rs.getString("email")), 
+					new Usuario(rs.getInt("id_usuario"),rs.getString("login"),rs.getBoolean("ativo"),new Perfil(rs.getInt("id_perfil"),rs.getString("descricao_perfil")),rs.getString("email")),
 					Cargo.valueOf(rs.getString("cargo")),
 					new Barbearia(rs.getInt("id_barbearia")));
 		}

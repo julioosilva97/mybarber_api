@@ -6,6 +6,6 @@ import com.mybarber.api.domain.entity.TokenDeVerificacao;
 
 public interface TokenDeVerificacaoService {
 
-	public TokenDeVerificacao criarToken(Pessoa pessoa);
-	public TokenDeVerificacao validarToken(String token);
+	 TokenDeVerificacao criarToken(Pessoa pessoa);
+	 TokenDeVerificacao validarToken(String token);
 }

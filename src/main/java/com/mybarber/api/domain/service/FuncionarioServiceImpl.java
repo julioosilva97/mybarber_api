@@ -49,7 +49,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Autowired
     TokenDeVerificacaoService tokenService;
-    
+
 
     @Autowired
     private EnviarEmail enviarEmail;
@@ -57,7 +57,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     @Transactional
     public void salvar(Map<String, Object> map) {
-    	
+
 
         var funcionario = (Funcionario) map.get("funcionario");
         var primeiroFuncionario = (Boolean) map.get("primeiroFuncionario");
@@ -70,26 +70,29 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                     funcionario.setEndereco(daoEndereco.salvar(funcionario.getEndereco()));
                 }
 
-                if (primeiroFuncionario == true) {
+                if (primeiroFuncionario) {
                     //salvar barbearia
-                    funcionario.getBarbearia().setEndereco(daoEndereco.salvar(funcionario.
-                            getEndereco()));
-                    funcionario.setBarbearia(daoBarbearia.salvar(funcionario.getBarbearia()));
+                    var barbearia = funcionario.getBarbearia();
+                    barbearia.setEndereco(funcionario.getEndereco());
+
+                    barbearia = daoBarbearia.salvar(funcionario.getBarbearia());
+
+                    funcionario.setBarbearia(barbearia);
                     //dados do usuario
                     funcionario.getUsuario().getPerfil().setDescricao("ADMINISTRADOR");
                     funcionario.setCargo(Cargo.BARBEIRO);
                 }
-                
+
                 var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
-        		
-        		barbearia.setQtdFuncionario(barbearia.getQtdFuncionario()+1);
-        		
-        		daoBarbearia.alterar(barbearia);
+
+                barbearia.setQtdFuncionario(barbearia.getQtdFuncionario() + 1);
+
+                daoBarbearia.alterar(barbearia);
                 daoUsuario.salvar(funcionario.getUsuario());
                 daoFuncionario.salvar(funcionario);
-                
 
-                 var token = tokenService.criarToken(funcionario);
+
+                var token = tokenService.criarToken(funcionario);
 
                 enviarEmail.ativarConta(funcionario, token);
 
@@ -105,60 +108,49 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public void alterar(Funcionario funcionario) {
 
-    	
-    	if(funcionario.getId()!=0) {
-    		
-    		
-    		if(funcionario.getUsuario().getId()!=0) {
-    			
-    			var usuarioEdicao = funcionario.getUsuario();
-    			
-    			var usuarioAntigoLogin = daoUsuario.buscarPorLogin(usuarioEdicao.getLogin());
-    			
-    			if(usuarioAntigoLogin == null || usuarioAntigoLogin.getId() == usuarioEdicao.getId()) {
-    				
-    				var usuarioAntigoEmail = daoUsuario.buscarPorEmail(usuarioEdicao.getEmail());
-    				
-    				if(usuarioAntigoEmail == null || usuarioAntigoEmail.getId() == usuarioEdicao.getId()) {
-    					
-    					if (funcionario.getEndereco() != null) {
-    			            daoEndereco.alterar(funcionario.getEndereco());
-    			        }
-    			        
-    			        daoFuncionario.alterar(funcionario);
-    			        
-    			      //para pegar o id e senha do usuario
-    			        Usuario usuario = daoUsuario.buscar(funcionario.getUsuario().getId());
-    			        if (usuario.getSenha() != "") {
-    			            funcionario.getUsuario().setSenha(usuario.getSenha());
-    			        }
-    			        daoUsuario.alterar(funcionario.getUsuario());
-    					
-    				}else{
-    					throw new NegocioException("Já existe um usuário com email : "+usuarioEdicao.getEmail());
-    				}
-    				
-    			}else {
-    				throw new NegocioException("Já existe um usuário com login : "+usuarioEdicao.getLogin());
-    			}
-    				
-    			
-    		}else {
-        		throw new NegocioException("Usuário sem id");
 
-    		}
-    		
-    	}else {
-    		throw new NegocioException("Funcionário sem id");
-    	}
-    	
+        if (funcionario.getId() != 0) {
+
+            if (funcionario.getUsuario().getId() != 0) {
+
+                verificarUsuarioEdicao(funcionario.getUsuario());
+
+                if (funcionario.getEndereco() != null) {
+                    daoEndereco.alterar(funcionario.getEndereco());
+                }
+                daoFuncionario.alterar(funcionario);
+
+                daoUsuario.alterar(funcionario.getUsuario());
+
+            } else {
+                throw new NegocioException("Usuário sem id");
+            }
+
+        } else {
+            throw new NegocioException("Funcionário sem id");
+        }
     }
 
 
     @Override
-    public List<Funcionario> listar(Barbearia barbearia) {
+    public List<Funcionario> listar(int idBarbearia) {
 
-        return daoFuncionario.listar(barbearia.getId());
+        return daoFuncionario.listar(idBarbearia);
+    }
+
+    public void verificarUsuarioEdicao(Usuario usuario) {
+
+        var usuarioEdicao = usuario;
+
+        var usuarioAntigoLogin = daoUsuario.buscarPorLogin(usuarioEdicao.getLogin());
+
+        if (usuarioAntigoLogin != null || usuarioAntigoLogin.getId() != usuarioEdicao.getId())
+            throw new NegocioException("Já existe um usuário com login : " + usuarioEdicao.getLogin());
+
+        var usuarioAntigoEmail = daoUsuario.buscarPorEmail(usuarioEdicao.getEmail());
+
+        if (usuarioAntigoEmail != null || usuarioAntigoEmail.getId() != usuarioEdicao.getId())
+            throw new NegocioException("Já existe um usuário com email : " + usuarioEdicao.getEmail());
     }
 
 
@@ -175,42 +167,33 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public void excluir(int id) {
 
-    	
-    	//verificar se o funcionario não tem cadastro como cliente, se tiver manter usuario e excluir da tabela funcionario
-    	
-        Funcionario funcionario = new Funcionario();
-        funcionario = buscar(id);
-        
+
+        //verificar se o funcionario não tem cadastro como cliente, se tiver manter usuario e excluir da tabela funcionario
+
+        var funcionario = buscar(id);
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String login = principal.toString();
-        
-        var usuario =  daoUsuario.buscarPorLogin(login);
-        
-        var funcionarioLogado =  buscarPorIdUsuario(usuario.getId());
-        
-        if(funcionarioLogado.getId() != funcionario.getId()) {
-        	if (funcionario.getUsuario().isAtivo() == true) {
 
-                horarioAtendimentoDAO.excluir(funcionario.getId());
-                daoFuncionario.excluir(funcionario);
-                daoUsuario.excluir(funcionario.getUsuario());
-                daoEndereco.excluir(funcionario.getEndereco());
-                
-                 var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
-        		
-        		barbearia.setQtdFuncionario(barbearia.getQtdFuncionario()-1);
-        		
-        		daoBarbearia.alterar(barbearia);
+        var usuario = daoUsuario.buscarPorLogin(login);
 
-            } else {
-                //tokenDAO.deletarPorIdUsuario(funcionario.getUsuario().getId());
-                daoFuncionario.excluir(funcionario);
-                daoUsuario.excluir(funcionario.getUsuario());
-                daoEndereco.excluir(funcionario.getEndereco());
-            }
+        var funcionarioLogado = buscarPorIdUsuario(usuario.getId());
 
-        }else {
-        	throw new NegocioException("Voce não pode se excluir");
+        if (funcionarioLogado.getId() != funcionario.getId()) {
+
+            horarioAtendimentoDAO.excluir(funcionario.getId());
+            daoFuncionario.excluir(funcionario);
+            daoUsuario.excluir(funcionario.getUsuario());
+            daoEndereco.excluir(funcionario.getEndereco());
+
+            var barbearia = daoBarbearia.buscarPorId(funcionario.getBarbearia().getId());
+
+            barbearia.setQtdFuncionario(barbearia.getQtdFuncionario() - 1);
+
+            daoBarbearia.alterar(barbearia);
+
+        } else {
+            throw new NegocioException("Voce não pode se excluir");
         }
     }
 
@@ -221,10 +204,10 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         var cargo = (String) map.get("cargo");
         var idBarbearia = (int) map.get("idBarbearia");
 
-        if(checkCargo(cargo)){
+        if (checkCargo(cargo)) {
             return daoFuncionario.listarPorCargo(Cargo.valueOf(cargo), idBarbearia);
-        }else{
-            throw new NegocioException("Nome cargo : "+cargo +" inválido");
+        } else {
+            throw new NegocioException("Nome cargo : " + cargo + " inválido");
         }
     }
 
@@ -246,33 +229,27 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     }
 
     @Override
-    public boolean verificarEmail(String email) {
+    public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento) {
 
-        return false; //daoFuncionario.verificarEmail(email);
+        List<HorarioAtendimento> horarios = horarioAtendimentoDAO
+                .buscarPorFuncionario(horarioAtendimento.get(0).getFuncionario().getId());
+
+        if (horarios.size() > 0) {
+
+            horarioAtendimentoDAO.editar(horarioAtendimento);
+
+        } else {
+            horarioAtendimentoDAO.salvar(horarioAtendimento);
+        }
+
     }
 
-	@Override
-	public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento) {
-		
-		List<HorarioAtendimento> horarios = horarioAtendimentoDAO
-				.buscarPorFuncionario(horarioAtendimento.get(0).getFuncionario().getId());
+    @Override
+    public List<HorarioAtendimento> buscarHorarioAtendimentoPorFuncionario(int idFuncionario) {
 
-		if (horarios.size() > 0) {
+        var show = horarioAtendimentoDAO.buscarPorFuncionario(idFuncionario);
+        return show;
 
-			horarioAtendimentoDAO.editar(horarioAtendimento);
-
-		} else {
-			horarioAtendimentoDAO.salvar(horarioAtendimento);
-		}
-		
-	}
-
-	@Override
-	public List<HorarioAtendimento> buscarHorarioAtendimentoPorFuncionario(int idFuncionario) {
-		
-		var show = horarioAtendimentoDAO.buscarPorFuncionario(idFuncionario);
-		return show;
-				
-	}
+    }
 
 }

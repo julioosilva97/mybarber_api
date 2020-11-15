@@ -11,7 +11,7 @@ public interface ClienteDAO {
 	public Cliente buscarPorid(int id);
 	public void editar(Cliente cliente);
 	public void excluir(int id);
-	public List<Cliente> listar(int  idBarbearia);
+	public List<Cliente> listar(int idBarbearia);
 	public int countPorBarbearia(int idBarbearia);
 	public List<Cliente> autoCompleteNome(String nome);
 

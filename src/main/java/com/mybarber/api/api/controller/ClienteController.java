@@ -34,7 +34,7 @@ public class ClienteController {
 	ClienteService service;
 
 	@PostMapping
-	public ResponseEntity<Void> cadatrar(@RequestBody ClienteInput clienteInput) {
+	public ResponseEntity<Void> cadastrar(@RequestBody ClienteInput clienteInput) {
 		
 		var idBarberia = clienteInput.getIdBarbearia();
 		
@@ -54,9 +54,9 @@ public class ClienteController {
 	}
 
 	@PutMapping
-	public ResponseEntity<Void> editar(@RequestBody ClienteInput clienteDTO) {
+	public ResponseEntity<Void> editar(@RequestBody ClienteInput clienteInput) {
 		
-		var cliente = (Cliente)ConverterDTO.toDoMain(clienteDTO, Cliente.class);
+		var cliente = (Cliente)ConverterDTO.toDoMain(clienteInput, Cliente.class);
 		service.editar(cliente);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}

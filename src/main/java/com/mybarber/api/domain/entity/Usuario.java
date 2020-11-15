@@ -81,11 +81,9 @@ public class Usuario {
 		this.email = email;
 	}
 
-	public Usuario(int id, String login,
-                   String senha, boolean ativo, Perfil perfil,String email) {
+	public Usuario(int id, String login, boolean ativo, Perfil perfil,String email) {
         this.id = id;
         this.login = login;
-        this.senha = senha;
         this.ativo = ativo;
         this.perfil = perfil;
         this.email = email;
