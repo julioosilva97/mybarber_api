@@ -1,9 +1,6 @@
 package com.mybarber.api.domain.util;
 
-import com.lowagie.text.DocumentException;
-
 import com.mybarber.api.domain.service.AgendamentoService;
-import com.mybarber.api.domain.service.RelatorioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -14,9 +11,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.time.LocalDate;
 
 @Component
@@ -69,7 +64,7 @@ public class GerarPdf {
         var mes = data.getMonth().getValue();
         var ano = data.getYear();
         context.setVariable("mes", mes);
-       context.setVariable("ano", ano);
+        context.setVariable("ano", ano);
         context.setVariable("relatorio", agendamentoService.relatorioServicosMes(idBarbearia));
         return context;
     }

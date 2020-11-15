@@ -27,7 +27,7 @@ public class RelatorioMensal {
 
     private static final String TIME_ZONE = "America/Sao_Paulo";
 
-    //@Scheduled(fixedDelay = 50000)
+    @Scheduled(fixedDelay = 5000000)
     private void gerarRelatorio(){
 
         var barbearias = barbeariaDAO.listar();
@@ -35,7 +35,7 @@ public class RelatorioMensal {
 
         barbearias.forEach(barbearia -> {
             var funcionarios = funcionarioDAO.listar(barbearia.getId());
-            agendamentoService.relatorioServicosMes(barbearia.getId());
+            //agendamentoService.relatorioServicosMes(barbearia.getId());
             funcionarios.forEach(funcionario-> {
 
                  if(funcionario.getCargo()== Cargo.BARBEIRO) {
