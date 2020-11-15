@@ -50,10 +50,10 @@ public class AgendamentoController {
     }
 
     @GetMapping("/listarFullCalendar/{idBarbeiro}")
-    public ResponseEntity<List<EventoDTO>> listarPorBarbeiro(@PathVariable("idBarbeiro") int id) {
+    public ResponseEntity<List<EventoDTO>> listarPorBarbeiro(@PathVariable("idBarbeiro") int idBarbeiro) {
 
 
-        var agendamentos = service.listarPorBarbeiro(id);
+        var agendamentos = service.listarPorBarbeiro(idBarbeiro);
 
 
         var eventosDTO = agendamentos.stream()

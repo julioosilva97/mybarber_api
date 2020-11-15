@@ -1,6 +1,7 @@
 package com.mybarber.api.domain.service;
 
 
+import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,17 +37,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
 	TokenDeVerificacaoDAO tokenDAO;
 
-	@Override
+
 	public Usuario buscarPorLogin(String login) {
 		return usuarioDAO.buscarPorLogin(login);
 	}
 
+	@Override
 	public void alterarSenha(Usuario usuario) {
 		
 		if(tokenDAO.buscarPorIdUsuario(usuario.getId())!=null) {
 			
 			usuarioDAO.alterarSenha(usuario);
-			tokenDAO.excluirPorIdUsuario(usuario.getId());
 		}else {
 			new Exception("Sem token");
 		}
@@ -77,8 +78,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public boolean verificarEmail(String email) {
 		
 		return usuarioDAO.verificarEmail(email);
-		
-		
+
+
 	}
 
 	@Override
@@ -114,6 +115,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 			throw new NegocioException("Tipo : "+tipo+" inválido");
 		}
 	
+	}
+
+	@Override
+	public TokenDeVerificacao buscarToken(String token) {
+		return  tokenService.validarToken(token);
 	}
 
 }

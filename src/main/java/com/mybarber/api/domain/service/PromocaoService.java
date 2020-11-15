@@ -5,9 +5,11 @@ import com.mybarber.api.domain.entity.Promocao;
 
 public interface PromocaoService {
 
-	
-	public void salvar(Promocao promocao);
-	public void editar(Promocao promocao);
-	public Promocao buscarPromocao(int idServico);
-	public void alterarStatus (Promocao promocao);
+    void salvar(Promocao promocao);
+
+    void editar(Promocao promocao);
+
+    Promocao buscarPromocao(int idServico);
+
+    void alterarStatus(Promocao promocao);
 }

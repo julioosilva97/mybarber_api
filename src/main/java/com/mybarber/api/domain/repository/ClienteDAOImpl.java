@@ -101,8 +101,6 @@ public class ClienteDAOImpl implements ClienteDAO {
 		String excluirClienteBarbearia = "delete from CLIENTE_BARBEARIA WHERE ID_CLIENTE  = ? ";
 		jdbcTemplate.update(excluirClienteBarbearia, id);	
 
-		
-		
 		//só poder excluir quando for ele mesmo, mudar isso depois 
 		//String excluir = "delete from cliente where id = ?";
 		//jdbcTemplate.update(excluir, id);	
@@ -153,9 +151,9 @@ public class ClienteDAOImpl implements ClienteDAO {
 				inner join cliente_barbearia cb on cb.id_cliente = c.id 
 				inner join gerenciar_usuario gu on gu.id_cliente = c.id
 				inner join usuario u on u.id = gu.id_usuario
-                where c.nome LIKE ? """;
-		
-		
+                where c.nome LIKE ? 
+                limit 10""";
+
  
 		return jdbcTemplate.query(autoCompleteNome,  new Object[] {"%" + nome +"%"},
 				(rs, rowNum) -> 

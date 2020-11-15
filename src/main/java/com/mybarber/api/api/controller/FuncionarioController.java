@@ -40,22 +40,7 @@ public class FuncionarioController {
         service.salvar(map);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
-    
-    
-    @PostMapping("cadastro-primeiro-funcionario")
-    public ResponseEntity<Void> primeiroCadastro(@Valid @RequestBody FuncionarioInput funcionarioDto) {
 
-        var funcionario = (Funcionario) ConverterDTO.toDoMain(funcionarioDto, Funcionario.class);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("funcionario", funcionario);
-        map.put("primeiroFuncionario", funcionarioDto.getPrimeiroFuncionario());
-
-        service.salvar(map);
-        return new ResponseEntity<Void>(HttpStatus.CREATED);
-    }
-    
-    
 
     @PatchMapping("/{id}")
     public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {
@@ -102,10 +87,7 @@ public class FuncionarioController {
     @GetMapping("{idBarbearia}")
     public ResponseEntity<List<FuncionarioDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
 
-        var barbearia = new Barbearia();
-        barbearia.setId(idBarbearia);
-
-        var funcionarios = service.listar(barbearia);
+        var funcionarios = service.listar(idBarbearia);
         var funcionariosDTO = funcionarios.stream()
                 .map(doMain -> (FuncionarioDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
                 .collect(Collectors.toList());

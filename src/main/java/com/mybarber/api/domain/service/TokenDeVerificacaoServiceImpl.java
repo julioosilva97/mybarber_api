@@ -19,11 +19,12 @@ public class TokenDeVerificacaoServiceImpl implements TokenDeVerificacaoService 
 
 	@Override
 	public TokenDeVerificacao criarToken(Pessoa pessoa) {
-        
-		tokenDAO.excluirPorIdUsuario(pessoa.getUsuario().getId());
-		
+
+
 		var token = new TokenDeVerificacao();
 		token.setUsuario(pessoa.getUsuario());
+
+		tokenDAO.excluirPorIdUsuario(pessoa.getUsuario().getId());
 
 		tokenDAO.salvar(token);
 

@@ -76,7 +76,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 				""";
 		
 		return jdbcTemplate.queryForObject(buscar, new Object[] { id },
-				(rs, rowNum) -> new Usuario(rs.getInt("id"), rs.getString("login"), rs.getString("senha"),
+				(rs, rowNum) -> new Usuario(rs.getInt("id"), rs.getString("login"),
 						rs.getBoolean("ativo"), new Perfil(rs.getInt("id_perfil"), rs.getString("descricao")),rs.getString("email")));
 	}
 
@@ -84,9 +84,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	public void alterar(Usuario usuario) {
 		
 
-		String alterar = "update usuario set login = ?, senha = ?, email = ? where id =?";
+		String alterar = "update usuario set login = ?, email = ? where id =?";
 
-		jdbcTemplate.update(alterar, usuario.getLogin(), usuario.getSenha(),usuario.getEmail(),usuario.getId());
+		jdbcTemplate.update(alterar, usuario.getLogin(),usuario.getEmail(),usuario.getId());
 		
 		String alterarUsuarioPerfil = "update usuario_perfil set id_perfil = ? where id_usuario= ?";
 		jdbcTemplate.update(alterarUsuarioPerfil, usuario.getPerfil().getId(),usuario.getId());

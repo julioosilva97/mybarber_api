@@ -33,7 +33,7 @@ public class ServicoController {
 	private ServicoService service;
 
 	@PostMapping
-	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO, HttpServletRequest request) {
+	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO) {
 
 		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
 		
@@ -44,10 +44,8 @@ public class ServicoController {
 	@GetMapping("{idBarbearia}")
 	public ResponseEntity<List<ServicoDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
 
-		var barbearia = new Barbearia();
-		barbearia.setId(idBarbearia);
 		
-		var servicos = service.listar(barbearia);
+		var servicos = service.listar(idBarbearia);
 		var servicosDTO = servicos.stream()
 				           .map(doMain -> (ServicoDTO) ConverterDTO.toDTO(doMain, ServicoDTO.class))
 				           .collect(Collectors.toList());

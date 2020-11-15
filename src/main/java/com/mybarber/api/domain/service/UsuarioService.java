@@ -1,20 +1,20 @@
 package com.mybarber.api.domain.service;
 
 
-
+import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import com.mybarber.api.domain.entity.Usuario;
 
 public interface UsuarioService {
 
-	public void alterarSenha(Usuario usuario);
+    void alterarSenha(Usuario usuario);
 
-	public Usuario buscarPorLogin(String login);
-	
-	public boolean verificarUsuario(String usuario);
-	
-	public boolean verificarEmail(String email);
-	
-	public void esqueceuSenha(String email);
-	
-	public Object buscarUsuarioLogado(String tipo);
+    boolean verificarUsuario(String usuario);
+
+    boolean verificarEmail(String email);
+
+    void esqueceuSenha(String email);
+
+    Object buscarUsuarioLogado(String tipo);
+
+    TokenDeVerificacao buscarToken(String token);
 }

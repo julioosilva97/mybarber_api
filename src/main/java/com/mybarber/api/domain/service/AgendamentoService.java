@@ -12,13 +12,21 @@ import com.mybarber.api.domain.util.SituacaoAgendamento;
 
 public interface AgendamentoService {
 
-	public void salvar(Agendamento agendamento);
-	public List<Agendamento> listarPorBarbeiro(int idBarbeiro);
-	public Agendamento buscarPorId(int idAgendamento);
-	public void editar(Agendamento agendamento);
-	public void alterarStatus(int idAgendamento, SituacaoAgendamento status);
-	public List<Agendamento> buscarPorData(LocalDate data,int idBarbeiro);
-	public List<Relatorio>somaValorMensal(Barbearia barbearia, LocalDate data);
-	public Map<String, Integer> countStatusAgendamentoMes(int idBarbearia);
-	public List<Map<String, String>> relatorioServicosMes(int idBarbearia);
+    void salvar(Agendamento agendamento);
+
+    List<Agendamento> listarPorBarbeiro(int idBarbeiro);
+
+    Agendamento buscarPorId(int idAgendamento);
+
+    void editar(Agendamento agendamento);
+
+    void alterarStatus(int idAgendamento, SituacaoAgendamento status);
+
+    List<Agendamento> buscarPorData(LocalDate data, int idBarbeiro);
+
+    List<Relatorio> somaValorMensal(Barbearia barbearia, LocalDate data);
+
+    Map<String, Integer> countStatusAgendamentoMes(int idBarbearia);
+
+    List<Map<String, String>> relatorioServicosMes(int idBarbearia);
 }

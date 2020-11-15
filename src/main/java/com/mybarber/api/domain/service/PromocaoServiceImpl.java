@@ -19,47 +19,46 @@ public class PromocaoServiceImpl implements PromocaoService {
 	@Override
 	public void salvar(Promocao promocao) {
 
-	    if (!promocao.getDataInicio().isAfter(promocao.getDataFim())) {
-	        if (!promocao.getDataInicio().isBefore(LocalDate.now())) {
-	        	if(promocao.getDataInicio().isAfter(LocalDate.now())) {
-	        		promocao.setStatus(false);
-	        	}else {
-	        		promocao.setStatus(true);
-	        	}
-		        dao.salvar(promocao);
-		    } else {
-		        throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
-		    }
-	    }else {
-	    	throw new NegocioException("Data inicial da promoção não pode ser após a data final.");
-	    }
+		validarDatasPromocao(promocao);
+
+		if(promocao.getDataInicio().isAfter(LocalDate.now())) {
+			promocao.setStatus(false);
+		}else {
+			promocao.setStatus(true);
+		}
+		dao.salvar(promocao);
 	  
 	}
 	
 
 	@Override
 	public void editar(Promocao promocao) {
-		 if (!promocao.getDataInicio().isAfter(promocao.getDataFim())) {
-		        if (!promocao.getDataInicio().isBefore(LocalDate.now())) {
-		        	if(promocao.getDataInicio().isAfter(LocalDate.now())) {
-		        		promocao.setStatus(false);
-		        	}else {
-		        		promocao.setStatus(true);
-		        	}
-		        	
-		        	dao.editar(promocao);
-			        
-			    } else {
-			        throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
-			    }
-		    }else {
-		    	throw new NegocioException("Data inicial da promoção não pode ser após a data final.");
-		    }
+
+		validarDatasPromocao(promocao);
+
+		if(promocao.getDataInicio().isAfter(LocalDate.now())) {
+			promocao.setStatus(false);
+		}else {
+			promocao.setStatus(true);
+		}
+
+		dao.editar(promocao);
+	}
+
+	private void validarDatasPromocao(Promocao promocao){
+
+		if (promocao.getDataInicio().isBefore(promocao.getDataFim()))
+			throw new NegocioException("Data inicial da promoção não pode ser após a data final.");
+
+		if (promocao.getDataInicio().isAfter(LocalDate.now()))
+			throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
+
 	}
 
 
 	@Override
 	public Promocao buscarPromocao(int idServico) {
+
 		return dao.buscarPorIdServico(idServico);
 	}
 

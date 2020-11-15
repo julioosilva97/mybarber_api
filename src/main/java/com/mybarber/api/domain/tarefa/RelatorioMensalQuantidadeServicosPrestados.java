@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RelatorioMensal {
+public class RelatorioMensalQuantidadeServicosPrestados {
 
     @Autowired
     BarbeariaDAO barbeariaDAO;
@@ -34,12 +34,12 @@ public class RelatorioMensal {
 
 
         barbearias.forEach(barbearia -> {
-            var funcionarios = funcionarioDAO.listar(barbearia.getId());
+            var funcionarios = funcionarioDAO.listarPorCargo(Cargo.BARBEIRO,barbearia.getId());
             //agendamentoService.relatorioServicosMes(barbearia.getId());
             funcionarios.forEach(funcionario-> {
 
                  if(funcionario.getCargo()== Cargo.BARBEIRO) {
-                     enviarEmail.enviarRelatorio(funcionario, barbearia.getId());
+                     enviarEmail.enviarRelatorioMensalQuantidadeServicoPrestado(funcionario, barbearia.getId());
                  }
             });
 
