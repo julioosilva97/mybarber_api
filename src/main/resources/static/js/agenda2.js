@@ -655,7 +655,7 @@ function visualizarAgendamento(info) {
             $("#labelObs").text(data.observacao);
             $("#labelSituacao").text(data.status);
 
-
+            console.log(data.status)
             if (data.status == 'AGENDADO') {
                 $(".btn-cancelar-agendamento").attr('idAgendamento', data.id);
                 $(".btn-cancelar-agendamento").show();
@@ -663,6 +663,17 @@ function visualizarAgendamento(info) {
                 $(".btn-concluido").show();
                 $(".btn-editar").show();
                 $(".btn-editar").attr('idAgendamento', data.id);
+
+                if(moment(data.dataHorarioInicio).isAfter(moment())){
+                    console.log("to aqui")
+                    $(".btn-concluido").removeAttr('idAgendamento');
+                    $(".btn-concluido").hide();
+                    
+                }else{
+                    console.log("to aqui")
+                    $(".btn-concluido").attr('idAgendamento', data.id);
+                    $(".btn-concluido").show();
+                }
             } else {
             	$(".btn-cancelar-agendamento").removeAttr('idAgendamento');
             	$(".btn-cancelar-agendamento").hide();
@@ -670,17 +681,9 @@ function visualizarAgendamento(info) {
             	$(".btn-concluido").hide();
             	$(".btn-editar").removeAttr('idAgendamento');
             	$(".btn-editar").hide();
-            	console.log('aqui')
             }
             
-            if(moment(data.dataHorarioInicio).isAfter(moment())){
-                $(".btn-concluido").removeAttr('idAgendamento');
-                $(".btn-concluido").hide();
-            	
-            }else{
-            	$(".btn-concluido").attr('idAgendamento', data.id);
-                $(".btn-concluido").show();
-            }
+            
         }
     });
 
@@ -857,7 +860,7 @@ function alterarStatus(id, status) {
         error: function error(data) {
         	fecharModalLoading();
             console.log(data)
-            lancarToastr("error", data.responseJSON);
+            lancarToastr("error", data.responseJSON.message);
 
         },
         // dataType: 'json',

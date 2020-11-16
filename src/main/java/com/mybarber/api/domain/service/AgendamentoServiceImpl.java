@@ -95,7 +95,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 		var agendamento = buscarPorId(idAgendamento);
 
-		validarAlteracaoStatus(agendamento,status);
+		validarAlteracaoStatus(agendamento);
 
 		agendamento.setStatus(status);
 		agendamentoDAO.alterarStatus(agendamento);
