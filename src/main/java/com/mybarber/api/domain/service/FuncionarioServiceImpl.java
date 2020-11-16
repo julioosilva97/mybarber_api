@@ -144,12 +144,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
         var usuarioAntigoLogin = daoUsuario.buscarPorLogin(usuarioEdicao.getLogin());
 
-        if (usuarioAntigoLogin != null || usuarioAntigoLogin.getId() != usuarioEdicao.getId())
+        if (usuarioAntigoLogin != null &&  usuarioAntigoLogin.getId() != usuarioEdicao.getId())
             throw new NegocioException("Já existe um usuário com login : " + usuarioEdicao.getLogin());
 
         var usuarioAntigoEmail = daoUsuario.buscarPorEmail(usuarioEdicao.getEmail());
 
-        if (usuarioAntigoEmail != null || usuarioAntigoEmail.getId() != usuarioEdicao.getId())
+        if (usuarioAntigoEmail != null && usuarioAntigoEmail.getId() != usuarioEdicao.getId())
             throw new NegocioException("Já existe um usuário com email : " + usuarioEdicao.getEmail());
     }
 

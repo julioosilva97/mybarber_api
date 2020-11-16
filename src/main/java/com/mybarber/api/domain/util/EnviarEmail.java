@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.mybarber.api.domain.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -87,6 +88,7 @@ public class EnviarEmail {
 
             map.put("pessoa", pessoa);
             map.put("signature", "https://com.mybarber.api.br");
+            map.put("logo", "logo");
 
             email.setMap(map);
             return email;
@@ -129,6 +131,7 @@ public class EnviarEmail {
             helper.setText(html, true);
             helper.setSubject(email.getAssunto());
             helper.setFrom(email.getDe());
+            helper.addInline("logo", new ClassPathResource("static/imagens/logoFundoAzul.png"),"image/png");
 
             if (email.getAnexo() != null) {
 
