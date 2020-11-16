@@ -108,8 +108,6 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		if (agendamento.getStatus() == SituacaoAgendamento.CANCELADO)
 			throw new NegocioException("Você não pode alterar um agendamento já cancelado");
 
-		if (status == SituacaoAgendamento.CONCLUIDO && agendamento.getDataHorarioFim().isAfter(LocalDateTime.now()))
-			throw new NegocioException("Você não pode concluir um agendamento fora da data e horário agendado");
 	}
 
 	@Override

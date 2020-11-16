@@ -13,9 +13,9 @@ public interface PromocaoDAO {
 	
 	public Promocao status(int idServico);
 	
-	public Promocao buscarPorIdServico(int idServico);
+	public Promocao buscar(int id);
 	
 	public void alterarStatus(Promocao promocao);
 	
-	public List <Promocao> promocoesDataInicioMaiorIgualHoje();
+	public List <Promocao> listar();
 }

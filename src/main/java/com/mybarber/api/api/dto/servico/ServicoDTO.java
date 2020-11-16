@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mybarber.api.api.dto.promocao.PromocaoDTO;
 import com.mybarber.api.domain.entity.Promocao;
 
 /**
@@ -21,7 +22,7 @@ public class ServicoDTO {
     @NotNull
     private Long idBarbearia;
     
-   private Promocao promocao;
+   private PromocaoDTO promocao;
 	
 	public String getDescricao() {
 		return descricao;
@@ -56,10 +57,10 @@ public class ServicoDTO {
 	}
 	
 	
-	public Promocao getPromocao() {
+	public PromocaoDTO getPromocao() {
 		return promocao;
 	}
-	public void setPromocao(Promocao promocao) {
+	public void setPromocao(PromocaoDTO promocao) {
 		this.promocao = promocao;
 	}
 	public ServicoDTO() {

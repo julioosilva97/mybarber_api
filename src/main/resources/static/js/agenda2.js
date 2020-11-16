@@ -218,7 +218,7 @@ function listarServicos(){
 
 	        },
 	        success: function(data) {
-	        	
+	        	console.log(data)
 	        	data.forEach(function(e){
 	        		
 	        		let valor = e.valor;

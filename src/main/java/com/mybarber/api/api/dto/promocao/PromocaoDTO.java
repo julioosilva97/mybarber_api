@@ -13,6 +13,7 @@ public class PromocaoDTO {
 	private LocalDate dataFim;
 	private String descricao;
 	private float valor;
+	private boolean status;
 	private Long idServico;
 	public int getId() {
 		return id;
@@ -52,6 +53,12 @@ public class PromocaoDTO {
 		this.valor = valor;
 	}
 	public PromocaoDTO() {
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
    
 	

@@ -46,6 +46,13 @@
 				toastr[acao](mensagem);
 	}
 
+	function formatData(inputDate) {
+		var date = new Date(inputDate);
+		if (!isNaN(date.getTime())) {
+			// Months use 0 index.
+			return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+		}
+	}
 
 	function getDateFromHours(time,dia,mes,ano) {
 	mes = mes-1
@@ -94,6 +101,15 @@
 		  return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
 		  // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
 		}
+
+		function formataStringDataUSParaBR(data) {
+			var ano  = data.split("-")[0];
+			var mes  = data.split("-")[1];
+			var dia  = data.split("-")[2];
+  
+			return  ("0"+dia).slice(-2) + '/' + ("0"+mes).slice(-2) + '/' + ano ;
+			// Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+		  }
 
 
 	function getToken(){

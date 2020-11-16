@@ -1,6 +1,7 @@
 package com.mybarber.api.domain.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,20 +47,26 @@ public class PromocaoServiceImpl implements PromocaoService {
 	}
 
 	private void validarDatasPromocao(Promocao promocao){
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		var dataInicio = promocao.getDataInicio();
+		var dataFim = promocao.getDataFim();
+		var agora = LocalDate.now();
 
-		if (promocao.getDataInicio().isBefore(promocao.getDataFim()))
-			throw new NegocioException("Data inicial da promoção não pode ser após a data final.");
+		if (!dataInicio.isBefore(dataFim))
+			throw new NegocioException("Data inicio "+dataInicio.format(formatter)+" da promoção não pode ser após ou igual a data final "+dataFim.format(formatter));
 
-		if (promocao.getDataInicio().isAfter(LocalDate.now()))
-			throw new NegocioException("Data promoção não pode ser antes que o dia atual.");
+		if (dataInicio.isBefore(agora))
+			throw new NegocioException("Data inicio promoção "+dataInicio.format(formatter) +" não pode ser antes que a data atual "+agora.format(formatter));
 
 	}
 
 
 	@Override
-	public Promocao buscarPromocao(int idServico) {
+	public Promocao buscarPromocao(int id) {
 
-		return dao.buscarPorIdServico(idServico);
+		return dao.buscar(id);
 	}
 
 

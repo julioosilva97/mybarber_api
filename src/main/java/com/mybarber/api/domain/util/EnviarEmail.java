@@ -99,7 +99,7 @@ public class EnviarEmail {
 
     public void enviarRelatorioMensalQuantidadeServicoPrestado(Pessoa pessoa, int idBarbearia) {
 
-        var pdf = gerarPDF.generatePdf(idBarbearia);
+       /* var pdf = gerarPDF.generatePdf(idBarbearia);
 
         if(pdf!=null){
             var email = gerarEmail(pessoa, null);
@@ -108,7 +108,7 @@ public class EnviarEmail {
             enviarEmail(email, "email/relatorio");
         }else{
             System.out.println( "Erro ao gerar PDF");
-        }
+        }*/
     }
 
     private void enviarEmail(Email email, String template) {
