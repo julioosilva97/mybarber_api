@@ -101,7 +101,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		agendamentoDAO.alterarStatus(agendamento);
 	}
 
-	private void validarAlteracaoStatus(Agendamento agendamento, SituacaoAgendamento status){
+	private void validarAlteracaoStatus(Agendamento agendamento){
 
 		if (agendamento.getStatus() == SituacaoAgendamento.CONCLUIDO)
 			throw new NegocioException("Você não pode alterar um agendamento já concluído");

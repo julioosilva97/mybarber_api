@@ -69,7 +69,7 @@ public class ClienteServiceImpl implements ClienteService {
                     var usuarioAntigoEmail = usuarioDAO.buscarPorEmail(usuarioEdicao.getEmail());
 
                     if (usuarioAntigoEmail == null || usuarioAntigoEmail.getId() == usuarioEdicao.getId()) {
-                        cliente.getUsuario().getPerfil().setId(4);
+                        cliente.getUsuario().getPerfil().setId(2);
                         usuarioDAO.alterar(cliente.getUsuario());
                         clienteDAO.editar(cliente);
 
