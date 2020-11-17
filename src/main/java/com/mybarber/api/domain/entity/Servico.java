@@ -69,12 +69,14 @@ public class Servico {
 		this.promocao = promocao;
 	}
 
-	public Servico(int id, String descricao, float valor, LocalTime tempo, Promocao promocao) {
+	public Servico(int id, String descricao, float valor, LocalTime tempo, Promocao promocao,Barbearia barbearia) {
 		this.id = id;
 		this.descricao = descricao;
 		this.valor = valor;
 		this.tempo = tempo;
 		this.promocao = promocao;
+
+		this.barbearia = barbearia;
 	}
 	
 	

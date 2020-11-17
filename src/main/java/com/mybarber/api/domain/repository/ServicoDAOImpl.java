@@ -17,17 +17,16 @@ public class ServicoDAOImpl implements ServicoDAO {
 	private JdbcTemplate jdbcTemplate;
 
 	
-	String select = "select * from servico where id = ?";
+	
 	String save = "insert into servico(descricao,valor,tempo,id_barbearia) values(?,?,?,?)";
-	String delete = "delete from servico where id=?";
 	String update = "update servico set descricao = ?, valor =?,tempo=? where id = ?";
 
 	@Override
-	public List<Servico> listar(int id) {
+	public List<Servico> listarAtivos(int idBarbearia) {
 		
 		String selectall = "select s.*,  p.id id_promocao, p.valor valor_promocao, p.descricao descricao_promocao,p.datainicio, p.datafim, p.status from\r\n" + 
-				"servico s left join promocao p on s.id = p.id_servico where id_barbearia =?";
-		return jdbcTemplate.query(selectall, new Object[] { id }, new ServicoMapper());
+				"servico s left join promocao p on s.id = p.id_servico where id_barbearia =? and ativo = true";
+		return jdbcTemplate.query(selectall, new Object[] { idBarbearia }, new ServicoMapper());
 
 	}
 
@@ -38,7 +37,10 @@ public class ServicoDAOImpl implements ServicoDAO {
 	}
 
 	@Override
-	public void excluir(int id) {
+	public void desativar(int id) {
+		
+		String delete = "update servico set ativo = false  where id=?";
+		
 		this.jdbcTemplate.update(delete, id);
 	}
 
@@ -51,8 +53,18 @@ public class ServicoDAOImpl implements ServicoDAO {
 
 	@Override
 	public Servico buscarPorId(int id) {
-		return this.jdbcTemplate.queryForObject(select, new Object[] { id }, (rs, rowNum) -> new Servico(rs.getInt("id"),
-				rs.getString("descricao"), rs.getFloat("valor"), rs.getTime("tempo").toLocalTime()));
+		
+		
+		String select = """
+				select s.*,b.id id_barbearia,
+				p.id id_promocao, p.valor valor_promocao, p.descricao descricao_promocao,p.datainicio, p.datafim, p.status
+				from servico s 
+				left join promocao p on s.id = p.id_servico 
+				inner join barbearia b on s.id_barbearia = b.id
+				where s.id = ?
+				""";
+		
+		return this.jdbcTemplate.queryForObject(select, new Object[] { id }, new ServicoMapper());
 
 	}
 

@@ -461,8 +461,8 @@ function excluir(id)
 		
 		$.ajax(
 		{
-			type: "DELETE",
-			url: "api/servicos/deletar/" + id,
+			type: "PUT",
+			url: "api/servicos/desativar/" + id,
 			cache: false,
 			beforeSend: function (request) {
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);

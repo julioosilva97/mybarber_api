@@ -42,10 +42,10 @@ public class ServicoController {
 	}
 
 	@GetMapping("{idBarbearia}")
-	public ResponseEntity<List<ServicoDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
+	public ResponseEntity<List<ServicoDTO>> listarAtivos(@PathVariable("idBarbearia") int idBarbearia) {
 
 		
-		var servicos = service.listar(idBarbearia);
+		var servicos = service.listarAtivos(idBarbearia);
 		var servicosDTO = servicos.stream()
 				           .map(doMain -> (ServicoDTO) ConverterDTO.toDTO(doMain, ServicoDTO.class))
 				           .collect(Collectors.toList());
@@ -61,10 +61,10 @@ public class ServicoController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
-	@DeleteMapping("deletar/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
+	@PutMapping("desativar/{id}")
+	public ResponseEntity<Void> desativar(@PathVariable("id") int id) {
 
-		service.excluir(id);
+		service.desativar(id);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 

@@ -31,9 +31,9 @@ public class ServicoServiceImpl implements ServicoService{
     BarbeariaDAO daoBarbearia;
 	
 	@Override
-	public List<Servico> listar(int idBarbearia) {
+	public List<Servico> listarAtivos(int idBarbearia) {
 		
-		return dao.listar(idBarbearia);
+		return dao.listarAtivos(idBarbearia);
 		
 	}
 
@@ -52,7 +52,7 @@ public class ServicoServiceImpl implements ServicoService{
 	}
 
 	@Override
-	public void excluir(int id) {
+	public void desativar(int id) {
 		
 		var servico = dao.buscarPorId(id);
 		
@@ -62,7 +62,7 @@ public class ServicoServiceImpl implements ServicoService{
 		
 		daoBarbearia.alterar(barbearia);
 		
-		dao.excluir(id);
+		dao.desativar(id);
 		
 	}
 

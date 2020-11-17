@@ -82,12 +82,17 @@ function listarBarbeiros() {
         success: function(data) {
         	console.log(data)
             for (var i in data) {
+                
+                /*if(data[i].usuario.ativo){*/
+                
                 if (i == 0) {
                     $(".nav-underline").append(`<a class="nav-link active" href="#" idBarbeiro=${data[i].id}> ${data[i].nome}</a>`);
                 } else {
                     $(".nav-underline").append(`<a class="nav-link" href="#" idBarbeiro=${data[i].id}> ${data[i].nome} </a>`);
                 }
-
+                
+               /* } */
+                
             }
             clickBarbeiro();
             carregarHorarioAtendimento();

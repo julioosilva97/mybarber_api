@@ -206,7 +206,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 
 	@Override
 	public Funcionario buscarPorIdUsuario(int idUsuario) {
-		
+			
 		String buscarPorIdUsuario = """
 				select f.id id_funcionario,f.cargo, f.nome nome, f.telefone, f.data_nascimento,
 				 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,

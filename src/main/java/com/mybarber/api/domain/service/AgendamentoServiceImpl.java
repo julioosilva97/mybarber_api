@@ -18,6 +18,7 @@ import com.mybarber.api.domain.entity.Barbearia;
 import com.mybarber.api.domain.entity.Relatorio;
 import com.mybarber.api.domain.exception.NegocioException;
 import com.mybarber.api.domain.repository.AgendamentoDAO;
+import com.mybarber.api.domain.repository.FuncionarioDAO;
 import com.mybarber.api.domain.repository.HorarioAtendimentoDAO;
 import com.mybarber.api.domain.repository.ServicoDAO;
 import com.mybarber.api.domain.util.SituacaoAgendamento;
@@ -28,6 +29,9 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
 	@Autowired
 	private AgendamentoDAO agendamentoDAO;
+	
+	@Autowired
+	private FuncionarioDAO funcionarioDAO;
 
 	@Autowired
 	private HorarioAtendimentoDAO horarioAtendimentoDAO;
@@ -49,6 +53,12 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		verificarAgendamentos(agendamento);
 
 		agendamento.setStatus(SituacaoAgendamento.valueOf("AGENDADO"));
+		
+		var funcionario = funcionarioDAO.buscar(agendamento.getFuncionario().getId());
+		
+		agendamento.setFuncionario(funcionario);
+		
+		
 		agendamentoDAO.salvar(agendamento);
 
 	}
@@ -86,6 +96,10 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 		verificarAgendamentos(agendamento);
 
 		agendamento.setStatus(SituacaoAgendamento.valueOf("AGENDADO"));
+		
+       var funcionario = funcionarioDAO.buscar(agendamento.getFuncionario().getId());
+		
+		agendamento.setFuncionario(funcionario);
 		agendamentoDAO.editar(agendamento);
 
 	}

@@ -170,7 +170,7 @@ function enviarForm(){
 				error: function error(data)
 				{
 					waitingDialog.hide();
-					lancarToastr("error","Erro ao enviar e-mail");
+					lancarToastr("error",data.responseJSON.message);
 					console.log(data);
 
 				},
