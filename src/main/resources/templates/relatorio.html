@@ -115,7 +115,7 @@
                 <table>
                     <tr>
                         <td>
-                           Faturamento de serviços prestados no mês
+                           Quantidade de serviços prestados no mês
                         </td>
 
                     </tr>
@@ -138,9 +138,6 @@
             <td>
                 Quantidade
             </td>
-            <td>
-                Preço
-            </td>
         </tr>
 
         <tr class="item" th:each ="r: ${relatorio}">
@@ -149,8 +146,6 @@
 
             <td th:text="${r.quantidade}">
 
-            </td>
-            <td th:text="${r.total}">
             </td>
         </tr>
 

@@ -30,7 +30,9 @@ public class BarbeariaServiceImpl implements BarbeariaService {
         barbearia.setQtdCliente(barbeariaAtual.getQtdCliente());
         barbearia.setQtdFuncionario(barbeariaAtual.getQtdFuncionario());
         barbearia.setQtdServico(barbeariaAtual.getQtdServico());
-        daoEndereco.alterar(barbearia.getEndereco());
+        var endereco = barbearia.getEndereco();
+        endereco.setId(barbeariaAtual.getEndereco().getId());
+        daoEndereco.alterar(endereco);
         dao.alterar(barbearia);
 
     }

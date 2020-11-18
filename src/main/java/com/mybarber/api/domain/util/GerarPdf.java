@@ -1,28 +1,26 @@
 package com.mybarber.api.domain.util;
 
-//import com.lowagie.text.DocumentException;
+
+import com.lowagie.text.DocumentException;
 
 import com.mybarber.api.domain.service.AgendamentoService;
-import com.mybarber.api.domain.service.RelatorioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
-//import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.time.LocalDate;
 
 @Component
 public class GerarPdf {
 
-/*
+
 	private static final String PDF_RESOURCES = "/pdf-resources/";
   
     private SpringTemplateEngine templateEngine;
@@ -73,5 +71,5 @@ public class GerarPdf {
     private String loadAndFillTemplate(Context context) {
         return templateEngine.process("relatorio", context);
     }
-    */
+
 }
