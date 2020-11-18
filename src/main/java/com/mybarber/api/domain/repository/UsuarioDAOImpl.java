@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.mybarber.api.domain.entity.Perfil;
+import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.Usuario;
 
 @Repository
@@ -178,5 +179,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         );
 		
 	}
+
+
 
 }

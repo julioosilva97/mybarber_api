@@ -137,7 +137,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 	public Funcionario buscar(int id) {
 		
 		String buscar ="""
-				select f.id id_funcionario,f.cargo, f.nome nome, f.telefone, f.data_nascimento,
+				select f.id id_funcionario,f.cargo, f.nome nome,f.sobrenome sobrenome, f.telefone, f.data_nascimento,
 				 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,
 				 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
 				 b.id id_barbearia

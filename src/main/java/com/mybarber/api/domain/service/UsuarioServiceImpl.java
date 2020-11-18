@@ -1,6 +1,8 @@
 package com.mybarber.api.domain.service;
 
 
+import com.mybarber.api.domain.entity.Funcionario;
+import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mybarber.api.domain.entity.Usuario;
 import com.mybarber.api.domain.exception.NegocioException;
 import com.mybarber.api.domain.repository.ClienteDAO;
+import com.mybarber.api.domain.repository.EnderecoDAO;
 import com.mybarber.api.domain.repository.FuncionarioDAO;
 import com.mybarber.api.domain.repository.TokenDeVerificacaoDAO;
 import com.mybarber.api.domain.repository.UsuarioDAO;
@@ -36,6 +39,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Autowired
 	TokenDeVerificacaoDAO tokenDAO;
+	
+	 @Autowired
+	 EnderecoDAO daoEndereco;
+	 
+	 @Autowired
+	 FuncionarioDAO daoFuncionario;
 
 
 	public Usuario buscarPorLogin(String login) {
@@ -127,5 +136,60 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public TokenDeVerificacao buscarToken(String token) {
 		return  tokenService.validarToken(token);
 	}
+
+	@Transactional
+	@Override
+	public void editarPessoa(Pessoa pessoa) {
+		
+		Funcionario funcionarioLogado = (Funcionario) buscarUsuarioLogado("funcionario");
+
+
+
+		if (pessoa.getEndereco() != null) {
+			var endereco = pessoa.getEndereco();
+			if(funcionarioLogado.getEndereco().getId()!=0){
+				endereco.setId(funcionarioLogado.getEndereco().getId());
+				daoEndereco.alterar(endereco);
+			}else {
+				pessoa.setEndereco(daoEndereco.salvar(endereco));
+			}
+        }
+		
+		Funcionario funcionario = (Funcionario) pessoa; 
+		
+		funcionario.setCargo(funcionarioLogado.getCargo());
+
+		funcionario.setId(funcionarioLogado.getId());
+		
+		daoFuncionario.alterar(funcionario);
+		
+		
+		var usuario = funcionario.getUsuario();
+
+		usuario.setId(funcionarioLogado.getUsuario().getId());
+		usuario.setPerfil(funcionarioLogado.getUsuario().getPerfil());
+		usuario.setAtivo(funcionarioLogado.getUsuario().isAtivo());
+		verificarUsuarioEdicao(pessoa.getUsuario());
+		usuarioDAO.alterar(usuario);
+		
+		if(usuario.getSenha() != null ) usuarioDAO.alterarSenha(usuario);
+		
+		
+	}
+	
+	public void verificarUsuarioEdicao(Usuario usuario) {
+
+        var usuarioEdicao = usuario;
+
+        var usuarioAntigoLogin = usuarioDAO.buscarPorLogin(usuarioEdicao.getLogin());
+
+        if (usuarioAntigoLogin != null &&  usuarioAntigoLogin.getId() != usuarioEdicao.getId())
+            throw new NegocioException("Já existe um usuário com login : " + usuarioEdicao.getLogin());
+
+        var usuarioAntigoEmail = usuarioDAO.buscarPorEmail(usuarioEdicao.getEmail());
+
+        if (usuarioAntigoEmail != null && usuarioAntigoEmail.getId() != usuarioEdicao.getId())
+            throw new NegocioException("Já existe um usuário com email : " + usuarioEdicao.getEmail());
+    }
 
 }

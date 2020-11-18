@@ -1,10 +1,17 @@
 $(document).ready(function ()
 {
+    waitingDialog.show('Carregando ...');
+	var emailEdicao = null;
+	var loginEdicao = null;
+
+	$("#cep").mask("99999-999");
+
 	$.ajax(
 			{
 				type: "GET",
 				url: "api/usuarios/funcionario",
 				cache: false,
+				async:false,
 				beforeSend: function (request) {
 					request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
 			    },
@@ -29,7 +36,9 @@ $(document).ready(function ()
 					$("#nome").val(data.nome);
 					$("#sobrenome").val(data.sobrenome);
 					$("#telefone").val(data.telefone);
-					$("#dataNascimento").val(data.dataNascimento);
+					let dataNascimento = `${data.dataNascimento[0]}-${("0"+data.dataNascimento[1]).slice(-2)}-${ ("0"+data.dataNascimento[2]).slice(-2) }`;
+					
+					$("#dataNascimento").val(dataNascimento);
 					
 					if(data.endereco){
 						$("#logradouro").val(data.endereco.logradouro);
@@ -45,40 +54,127 @@ $(document).ready(function ()
 						loginEdicao = data.usuario.login;
 						$("#email").val(data.usuario.email);
 						emailEdicao = data.usuario.email;
+						console.log(emailEdicao)
 					}
+
+					waitingDialog.hide();
 				}
 			});
+	
+			$("#alterar-senha").on("change",function(){
+    	
+				if($(this).is(":checked")){
+					$(".row-senha").show();
+					
+				}else{
+					$("#cliente").val('');
+					$(".row-senha").hide();
+				}
+				
+			});
+
+            viaCep();
+			validarForm();
 	
 });
 
 
-function enviarForm(acao, id)
+function viaCep(){
+
+	$(".btn-buscar").on('click',function() {
+	
+	
+		//Nova variável "cep" somente com dígitos.
+		var cep = $('#cep').val().replace(/\D/g, '');
+		 console.log(cep)
+		//Verifica se campo cep possui valor informado.
+		if (cep != "") {
+	
+			//Expressão regular para validar o CEP.
+			var validacep = /^[0-9]{8}$/;
+	
+			//Valida o formato do CEP.
+			if(validacep.test(cep)) {
+	
+				//Preenche os campos com "..." enquanto consulta webservice.
+				$("#logradouro").val("...");
+				$("#bairro").val("...");
+				$("#cidade").val("...");
+				$("#uf").val("...");
+	
+				//Consulta o webservice viacep.com.br/
+				$.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+	
+					if (!("erro" in dados)) {
+						//Atualiza os campos com os valores da consulta.
+						$("#logradouro").val(dados.logradouro);
+						$("#bairro").val(dados.bairro);
+						$("#cidade").val(dados.localidade);
+						$("#uf").val(dados.uf);
+						$('#form-perfil').validate().element("#logradouro");
+						$('#form-perfil').validate().element("#bairro");
+						$('#form-perfil').validate().element("#cidade");
+						$('#form-perfil').validate().element("#uf");
+					} //end if.
+					else {
+						//CEP pesquisado não foi encontrado.
+						limpa_formulário_cep();
+						alert("CEP não encontrado.");
+					}
+				});
+			} //end if.
+			else {
+				//cep é inválido.
+				limpa_formulário_cep();
+				alert("Formato de CEP inválido.");
+			}
+		} //end if.
+		else {
+			alert("DIGITE UM CEP.");
+			limpa_formulário_cep();
+		}
+	});
+
+}
+
+function limpa_formulário_cep() {
+    // Limpa valores do formulário de cep.
+    $("#logradouro").val("");
+    $("#bairro").val("");
+    $("#cidade").val("");
+    $("#uf").val("");
+}
+
+function enviarForm()
 {
-       
-	var sendInfo = {
-			id : id,
-			nome : $("#nome").val(),
-			telefone : $("#telefone").val(),
-			dataNascimento: $("#dataNascimento").val(),
-			endereco : null,
-			usuario:null,
-			idBarbearia: getIdBarbearia(getToken()),
-			usuario : {id:$("#email").attr('idusuario'), email : $("#email").val()!=""?$("#email").val():null}
-	}
-	
-	
-	let verbo;
-	if(acao == "editar"){
-		verbo = 'PUT';
-	}else{
-		verbo= 'POST';
+
+	let senha = null ;
+
+	if($("#alterar-senha").is(":checked")){
+		console.log($("#senha").val())
+		senha = $("#senha").val();
 	}
 
-	waitingDialog.show('Salvando cliente ...');
+	console.log(senha)
+
+       
+	var sendInfo = {
+
+			nome : $("#nome").val(),
+			sobrenome : $("#sobrenome").val(),
+			telefone : $("#telefone").val(),
+			dataNascimento: $("#dataNascimento").val(),
+			endereco : {logradouro: $("#logradouro").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()},
+			usuario : {email : $("#email").val(),login : $("#login").val(), senha : senha }
+	}
+	
+	console.log(sendInfo);
+
+	waitingDialog.show('Salvando ...');
 	$.ajax(
 	{
-		type : verbo,
-		url: `api/clientes`,
+		type : 'PUT',
+		url: `api/usuarios/editar-pessoa`,
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(sendInfo),
 		beforeSend: function (request) {
@@ -86,11 +182,12 @@ function enviarForm(acao, id)
 	    },
 		error: function error(data)
 		{
+			console.log(data)
 			waitingDialog.hide();
 			if(data.status == 400){
-				lancarToastr("error",`${data.responseJSON.titulo}`);
+				lancarToastr("error",`${data.responseJSON.message}`);
 			}else{
-				lancarToastr("error",`${data.responseJSON.error_description}`);
+				lancarToastr("error",`Erro ao atualizar informações`);
 			}
 
 		},
@@ -99,8 +196,12 @@ function enviarForm(acao, id)
 		{
 			
 			
-			lancarToastr("success",`Cliente ${acao == "cadastrar" ? "salvo" : "editado"} com sucesso.`,true)
+			lancarToastr("success",`Dados alterados com sucesso.`,true);
 
+			if(senha!=null){
+			  localStorage.clear();
+			  window.location.href = "/";
+			}
 
 		}
 	});
@@ -111,7 +212,7 @@ function enviarForm(acao, id)
 
 function validarForm()
 {
-
+    errorElement: 'span',
 	jQuery.validator.setDefaults({
 	    errorPlacement: function (error, element) {
 	        error.addClass('invalid-feedback');
@@ -127,67 +228,65 @@ function validarForm()
 	    }
 	});
 	
-	jQuery.validator.addMethod("verificarEmail", function(value, element,parametros) {
-		
-		return  !verificarEmail();
-		
-	},'Email já utilizado.');
+
 	
-	
-	 $("#form-cliente").validate(
+	$("#form-perfil").validate(
 	{
 		// Rules for form validation
 		rules:
 		{
-			nome: {
-				required: true
-			},
-			telefone:
+			nome:
 			{
 				required: true
 			},
-			email:
+			email : {
+				required: true
+			},
+			login:
 			{
+				required: true
+			},
+			senha:
+			{
+				required: true
+			},
+			senha2 : {
 				required: true,
-				verificarEmail: true
-			},
-			dataNascimento:
-			{
-				required: true
+				equalTo : "#senha"
 			}
 		},
 		messages : {
-			nome: {
-				required: "Campo obrigatório"
-			},
-			telefone:
-			{
-				required: "Campo obrigatório"
-			},
-			dataNascimento:
+			nome:
 			{
 				required: "Campo obrigatório"
 			},
 			email:
 			{
 				required: "Campo obrigatório"
+			},
+			login:
+			{
+				required: "Campo obrigatório"
+			},
+			senha:
+			{
+				required: "Campo obrigatório"
+			},
+			senha2 : {
+				required: "Campo obrigatório"
 			}
+			
 		},
 		submitHandler: function submitHandler(form)
 		{
-			enviarForm($(".btn-salvar").attr("acao"), $(".btn-salvar").attr("data-id"))
+			enviarForm();
 
 		}
 	});
 }
 
 
-
-
-
-
 function verificarEmail(){
-	
 	
 	var existe;
 	let email = $('#email').val();
@@ -218,5 +317,79 @@ function verificarEmail(){
 				});
 		
 		return existe;
+	
+}
+
+function verificarUsuario(){
+	
+	var existe;
+	let login = $('#login').val();
+	
+	
+		
+		if(login == loginEdicao) return false;
+		
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarUsuario/${login}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
+	
+}
+
+function verificarEmail(){
+	
+	
+	
+	var existe;
+	let email = $('#email').val();
+	
+
+	console.log(emailEdicao)
+		
+		if(email == emailEdicao) return false;
+		$.ajax(
+				
+				{
+					type: 'GET',
+					url: `api/usuarios/verificarEmail/${email}`,
+					contentType: "application/json; charset=utf-8",
+					async:false,
+					error: function error(data)
+					{
+						
+						lancarToastr("error",data);
+
+					},
+					//dataType: 'json',
+					success: function success(data)
+					{
+						
+						
+						existe = data;
+					}
+				});
+		
+		return existe;
+	
 	
 }

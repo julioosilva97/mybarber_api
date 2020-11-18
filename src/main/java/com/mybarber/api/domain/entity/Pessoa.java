@@ -19,6 +19,17 @@ public abstract class Pessoa {
 	
 	protected Usuario usuario;
 
+	public Pessoa(int id, String nome, String telefone, LocalDate dataNascimento, Endereco endereco, Usuario usuario) {
+
+		this.id = id;
+		this.nome = nome;
+		this.telefone = telefone;
+		this.dataNascimento = dataNascimento;
+		this.endereco = endereco;
+		this.usuario = usuario;
+
+	}
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -80,10 +91,11 @@ public abstract class Pessoa {
 	
 	
 
-	public Pessoa(int id, String nome, String telefone, LocalDate dataNascimento,
+	public Pessoa(int id, String nome,String sobrenome, String telefone, LocalDate dataNascimento,
 			Endereco endereco, Usuario usuario) {
 		this.id = id;
 		this.nome = nome;
+		this.sobrenome = sobrenome;
 		this.telefone = telefone;
 		this.dataNascimento = dataNascimento;
 		this.endereco = endereco;
@@ -99,9 +111,10 @@ public abstract class Pessoa {
 
 	
 
-	public Pessoa(int id, String nome, String telefone,Endereco endereco, Usuario usuario) {
+	public Pessoa(int id, String nome,String sobrenome, String telefone,Endereco endereco, Usuario usuario) {
 		this.id = id;
 		this.nome = nome;
+		this.sobrenome = sobrenome;
 		this.telefone = telefone;
 		this.endereco = endereco;
 		this.usuario = usuario;

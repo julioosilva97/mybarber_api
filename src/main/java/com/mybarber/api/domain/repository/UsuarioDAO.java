@@ -2,6 +2,7 @@ package com.mybarber.api.domain.repository;
 
 import java.util.Map;
 
+import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.Usuario;
 
 public interface UsuarioDAO {
@@ -12,6 +13,7 @@ public interface UsuarioDAO {
     Usuario buscar(int id);
 
     void alterar(Usuario usuario);
+    
 
     void excluir(Usuario usuario);
 

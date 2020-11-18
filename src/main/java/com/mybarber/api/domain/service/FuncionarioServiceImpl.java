@@ -118,9 +118,14 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                 if (funcionario.getEndereco() != null) {
                     daoEndereco.alterar(funcionario.getEndereco());
                 }
+                
                 daoFuncionario.alterar(funcionario);
 
-                daoUsuario.alterar(funcionario.getUsuario());
+                var usuario = funcionario.getUsuario();
+                
+                daoUsuario.alterar(usuario);
+                
+                if(usuario.getSenha() != null ) daoUsuario.alterarSenha(usuario);
 
             } else {
                 throw new NegocioException("Usuário sem id");

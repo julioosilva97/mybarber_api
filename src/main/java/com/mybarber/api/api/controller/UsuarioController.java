@@ -2,19 +2,27 @@ package com.mybarber.api.api.controller;
 
 
 
+import com.mybarber.api.api.dto.PessoaDTO;
+import com.mybarber.api.api.dto.funcionario.FuncionarioInput;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
 import com.mybarber.api.api.util.ConverterDTO;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
+import com.mybarber.api.domain.entity.Funcionario;
+import com.mybarber.api.domain.entity.Pessoa;
 import com.mybarber.api.domain.entity.TokenDeVerificacao;
 import com.mybarber.api.domain.entity.Usuario;
 import com.mybarber.api.domain.service.TokenDeVerificacaoService;
@@ -77,6 +85,15 @@ public class UsuarioController {
 		return new ResponseEntity<Object>(service.buscarUsuarioLogado(tipo) , HttpStatus.OK);
 		
 	}
+	
+	@PutMapping("editar-pessoa")
+    public ResponseEntity<Void> editarPessoa(@RequestBody PessoaDTO pessoaDTO) {
+
+        var pessoa = (Funcionario) ConverterDTO.toDoMain(pessoaDTO, Funcionario.class);
+
+        service.editarPessoa(pessoa);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
 	
 	
 }
