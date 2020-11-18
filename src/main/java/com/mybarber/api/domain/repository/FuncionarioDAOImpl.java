@@ -26,20 +26,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 
 
 	
-	String listarPorCargo = """
-			select f.id id_funcionario,f.cargo, f.nome nome, f.telefone, f.data_nascimento,
-			 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,
-			 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
-			 b.id id_barbearia
-			 from funcionario f 
-			 left join endereco e on f.id_endereco = e.id 
-			 inner join gerenciar_usuario gu on gu.id_funcionario = f.id 
-			 inner join usuario u on gu.id_usuario = u.id
-	         inner join usuario_perfil up on up.id_usuario = u.id
-	         inner join perfil per on per.id = up.id_perfil
-	         left join barbearia b on f.id_barbearia = b.id
-	         where f.cargo = ? and f.id_barbearia = ? 
-			""";
+
 
 	
 
@@ -114,7 +101,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 	public List<Funcionario> listar(int id) {
 		
 		String listar = """
-				select f.id id_funcionario,f.cargo, f.nome nome, f.telefone, f.data_nascimento,
+				select f.id id_funcionario,f.cargo, f.nome nome,f.sobrenome sobrenome, f.telefone, f.data_nascimento,
 				 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,
 				 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
 				 b.id id_barbearia
@@ -200,6 +187,22 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 	@Override
 	public List<Funcionario> listarPorCargo(Cargo cargo, int id_barbearia) {
 
+
+		String listarPorCargo = """
+			select f.id id_funcionario,f.cargo, f.nome nome,f.sobrenome sobrenome, f.telefone, f.data_nascimento,
+			 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,
+			 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
+			 b.id id_barbearia
+			 from funcionario f 
+			 left join endereco e on f.id_endereco = e.id 
+			 inner join gerenciar_usuario gu on gu.id_funcionario = f.id 
+			 inner join usuario u on gu.id_usuario = u.id
+	         inner join usuario_perfil up on up.id_usuario = u.id
+	         inner join perfil per on per.id = up.id_perfil
+	         left join barbearia b on f.id_barbearia = b.id
+	         where f.cargo = ? and f.id_barbearia = ? 
+			""";
+
 		return jdbcTemplate.query(listarPorCargo,new Object[] { cargo.getDescricao(),id_barbearia }, new FuncionarioMapper()) ;
 
 	}
@@ -208,7 +211,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO{
 	public Funcionario buscarPorIdUsuario(int idUsuario) {
 			
 		String buscarPorIdUsuario = """
-				select f.id id_funcionario,f.cargo, f.nome nome, f.telefone, f.data_nascimento,
+				select f.id id_funcionario,f.cargo, f.nome nome,f.sobrenome sobrenome, f.telefone, f.data_nascimento,
 				 e.id id_endereco,e.logradouro,e.bairro,e.numero,e.cep, e.cidade, e.uf,
 				 u.id id_usuario, u.login, u.ativo,u.email, per.id id_perfil, per.descricao descricao_perfil,
 				 b.id id_barbearia
