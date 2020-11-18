@@ -199,7 +199,7 @@ function enviarForm()
 			lancarToastr("success",`Dados alterados com sucesso.`,true);
 
 			if(senha!=null){
-			  localStorage.clear();
+			  sessionStorage.clear();
 			  window.location.href = "/";
 			}
 

@@ -214,8 +214,8 @@ function login(){
 				$("#alert-erro").hide();
 				
 				//localStorage.checkBoxValidation =  $('#lembrar').is(":checked");
-				localStorage.setItem('accessToken', data.access_token);
-				localStorage.setItem('refreshToken', data.refresh_token);
+				sessionStorage.setItem('accessToken', data.access_token);
+				sessionStorage.setItem('refreshToken', data.refresh_token);
 				window.location.href = "/"; //fazer redirect uri no servidor de autenticação
 			}
 		});

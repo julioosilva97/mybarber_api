@@ -17,7 +17,7 @@
 <script  type="text/javascript">
 
 
-if(!localStorage.getItem("accessToken")){
+if(!sessionStorage.getItem("accessToken")){
 	window.location.href = "/login";
 }
 
@@ -30,15 +30,15 @@ ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 ajax.setRequestHeader("Authorization", `Basic ${btoa("servidorAuthMyBarber:123")}`);
 
 //Seta paramêtros da requisição e envia a requisição
-ajax.send("refresh_token="+localStorage.getItem("refreshToken")+"&grant_type=refresh_token");
+ajax.send("refresh_token="+sessionStorage.getItem("refreshToken")+"&grant_type=refresh_token");
 
 //Cria um evento para receber o retorno.
 ajax.onreadystatechange = function(data) {
 // Caso o state seja 4 e o http.status for 200, é porque a requisiçõe deu certo.
 	if (ajax.readyState == 4 && ajax.status == 200) {
 		let data = JSON.parse(ajax.response)
-		localStorage.setItem('accessToken', data.access_token);
-		localStorage.setItem('refreshToken', data.refresh_token);
+		sessionStorage.setItem('accessToken', data.access_token);
+		sessionStorage.setItem('refreshToken', data.refresh_token);
  	}
 }
 

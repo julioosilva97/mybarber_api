@@ -111,10 +111,8 @@ public class AgendamentoController {
     @GetMapping("somaValorMensal/{idBarbearia}")
     public ResponseEntity<List<RelatorioDTO>> valorTotalMensal(@PathVariable("idBarbearia") int idBarbearia, LocalDate data) {
 
-        var barbearia = new Barbearia();
-        barbearia.setId(idBarbearia);
 
-        var valores = service.somaValorMensal(barbearia, data);
+        var valores = service.somaValorMensal(idBarbearia, data);
 
         var valoresDTO = valores.stream()
                 .map(valor -> (RelatorioDTO) ConverterDTO.toDTO(valor,RelatorioDTO.class))

@@ -131,11 +131,11 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 	}
 
 	@Override
-	public List<Relatorio> somaValorMensal(Barbearia barbearia, LocalDate date) {
+	public List<Relatorio> somaValorMensal(int idbarbearia, LocalDate date) {
 
 		LocalDate data = LocalDate.now();
 
-		return agendamentoDAO.somaValorMensal(barbearia.getId(), data);
+		return agendamentoDAO.somaValorMensal(idbarbearia, data);
 	}
 
 	@Override

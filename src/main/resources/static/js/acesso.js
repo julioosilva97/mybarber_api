@@ -26,7 +26,7 @@ $(document).ready(function (){
 	    					error: function error(data)
 	    					{
 	    						lancarToastr("error","Erro ao atualizar token");
-	    						localStorage.clear();
+	    						sessionStorage.clear();
 	    						window.location.href = "/";
 
 	    					},
@@ -34,15 +34,15 @@ $(document).ready(function (){
 	    					success: function success(data)
 	    					{
 	    						console.log(data)
-	    						localStorage.setItem('accessToken', data.access_token);
-	    						localStorage.setItem('refreshToken', data.refresh_token);
+	    						sessionStorage.setItem('accessToken', data.access_token);
+	    						sessionStorage.setItem('refreshToken', data.refresh_token);
 	    						window.location.reload(pageName)
 
 	    					}
 	    		  });
 	    		
 	    	}else{
-	    		window.localStorage.clear();
+	    		window.sessionStorage.clear();
 	    	}
 	    	
 		}

@@ -24,7 +24,7 @@ public interface AgendamentoService {
 
     List<Agendamento> buscarPorData(LocalDate data, int idBarbeiro);
 
-    List<Relatorio> somaValorMensal(Barbearia barbearia, LocalDate data);
+    List<Relatorio> somaValorMensal(int idBbarbearia, LocalDate data);
 
     Map<String, Integer> countStatusAgendamentoMes(int idBarbearia);
 

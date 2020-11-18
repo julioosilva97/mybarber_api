@@ -6,7 +6,7 @@
 	
 		$("#logout").on('click',function(){
 			
-			localStorage.clear();
+			sessionStorage.clear();
 		});
 		
 		if(getToken()){
@@ -114,12 +114,12 @@
 
 	function getToken(){
 		
-		return localStorage.getItem("accessToken");
+		return sessionStorage.getItem("accessToken");
 	}
 	
     function getRefreshToken(){
 		
-		return localStorage.getItem("refreshToken");
+		return sessionStorage.getItem("refreshToken");
 	}
 	
 	function fecharModalLoading(){
@@ -144,7 +144,7 @@
 					error: function error(data)
 					{
 						lancarToastr("error","Erro ao atualizar token");
-						localStorage.clear();
+						sessionStorage.clear();
 						window.location.href = "/";
 
 					},
@@ -152,8 +152,8 @@
 					success: function success(data)
 					{
 						console.log(data)
-						localStorage.setItem('accessToken', data.access_token);
-						localStorage.setItem('refreshToken', data.refresh_token);
+						sessionStorage.setItem('accessToken', data.access_token);
+						sessionStorage.setItem('refreshToken', data.refresh_token);
 						window.location.reload(pageName)
 
 					}
