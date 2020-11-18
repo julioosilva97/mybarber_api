@@ -54,7 +54,7 @@ function limpa_formulário_cep() {
     $("#uf").val("");
 }
 
-function viaCep(){
+
 	
 $("#cep").mask("99999-999");
 	
@@ -90,6 +90,7 @@ $("#cep").mask("99999-999");
                         $("#bairro").val(dados.bairro);
                         $("#cidade").val(dados.localidade);
                         $("#uf").val(dados.uf);
+
                     } //end if.
                     else {
                         //CEP pesquisado não foi encontrado.
@@ -109,20 +110,27 @@ $("#cep").mask("99999-999");
             limpa_formulário_cep();
         }
     });
- }
+
 
 function enviarForm()
 {
-       
+
+
+       console.log($("#logradouro").val());
 	var sendInfo = {
 			id : getIdBarbearia(getToken()),
 			nome : $("#nome").val(),
 			descricao : $("#descricao").val(),
 			endereco : {logradouro: $("#logradouro").val(), bairro: $("#bairro").val(), numero: $("#numero").val(), cep: $("#cep").val(), cidade:  $("#cidade").val(), uf: $("#uf").val()}
-			
 	}
-	
-	
+
+
+	console.log(sendInfo);
+
+
+
+
+
 
 	waitingDialog.show('Salvando informações barbearia ...');
 	$.ajax(
