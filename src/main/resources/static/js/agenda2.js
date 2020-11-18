@@ -380,6 +380,7 @@ function carregarHorarioAtendimento() {
             lancarToastr('error', data.responseJSON.message);
         },
         success: function(data) {
+            console.log(data)
         	diasGlobal = data;
             if (data.length > 0) {
                 data.forEach(function(element) {
@@ -426,7 +427,8 @@ function carregarHorarioAtendimento() {
             }
         }
     });
- 
+
+ console.log(dias)
     setTimeout(function() {
         carregarAgenda(dias);
     }, 1000);

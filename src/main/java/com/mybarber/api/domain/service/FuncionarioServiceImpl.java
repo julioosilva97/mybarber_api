@@ -236,16 +236,21 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     public void salvarHorarioAtendimento(List<HorarioAtendimento> horarioAtendimento) {
 
-        List<HorarioAtendimento> horarios = horarioAtendimentoDAO
-                .buscarPorFuncionario(horarioAtendimento.get(0).getFuncionario().getId());
+        /*List<HorarioAtendimento> horarios = horarioAtendimentoDAO
+                .buscarPorFuncionario(horarioAtendimento.get(0).getFuncionario().getId());*/
 
+        horarioAtendimentoDAO.excluir(horarioAtendimento.get(0).getFuncionario().getId());
+        horarioAtendimentoDAO.salvar(horarioAtendimento);
+
+        //depois alterar para editar
+        /*
         if (horarios.size() > 0) {
 
             horarioAtendimentoDAO.editar(horarioAtendimento);
 
         } else {
             horarioAtendimentoDAO.salvar(horarioAtendimento);
-        }
+        }*/
 
     }
 
