@@ -27,7 +27,7 @@ public class RelatorioMensalQuantidadeServicosPrestados {
 
     private static final String TIME_ZONE = "America/Sao_Paulo";
 
-    //@Scheduled(fixedDelay = 50000)
+    @Scheduled(fixedDelay = 50000)
     private void gerarRelatorio(){
 
         var barbearias = barbeariaDAO.listar();
@@ -40,11 +40,12 @@ public class RelatorioMensalQuantidadeServicosPrestados {
 
                  if(funcionario.getCargo()== Cargo.BARBEIRO) {
                      enviarEmail.enviarRelatorioMensalQuantidadeServicoPrestado(funcionario, barbearia.getId());
+                     System.out.println( "Enviado para o email "+funcionario.getUsuario().getEmail());
                  }
             });
 
 
-            System.out.println( "Foi");
+
         });
 
     }
