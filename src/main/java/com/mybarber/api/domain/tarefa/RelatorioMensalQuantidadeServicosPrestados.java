@@ -27,6 +27,7 @@ public class RelatorioMensalQuantidadeServicosPrestados {
 
     private static final String TIME_ZONE = "America/Sao_Paulo";
 
+
     @Scheduled(fixedDelay = 50000)
     private void gerarRelatorio(){
 

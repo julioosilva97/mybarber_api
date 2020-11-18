@@ -36,9 +36,12 @@ $(document).ready(function ()
 					$("#nome").val(data.nome);
 					$("#sobrenome").val(data.sobrenome);
 					$("#telefone").val(data.telefone);
-					let dataNascimento = `${data.dataNascimento[0]}-${("0"+data.dataNascimento[1]).slice(-2)}-${ ("0"+data.dataNascimento[2]).slice(-2) }`;
-					
-					$("#dataNascimento").val(dataNascimento);
+					if(data.dataNascimento){
+					  	let dataNascimento = `${data.dataNascimento[0]}-${("0"+data.dataNascimento[1]).slice(-2)}-${ ("0"+data.dataNascimento[2]).slice(-2) }`;
+
+                        $("#dataNascimento").val(dataNascimento);
+					}
+
 					
 					if(data.endereco){
 						$("#logradouro").val(data.endereco.logradouro);
