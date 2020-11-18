@@ -31,10 +31,10 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	@Override
 	public void editar(Promocao promocao) {
 		
-		String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=?, status = ? where id_servico =?";
+		String update = "update promocao  set dataInicio = ?, dataFim = ?, descricao= ?, valor=?, status = ? where id =?";
 		
 		jdbcTemplate.update(update,promocao.getDataInicio(), promocao.getDataFim(), promocao.getDescricao(),
-				promocao.getValor(),promocao.isStatus(),promocao.getServico().getId());
+				promocao.getValor(),promocao.isStatus(),promocao.getId());
 	}
 
 	@Override
@@ -44,15 +44,12 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public Promocao buscarPorIdServico(int idServico) {
-		String buscarPorId = "select * from promocao where id_servico = ?";
-		try {
-		return jdbcTemplate.queryForObject(buscarPorId, new Object[] {idServico}, 
-				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor"), new Servico(rs.getInt("id_servico"))));
-
-		}catch (Exception e) {
-			return null;
-		}
+	public Promocao buscar(int id) {
+		String buscarPorId = "select * from promocao where id = ?";
+		return jdbcTemplate.queryForObject(buscarPorId, new Object[] {id}, 
+				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(),
+						rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),
+						rs.getFloat("valor"), new Servico(rs.getInt("id_servico"))));
 	}
 
 	@Override
@@ -62,8 +59,8 @@ public class PromocaoDAOImpl implements PromocaoDAO {
 	}
 
 	@Override
-	public List <Promocao> promocoesDataInicioMaiorIgualHoje() {
-		 String promocoes = "select * from promocao where datainicio >= to_date(to_char(now(), 'YYYY-MM-DD'),'YYYY-MM-DD')";
+	public List <Promocao> listar() {
+		 String promocoes = "select * from promocao";
 		return jdbcTemplate.query(promocoes,
 				(rs, rowNum) -> new Promocao(rs.getInt("id"),rs.getDate("dataInicio").toLocalDate(), rs.getDate("dataFim").toLocalDate(),rs.getString("descricao"),rs.getBoolean("status"),rs.getFloat("valor")));
 	}

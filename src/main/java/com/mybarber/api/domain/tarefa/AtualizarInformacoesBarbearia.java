@@ -41,7 +41,7 @@ public class AtualizarInformacoesBarbearia {
 			
 			var idBarbearia = barbearia.getId();
 			
-			 barbearia.setQtdServico(servicoDAO.listar(idBarbearia).size());
+			 barbearia.setQtdServico(servicoDAO.listarAtivos(idBarbearia).size());
 			 barbearia.setQtdCliente(clienteDAO.countPorBarbearia(idBarbearia));
 			 barbearia.setQtdFuncionario(funcionarioDAO.listar(idBarbearia).size());
 			 

@@ -170,7 +170,7 @@ function enviarForm(){
 				error: function error(data)
 				{
 					waitingDialog.hide();
-					lancarToastr("error","Erro ao enviar e-mail");
+					lancarToastr("error",data.responseJSON.message);
 					console.log(data);
 
 				},
@@ -180,10 +180,7 @@ function enviarForm(){
 					
 					$('#form-esqueci-senha')[0].reset();
 					waitingDialog.hide();
-					$(".flipped").addClass("box-esqueci-senha");
-					var alert = $( "#form-esqueci-senha" ).find( "div.alert");
-					alert.show();
-					$(alert).find('strong').text(email);
+					lancarToastr("success",`Link de alteração de senha enviado para o e-mail ${email}`);
 					$("#form-esqueci-senha").find('.is-valid').removeClass("is-valid");
 				}
 			});

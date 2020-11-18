@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.mybarber.api.domain.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -87,6 +88,7 @@ public class EnviarEmail {
 
             map.put("pessoa", pessoa);
             map.put("signature", "https://com.mybarber.api.br");
+            map.put("logo", "logo");
 
             email.setMap(map);
             return email;
@@ -99,7 +101,7 @@ public class EnviarEmail {
 
     public void enviarRelatorioMensalQuantidadeServicoPrestado(Pessoa pessoa, int idBarbearia) {
 
-        var pdf = gerarPDF.generatePdf(idBarbearia);
+       /* var pdf = gerarPDF.generatePdf(idBarbearia);
 
         if(pdf!=null){
             var email = gerarEmail(pessoa, null);
@@ -108,7 +110,7 @@ public class EnviarEmail {
             enviarEmail(email, "email/relatorio");
         }else{
             System.out.println( "Erro ao gerar PDF");
-        }
+        }*/
     }
 
     private void enviarEmail(Email email, String template) {
@@ -129,6 +131,7 @@ public class EnviarEmail {
             helper.setText(html, true);
             helper.setSubject(email.getAssunto());
             helper.setFrom(email.getDe());
+            helper.addInline("logo", new ClassPathResource("static/imagens/logoFundoAzul.png"),"image/png");
 
             if (email.getAnexo() != null) {
 

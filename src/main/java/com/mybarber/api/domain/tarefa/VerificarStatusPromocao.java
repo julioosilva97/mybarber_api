@@ -25,7 +25,7 @@ public class VerificarStatusPromocao {
 	//@Scheduled(fixedDelay = 1000)
 	@Transactional
 	private void verificarStatusPromocoes() {
-	   var promocoes = promocaoDAO.promocoesDataInicioMaiorIgualHoje();
+	   var promocoes = promocaoDAO.listar();
 	   
 	   
 	   promocoes.forEach(promocao -> {
@@ -36,12 +36,13 @@ public class VerificarStatusPromocao {
 		   }else if(!promocao.getDataInicio().isAfter(LocalDate.now()) && !promocao.isStatus()) {
 			   promocao.setStatus(true);
 			   System.out.println("promocao ativa");
+		   }else {
+			   System.out.println("Manter promoçãõ");
 		   }
 		   promocaoDAO.alterarStatus(promocao);
 
 	   });
-	
-	   
+	 
 	}
 
 	

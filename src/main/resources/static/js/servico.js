@@ -61,6 +61,8 @@ var verbo;
 	}else{
 		var verbo = "PUT";
 	}
+
+	console.log(data)
 	waitingDialog.show('Carregando ...');
 	$.ajax(
 	{
@@ -153,7 +155,9 @@ var verbo;
 
 
 function alterarStatusPromocao(idPromocao, status, elemento) {
-	
+
+
+
 	swal({
   		title: "Deseja alterar o status da promoção?",
   		//text: "You will not be able to recover this imaginary file!",
@@ -199,7 +203,7 @@ function alterarStatusPromocao(idPromocao, status, elemento) {
   	       
   		}
   	});
-	
+
 	
 }
 
@@ -244,20 +248,14 @@ function montarDataTable()
 		   {
 			'mRender': function (data, type, row)
 			{
-				
 				 if (row.promocao) {
+					console.log(row.promocao)
+					let dataInicio =  formataStringDataUSParaBR(row.promocao.dataInicio);
+					let dataFim = formataStringDataUSParaBR(row.promocao.dataFim);
 					 if(row.promocao.status){
-						 return `<div class="toggle-flip" style=""">
-		                  <label>
-		                    <input type="checkbox" class="status-promocao"  data-id="${row.promocao.id}" checked><span class="flip-indecator" data-toggle-on="ATIVA" data-toggle-off="INATIVA" style="width: 80px!important"></span>
-		                  </label>
-		                </div>`
+						 return `ATIVA - ${dataInicio} até ${dataFim}`
 					 }else {
-						 return `<div class="toggle-flip" style=""">
-		                  <label>
-		                    <input type="checkbox" class="status-promocao"  data-id="${row.promocao.id}"><span class="flip-indecator" data-toggle-on="ATIVA" data-toggle-off="INATIVA" style="width: 80px!important"></span>
-		                  </label>
-		                </div>`
+						 return `INATIVA - ${dataInicio} até ${dataFim}`
 					 }
 				 } else {
 					 return 'SEM PROMOÇÃO'
@@ -278,9 +276,9 @@ function montarDataTable()
 		{
 			'mRender': function (data, type, row)
 			{
-				return `<a sec:authorize="hasRole('EDITAR_SERVICO')" type="button" class="btn btn-secondary btn-sm btn-editar" title="Editar serviço" data-id="${row.id}" data-toggle="modal" ><i class="fa fa-lg fa-edit"></i></a>
-            <a sec:authorize="hasRole('EXCLUIR_SERVICO')" type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>
-             <a sec:authorize="hasRole('CADASTRAR_PROMOCAO')" type="button" class="btn btn-primary btn-sm btn-promocao" data-toggle="modal" href="#modal-excluir" title="Cadastrar Promoção" data-id="${row.id}" ><i class="fa fa-lg fa-percent"></i></a>`
+				return `<a  type="button" class="btn btn-secondary btn-sm btn-editar" title="Editar serviço" data-id="${row.id}" data-toggle="modal" ><i class="fa fa-lg fa-edit"></i></a>
+            <a  type="button" class="btn btn-danger btn-sm btn-excluir" data-toggle="modal" href="#modal-excluir" title="Excluir serviço" data-id="${row.id}" ><i class="fa fa-lg fa-trash"></i></a>
+             <a type="button" class="btn btn-primary btn-sm btn-promocao" data-toggle="modal" href="#modal-excluir" title="${row.promocao ? "Editar promoção": "Cadastrar promoção"}" data-id="${row.promocao ? row.promocao.id : 0}" data-id-servico="${row.id}" ><i class="fa fa-lg fa-percent"></i></a>`
 			},
 		}],
 		buttons: [ {
@@ -376,12 +374,22 @@ function buscarPromocao(id) {
 	    async: false,
 
 		type: 'GET',
-		success: function(response) {
-		  data = response;
+		success: function(data) {
+
+			console.log(data.dataInicio)
+			$('.promocao-form').slideDown('slow');
+			$(".titulo-form-promocao").text("Editar promoção");
+			$(".listagem").slideUp('slow');
+			$("#dataInicio").val(data.dataInicio);
+			$("#dataFim").val(data.dataFim);
+			$("#descricaoPromocao").val(data.descricao);
+			$("#valorPromocao").val(data.valor.toFixed(2));
+			$(".btn-salvar-promocao").attr("acao", "editar");
+			$(".btn-salvar-promocao").attr("data-id-promocao", data.id);
+			$(".btn-salvar-promocao").attr("data-id-servico", data.id);
 		},
 		error: function(error){
-            console.log(error);
-            alert("Error -> " + error);
+            lancarToastr("error","Erro ao buscar promoção");
         }
 	});
 	   
@@ -395,36 +403,21 @@ function cadastrarPromocao(tabelaBody) {
 		
 		
 		let id = $(this).attr('data-id');
-			
-
-	   data = buscarPromocao(id);
-	   
-	   console.log(data);
-	   
-			
-		if(data.id==null){
+		$(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id-servico'));
 		
-		$('.promocao-form').slideDown('slow');
-		$(".titulo-form-promocao").text("Nova promoção");
-		 $(".listagem").slideUp('slow');
-		 $('#form-promocao')[0].reset();
-		 $("#dataInicio").val($(this).closest("tr").find('td:eq(0)').text());
-		 $("#dataFim").val($(this).closest("tr").find('td:eq(1)').text());
-		 $("#descricao").val($(this).closest("tr").find('td:eq(1)').text());
-		 $("#valor").val($(this).closest("tr").find('td:eq(1)').text());
-		 $(".btn-salvar-promocao").attr("acao", "cadastrar");
-		 $(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id'));
-		 
-		}else {
+		if(id!=0){
+			buscarPromocao(id)
+		}else{
 			$('.promocao-form').slideDown('slow');
-			$(".titulo-form-promocao").text("Editar promoção");
-			$(".listagem").slideUp('slow');
-			$("#dataInicio").val(data.dataInicio);
-			$("#dataFim").val(data.dataFim);
-			$("#descricaoPromocao").val(data.descricao);
-			$("#valorPromocao").val(data.valor.toFixed(2));
-			$(".btn-salvar-promocao").attr("acao", "editar");
-		    $(".btn-salvar-promocao").attr("data-id-servico", $(this).attr('data-id'));
+			$(".titulo-form-promocao").text("Nova promoção");
+			 $(".listagem").slideUp('slow');
+			 $('#form-promocao')[0].reset();
+			 $("#dataInicio").val($(this).closest("tr").find('td:eq(0)').text());
+			 $("#dataFim").val($(this).closest("tr").find('td:eq(1)').text());
+			 $("#descricao").val($(this).closest("tr").find('td:eq(1)').text());
+			 $("#valor").val($(this).closest("tr").find('td:eq(1)').text());
+			 $(".btn-salvar-promocao").attr("acao", "cadastrar");
+			 $(".btn-salvar-promocao").removeAttr("data-id-promocao");
 		}
 		 
 	})
@@ -468,8 +461,8 @@ function excluir(id)
 		
 		$.ajax(
 		{
-			type: "DELETE",
-			url: "api/servicos/deletar/" + id,
+			type: "PUT",
+			url: "api/servicos/desativar/" + id,
 			cache: false,
 			beforeSend: function (request) {
 				request.setRequestHeader("Authorization", `Bearer ${getToken()}`);
@@ -577,7 +570,6 @@ function validarForm()
 		},
 		messages:
 		{
-			
 			dataInicio:
 			{
 				required: 'Data início é obrigatória.'
@@ -594,7 +586,7 @@ function validarForm()
 		submitHandler: function submitHandler(form)
 		{
 
-			enviarFormPromocao($(".btn-salvar-promocao").attr("acao"), $(".btn-salvar-promocao").attr("data-id"))
+			enviarFormPromocao($(".btn-salvar-promocao").attr("acao"), $(".btn-salvar-promocao").attr("data-id-promocao"))
 
 		}
 

@@ -9,7 +9,7 @@ public interface PromocaoService {
 
     void editar(Promocao promocao);
 
-    Promocao buscarPromocao(int idServico);
+    Promocao buscarPromocao(int id);
 
     void alterarStatus(Promocao promocao);
 }

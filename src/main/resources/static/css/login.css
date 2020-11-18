@@ -1,11 +1,12 @@
 .login-box {
 	    min-height: 350px!important;
 }
+
 .login-box.flipped {
 	    min-height: 300px!important;
 }
 
-/* só por enquanto não tem login social */
+/* sï¿½ por enquanto nï¿½o tem login social */
 
 .box-error {
 	/*min-height: 450px !important;*/
@@ -48,8 +49,3 @@
     font-weight: 700;
 }
 
-.box-esqueci-senha {
-	
-	min-height: 380px!important;
-	
-}

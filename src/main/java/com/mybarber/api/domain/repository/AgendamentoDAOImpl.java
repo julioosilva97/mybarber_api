@@ -29,32 +29,14 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
     JdbcTemplate jdbcTemplate;
 
 
-    String listarPorBarbeiro = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," +
-            "c.id id_cliente," +
-            "a.nome_cliente" +
-            " from agendamento a" +
-            " left join cliente c on a.id_cliente = c.id "
-            + " inner join funcionario f on a.id_barbeiro = f.id" +
-            " where f.id = ?";
-
-    String buscarPorId = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," +
-            "c.id id_cliente," +
-            "a.nome_cliente" +
-            " from agendamento a" +
-            " left join cliente c on a.id_cliente = c.id" +
-            " inner join funcionario f on a.id_barbeiro = f.id" +
-            " where a.id = ?";
-
-
-    String alterarStatus = "update agendamento set status = ? where id = ?";
 
 
     @Override
     public void salvar(Agendamento agendamento) {
 
         String salvar = """
-                INSERT INTO agendamento( datahorainicio, datahoratermino, observacao, status, valor, id_cliente, id_barbeiro,nome_cliente)
-                VALUES (?, ?, ?, ?, ?,?,?,?)
+                INSERT INTO agendamento( datahorainicio, datahoratermino, observacao, status, valor, id_cliente, id_barbeiro,nome_cliente,notificado,id_barbearia)
+                VALUES (?, ?, ?, ?, ?,?,?,?,false,?)
                 """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -78,6 +60,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
 
                 ps.setInt(7, agendamento.getFuncionario().getId());
                 ps.setString(8, agendamento.getCliente().getNome());
+                ps.setInt(9, agendamento.getFuncionario().getBarbearia().getId());
                 return ps;
             }
         }, keyHolder);
@@ -90,6 +73,16 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
 
     @Override
     public List<Agendamento> listarPorBarbeiro(int idBarbeiro) {
+    	
+    	
+    	  String listarPorBarbeiro = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," +
+    	            "c.id id_cliente," +
+    	            "a.nome_cliente" +
+    	            " from agendamento a" +
+    	            " inner join funcionario f on a.id_barbeiro = f.id"+
+    	            " left join cliente c on a.id_cliente = c.id "+
+    	            " where a.id_barbeiro = ?";
+    	
 
         return jdbcTemplate.query(listarPorBarbeiro, new Object[]{idBarbeiro}, new AgendamentoMapper());
 
@@ -97,6 +90,13 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
 
     @Override
     public Agendamento buscarPorId(int idAgendamento) {
+    	
+    	String buscarPorId = "select a.id id_agendamento, a.datahorainicio, a.datahoratermino,a.observacao,a.status,a.valor,a.id_barbeiro," +
+                "c.id id_cliente," +
+                "a.nome_cliente" +
+                " from agendamento a" +
+                " left join cliente c on a.id_cliente = c.id" +
+                " where a.id = ?";
 
         return jdbcTemplate.queryForObject(buscarPorId, new Object[]{idAgendamento}, new AgendamentoMapper());
     }
@@ -105,13 +105,15 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
     @Override
     public void editar(Agendamento agendamento) {
 
-        String editar = "UPDATE agendamento SET id=?, datahorainicio=?, datahoratermino=?, observacao=?, status=?, valor=?, id_cliente=?,id_barbeiro=?, nome_cliente=? where id = ?";
+        String editar = "UPDATE agendamento SET id=?, datahorainicio=?, datahoratermino=?, observacao=?,"
+        		+ " status=?, valor=?, id_cliente=?,id_barbeiro=?, nome_cliente=?, notificado=false, id_barbearia = ? where id = ?";
 
 
         jdbcTemplate.update(editar, agendamento.getId(), agendamento.getDataHorarioInicio(), agendamento.getDataHorarioFim(),
                 agendamento.getObservacao(), agendamento.getStatus().getDescricao(), agendamento.getValor(),
                 agendamento.getCliente().getId() == 0 ? null : agendamento.getCliente().getId(),
-                agendamento.getFuncionario().getId(), agendamento.getCliente().getNome(), agendamento.getId());
+                agendamento.getFuncionario().getId(), agendamento.getCliente().getNome(),agendamento.getFuncionario().getBarbearia().getId(),
+                agendamento.getId());
 
 
         String excluirAgendamentoServico = "delete from agendamento_servico where id_agendamento = ?";
@@ -144,6 +146,9 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
 
     @Override
     public void alterarStatus(Agendamento agendamento) {
+    	
+
+        String alterarStatus = "update agendamento set status = ? where id = ?";
 
         jdbcTemplate.update(alterarStatus, agendamento.getStatus().getDescricao(), agendamento.getId());
 
@@ -157,7 +162,6 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
                 "a.nome_cliente" +
                 " from agendamento a" +
                 " left join cliente c on a.id_cliente = c.id" +
-                " inner join funcionario f on a.id_barbeiro = f.id" +
                 " where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status NOT IN('CANCELADO') and a.id_barbeiro = ?";
 
         return jdbcTemplate.query(buscarPorData, new Object[]{data.toString(), idBarbeiro}, new AgendamentoMapper());
@@ -173,8 +177,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
                 "a.nome_cliente" +
                 " from agendamento a" +
                 " inner join cliente c on a.id_cliente = c.id" +
-                " inner join funcionario f on a.id_barbeiro = f.id" +
-                " where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status = 'AGENDADO' and notificado != true";
+                " where to_char(a.datahorainicio,'YYYY-MM-DD') = ? and a.status = 'AGENDADO' and notificado = false";
 
         return jdbcTemplate.query(buscarPorData, new Object[]{LocalDate.now().toString()}, new AgendamentoMapper());
     }
@@ -186,8 +189,7 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
         String somaValorMensal = """
                 select sum(a.valor) valor, extract (month from a.datahorainicio) datahorainicio
                 from agendamento a
-                inner join funcionario f on f.id = a.id_barbeiro 
-                inner join barbearia b on b.id = f.id_barbearia
+                inner join barbearia b on b.id = a.id_barbearia
                 where extract (year from a.datahorainicio)= ?
                 and a.status='CONCLUIDO' and b.id=? group by extract(month from a.datahorainicio)
                 """;
@@ -212,9 +214,8 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
         var countStatusAgendamentoMes = """
                 select a.status, count(a.status) 
                 from agendamento a 
-                inner join funcionario f on f.id = a.id_barbeiro
                 where to_char(a.datahorainicio,'MM') = ? 
-                and f.id_barbearia = ?
+                and a.id_barbearia = ?
                 GROUP by a.status
                 """;
 
@@ -237,12 +238,11 @@ public class AgendamentoDAOImpl implements AgendamentoDAO {
     @Override
     public List<Map<String, String>> relatorioServicosMes(int idBarbearia) {
         var servicosMes = "select  s.descricao, count(s.id) as quantidade, sum (s.valor) as total from agendamento a\n" +
-                "inner join funcionario f on f.id = a.id_barbeiro\n" +
-                "inner join barbearia b on b.id = f.id_barbearia \n" +
+                "inner join barbearia b on b.id = a.id_barbearia \n" +
                 "inner join agendamento_servico ags on ags.id_agendamento = a.id\n" +
                 "inner join servico s on ags.id_servico = s.id\n" +
                 "where \n" +
-                "f.id_barbearia = ? and\n" +
+                "a.id_barbearia = ? and\n" +
                 "a.status = 'CONCLUIDO' and\n" +
                 "extract (month from a.datahorainicio) = extract(month from now()) \n" +
                 "group by  s.id\n" +

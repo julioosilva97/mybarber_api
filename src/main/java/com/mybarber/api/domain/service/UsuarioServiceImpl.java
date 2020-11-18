@@ -65,10 +65,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		if(verificarEmail(email)) {
 	
-			var funcionario = funcionarioDAO.buscarPorIdUsuario(usuarioDAO.buscarPorEmail(email).getId());
-			var token = tokenService.criarToken(funcionario);
+			try {
+				var funcionario = funcionarioDAO.buscarPorIdUsuario(usuarioDAO.buscarPorEmail(email).getId());
+				var token = tokenService.criarToken(funcionario);
+				
+				enviarEmail.resetarSenha(funcionario,token);
+			}catch (Exception e) {
+				throw new NegocioException("Funcionário não encontrado, e-mail utilizado por um cliente");
+			}
 			
-			enviarEmail.resetarSenha(funcionario,token);
+			
 		}else {
 			throw new NegocioException("Email "+email+" não cadastrado");
 		}

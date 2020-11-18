@@ -39,10 +39,10 @@ public class PromocaoController {
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 	
-	@GetMapping("{idServico}")
-	public ResponseEntity<PromocaoDTO> buscarPromocao(@PathVariable("idServico") int idServico){
+	@GetMapping("{id}")
+	public ResponseEntity<PromocaoDTO> buscarPromocao(@PathVariable("id") int id){
 
-		var promocao = service.buscarPromocao(idServico);
+		var promocao = service.buscarPromocao(id);
 
 		var promocaoDTO = (PromocaoDTO) ConverterDTO.toDTO(promocao, PromocaoDTO.class);
 
