@@ -1,5 +1,8 @@
 # My Barber
 
+# Apresentação Linkedin : https://www.linkedin.com/posts/julioosilva97_muito-satisfeito-com-o-resultado-do-pfc-activity-6742203248322641920-61eQ
+
+# Servidor de autenticação : https://github.com/julioosilva97/servidor_autenticacao_mybarber
 
 # Sobre o projeto
 
