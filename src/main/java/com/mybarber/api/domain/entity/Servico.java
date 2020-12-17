@@ -16,6 +16,8 @@ public class Servico {
 	private LocalTime tempo;
 
 	private Barbearia barbearia;
+	
+	private Promocao promocao;
 
 	public int getId() {
 		return id;
@@ -56,7 +58,28 @@ public class Servico {
 	public void setBarbearia(Barbearia barbearia) {
 		this.barbearia = barbearia;
 	}
+	
+	
 
+	public Promocao getPromocao() {
+		return promocao;
+	}
+
+	public void setPromocao(Promocao promocao) {
+		this.promocao = promocao;
+	}
+
+	public Servico(int id, String descricao, float valor, LocalTime tempo, Promocao promocao,Barbearia barbearia) {
+		this.id = id;
+		this.descricao = descricao;
+		this.valor = valor;
+		this.tempo = tempo;
+		this.promocao = promocao;
+
+		this.barbearia = barbearia;
+	}
+	
+	
 	public Servico(int id, String descricao, float valor, LocalTime tempo) {
 		this.id = id;
 		this.descricao = descricao;
@@ -64,7 +87,14 @@ public class Servico {
 		this.tempo = tempo;
 	}
 
+	public Servico(int id) {
+		this.id = id;
+	}
+
 	public Servico() {
 	}
+
+	
+	
 
 }

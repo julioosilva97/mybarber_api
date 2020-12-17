@@ -5,21 +5,30 @@ import java.time.LocalDate;
 public abstract class Pessoa {
 
 	
-private int id;
+   private int id;
 	
 	protected String nome;
 	
 	protected String sobrenome;
 	
 	protected String telefone;
-	
-	protected String email;
 
 	protected LocalDate dataNascimento;
 	
 	protected Endereco endereco;
 	
 	protected Usuario usuario;
+
+	public Pessoa(int id, String nome, String telefone, LocalDate dataNascimento, Endereco endereco, Usuario usuario) {
+
+		this.id = id;
+		this.nome = nome;
+		this.telefone = telefone;
+		this.dataNascimento = dataNascimento;
+		this.endereco = endereco;
+		this.usuario = usuario;
+
+	}
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -53,13 +62,6 @@ private int id;
 		this.telefone = telefone;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public LocalDate getDataNascimento() {
 		return dataNascimento;
@@ -89,12 +91,12 @@ private int id;
 	
 	
 
-	public Pessoa(int id, String nome, String telefone, String email, LocalDate dataNascimento,
+	public Pessoa(int id, String nome,String sobrenome, String telefone, LocalDate dataNascimento,
 			Endereco endereco, Usuario usuario) {
 		this.id = id;
 		this.nome = nome;
+		this.sobrenome = sobrenome;
 		this.telefone = telefone;
-		this.email = email;
 		this.dataNascimento = dataNascimento;
 		this.endereco = endereco;
 		this.usuario = usuario;
@@ -109,11 +111,11 @@ private int id;
 
 	
 
-	public Pessoa(int id, String nome, String telefone, String email, Endereco endereco, Usuario usuario) {
+	public Pessoa(int id, String nome,String sobrenome, String telefone,Endereco endereco, Usuario usuario) {
 		this.id = id;
 		this.nome = nome;
+		this.sobrenome = sobrenome;
 		this.telefone = telefone;
-		this.email = email;
 		this.endereco = endereco;
 		this.usuario = usuario;
 	}
@@ -122,7 +124,5 @@ private int id;
 		this.id = id;
 		this.nome = nome;
 	}
-
-	
 	
 }

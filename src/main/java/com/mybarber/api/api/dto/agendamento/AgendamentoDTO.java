@@ -3,6 +3,7 @@ package com.mybarber.api.api.dto.agendamento;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mybarber.api.api.dto.cliente.ClienteRM;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
 import com.mybarber.api.domain.util.SituacaoAgendamento;
@@ -11,7 +12,9 @@ import com.mybarber.api.domain.util.SituacaoAgendamento;
 public class AgendamentoDTO {
 
 	private int id;
+	 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHorarioInicio;
+	 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHorarioFim;
 	private String observacao;
 	private SituacaoAgendamento status;

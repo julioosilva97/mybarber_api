@@ -21,31 +21,40 @@ public class HorarioAtendimentoDAOImpl implements HorarioAtendimentoDAO {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	String buscarPorFuncionario = "select * from horario_atendimento where id_funcionario =  ?";
 
-	String salvar = "INSERT INTO horario_atendimento(dia, aberto, inicio, final, id_funcionario) VALUES ( ?, ?, ?, ?, ?)";
-
-	String editar = "UPDATE horario_atendimento SET aberto=?, inicio=?, final=? WHERE id_funcionario = ? and dia=?";
-	
 	String excluir = "delete from horario_atendimento where id_funcionario =? "; 
 
 	@Override
 	public void salvar(List<HorarioAtendimento> horarioAtendimento) {
 
+		String salvar = "INSERT INTO horario_atendimento(dia, aberto, entrada, saida,almoco,entrada_almoco, saida_almoco, id_funcionario) VALUES (?, ?,?,? ,?, ?, ?,?)";
+		
 		jdbcTemplate.batchUpdate(salvar, new BatchPreparedStatementSetter() {
 
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				ps.setInt(1, horarioAtendimento.get(i).getDia());
+				ps.setString(1, horarioAtendimento.get(i).getDia().toString());
 				ps.setBoolean(2, horarioAtendimento.get(i).isAberto());
+				ps.setBoolean(5, horarioAtendimento.get(i).isAlmoco());
 				if (horarioAtendimento.get(i).isAberto() == true) {
-					ps.setTime(3, java.sql.Time.valueOf(horarioAtendimento.get(i).getInicio()));
-					ps.setTime(4, java.sql.Time.valueOf(horarioAtendimento.get(i).getFim()));
+					ps.setTime(3, java.sql.Time.valueOf(horarioAtendimento.get(i).getEntrada()));
+					ps.setTime(4, java.sql.Time.valueOf(horarioAtendimento.get(i).getSaida()));
+					if(horarioAtendimento.get(i).isAlmoco()) {
+						ps.setTime(6, java.sql.Time.valueOf(horarioAtendimento.get(i).getEntradaAlmoco()));
+						ps.setTime(7, java.sql.Time.valueOf(horarioAtendimento.get(i).getSaidaAlmoco()));
+					}else {
+						ps.setNull(6, Types.TIME);
+						ps.setNull(7, Types.TIME);
+					}
 				} else {
 					ps.setNull(3, Types.TIME);
 					ps.setNull(4, Types.TIME);
+					ps.setNull(6, Types.TIME);
+					ps.setNull(7, Types.TIME);
 				}
-				ps.setInt(5, horarioAtendimento.get(i).getFuncionario().getId());
+				
+	
+				ps.setInt(8, horarioAtendimento.get(i).getFuncionario().getId());
 
 			}
 
@@ -61,27 +70,47 @@ public class HorarioAtendimentoDAOImpl implements HorarioAtendimentoDAO {
 	@Override
 	public List<HorarioAtendimento> buscarPorFuncionario(int idFuncionario) {
 
+		String buscarPorFuncionario = "select * from horario_atendimento where id_funcionario =  ?";
+		
 		return jdbcTemplate.query(buscarPorFuncionario, new Object[] { idFuncionario }, new HorarioAtendimentoMapper());
 	}
 
 	@Override
 	public void editar(List<HorarioAtendimento> horarioAtendimento) {
 
+		String editar = """
+				UPDATE horario_atendimento SET aberto=?,entrada=?,saida=?,almoco=?,saida_almoco=?,entrada_almoco=? WHERE id_funcionario = ? and dia = ? 
+				""";
+
+	
 		jdbcTemplate.batchUpdate(editar, new BatchPreparedStatementSetter() {
 
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				
+			
 				ps.setBoolean(1, horarioAtendimento.get(i).isAberto());
+				ps.setBoolean(4, horarioAtendimento.get(i).isAlmoco());
 				if (horarioAtendimento.get(i).isAberto() == true) {
-					ps.setTime(2, java.sql.Time.valueOf(horarioAtendimento.get(i).getInicio()));
-					ps.setTime(3, java.sql.Time.valueOf(horarioAtendimento.get(i).getFim()));
+					ps.setTime(2, java.sql.Time.valueOf(horarioAtendimento.get(i).getEntrada()));
+					ps.setTime(3, java.sql.Time.valueOf(horarioAtendimento.get(i).getSaida()));
+					if(horarioAtendimento.get(i).isAlmoco()) {
+						ps.setTime(5, java.sql.Time.valueOf(horarioAtendimento.get(i).getEntradaAlmoco()));
+						ps.setTime(6, java.sql.Time.valueOf(horarioAtendimento.get(i).getSaidaAlmoco()));
+					}else {
+						ps.setNull(5, Types.TIME);
+						ps.setNull(6, Types.TIME);
+					}
 				} else {
 					ps.setNull(2, Types.TIME);
 					ps.setNull(3, Types.TIME);
+					ps.setNull(5, Types.TIME);
+					ps.setNull(6, Types.TIME);
 				}
-				ps.setInt(4, horarioAtendimento.get(i).getFuncionario().getId());
-				ps.setInt(5, horarioAtendimento.get(i).getDia());
+				
+			
+				ps.setInt(7, horarioAtendimento.get(i).getFuncionario().getId());
+				ps.setString(8, horarioAtendimento.get(i).getDia().toString());
 
 			}
 

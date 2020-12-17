@@ -24,15 +24,8 @@ public class BarbeariaDAOImpl implements BarbeariaDAO {
 	
 	String salvar = "insert into barbearia (nome,descricao,id_endereco) values(?,?,?)";
 	String salvarSemDescricao = "insert into barbearia(nome,id_endereco) values(?,?)";
-	String listar = "select b.id, b.nome, b.descricao,"
-			+ "e.id id_endereco, e.numero ,e.cep, e.logradouro, e.bairro, e.cidade, e.uf "
-			+ "from barbearia b inner join endereco e on b.id_endereco = e.id ";
-	String buscarPorId = "select b.id, b.nome, b.descricao,"
-			+ "e.id id_endereco, e.numero ,e.cep, e.logradouro, e.bairro, e.cidade, e.uf "
-			+ "from barbearia b inner join endereco e on b.id_endereco = e.id"
-			+ " where b.id =?";
-	String deletar = "delete from barbearia where id= ?";
-	String update = "update barbearia set nome=?, descricao = ? where id = ?";
+	
+
 	
 
 	@Override
@@ -71,26 +64,45 @@ public class BarbeariaDAOImpl implements BarbeariaDAO {
 	@Override
 	public List<Barbearia> listar() {
 		
+		String listar = "select b.id, b.nome, b.descricao,b.qtdcliente, b.qtdfuncionario,b.qtdservico,"
+				+ "e.id id_endereco, e.numero ,e.cep, e.logradouro, e.bairro, e.cidade, e.uf "
+				+ "from barbearia b inner join endereco e on b.id_endereco = e.id ";
+		
 		Endereco endereco = new Endereco();
-		return this.jdbcTemplate.query(listar,(rs,rowNum)-> new Barbearia(rs.getInt("id"),rs.getString("nome"),rs.getString("descricao"),endereco));
+		return this.jdbcTemplate.query(listar,(rs,rowNum)-> new Barbearia(rs.getInt("id"),rs.getString("nome"),rs.getString("descricao"),endereco
+				,rs.getInt("qtdcliente"),rs.getInt("qtdfuncionario"),rs.getInt("qtdservico")));
 	}
 
 	
 
 	@Override
 	public void alterar(Barbearia barbearia) {
-		this.jdbcTemplate.update(update,barbearia.getNome(),barbearia.getDescricao(),barbearia.getId());
+		
+		String update = """
+				update barbearia set nome=?, descricao = ?, qtdfuncionario = ?,
+				qtdcliente = ?, qtdservico = ? where id = ?
+				""";
+		
+		this.jdbcTemplate.update(update,barbearia.getNome(),barbearia.getDescricao(),
+				barbearia.getQtdFuncionario(),barbearia.getQtdCliente(),
+				barbearia.getQtdServico(),barbearia.getId());
 	}
 
-	@Override
-	public void excluir(int id) {
-		this.jdbcTemplate.update(deletar,id);
-	}
 
 	@Override
 	public Barbearia buscarPorId(int id) {
-		return this.jdbcTemplate.queryForObject(buscarPorId, new Object[] {id}, (rs,rowNum) -> new Barbearia(rs.getInt("id"),rs.getString("nome"),rs.getString("descricao"),
-				new Endereco(rs.getInt("id_endereco"),rs.getString("logradouro"),rs.getString("bairro"),rs.getInt("numero"),rs.getString("cep"),rs.getString("cidade"),rs.getString("uf"))));
+		
+		String buscarPorId = "select b.id, b.nome, b.descricao, b.qtdcliente, b.qtdfuncionario,b.qtdservico,"
+				+ "e.id id_endereco, e.numero ,e.cep, e.logradouro, e.bairro, e.cidade, e.uf "
+				+ "from barbearia b inner join endereco e on b.id_endereco = e.id"
+				+ " where b.id =?";
+		
+		
+		return this.jdbcTemplate.queryForObject(buscarPorId, new Object[] {id}, (rs,rowNum) -> 
+		new Barbearia(rs.getInt("id"),rs.getString("nome"),rs.getString("descricao"),
+				new Endereco(rs.getInt("id_endereco"),rs.getString("logradouro"),
+						rs.getString("bairro"),rs.getInt("numero"),rs.getString("cep"),
+						rs.getString("cidade"),rs.getString("uf")),rs.getInt("qtdcliente"),rs.getInt("qtdfuncionario"),rs.getInt("qtdservico")));
 	}
 	
 }

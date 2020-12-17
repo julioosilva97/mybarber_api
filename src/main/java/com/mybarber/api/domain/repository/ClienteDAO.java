@@ -7,11 +7,12 @@ import com.mybarber.api.domain.entity.Cliente;
 
 public interface ClienteDAO {
 	
-	public void cadastrar(Cliente cliente);
+	public void cadastrar(Cliente cliente,int idBarbearia);
 	public Cliente buscarPorid(int id);
 	public void editar(Cliente cliente);
 	public void excluir(int id);
-	public List<Cliente> listar(Barbearia barbearia);
-	public boolean verificarEmail(String email);
+	public List<Cliente> listar(int idBarbearia);
+	public int countPorBarbearia(int idBarbearia);
+	public List<Cliente> autoCompleteNome(String nome);
 
 }

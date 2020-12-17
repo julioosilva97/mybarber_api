@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 public class AgendamentoAgendado extends Agendamento {
 
 
-	
-	
 	public AgendamentoAgendado() {
 	}
 

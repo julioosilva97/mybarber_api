@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.mybarber.api.api.dto.funcionario.FuncionarioInput;
+import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTO;
+import com.mybarber.api.api.dto.funcionario.HorarioAtendimentoDTOInput;
 import com.mybarber.api.domain.entity.Barbearia;
-import com.mybarber.api.domain.util.ConverterDTO;
+import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ import com.mybarber.api.domain.entity.Funcionario;
 import com.mybarber.api.domain.service.FuncionarioService;
 
 @RestController
-@RequestMapping("funcionarios")
+@RequestMapping("api/funcionarios")
 public class FuncionarioController {
 
     @Autowired
@@ -38,6 +40,7 @@ public class FuncionarioController {
         service.salvar(map);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<FuncionarioDTO> iniciarEdicao(@PathVariable("id") int id) {
@@ -84,15 +87,41 @@ public class FuncionarioController {
     @GetMapping("{idBarbearia}")
     public ResponseEntity<List<FuncionarioDTO>> listar(@PathVariable("idBarbearia") int idBarbearia) {
 
-        var barbearia = new Barbearia();
-        barbearia.setId(idBarbearia);
-
-        var funcionarios = service.listar(barbearia);
+        var funcionarios = service.listar(idBarbearia);
         var funcionariosDTO = funcionarios.stream()
                 .map(doMain -> (FuncionarioDTO) ConverterDTO.toDTO(doMain, FuncionarioDTO.class))
                 .collect(Collectors.toList());
 
         return new ResponseEntity<List<FuncionarioDTO>>(funcionariosDTO,HttpStatus.OK);
     }
+    
+    @PostMapping("/horario-atendimento")
+    public ResponseEntity<Void> defirnirHorarioAtendimento(@RequestBody List<HorarioAtendimentoDTOInput> horariosDTO) {
+
+  
+    	var horarios = horariosDTO.stream()
+    			.map(dto -> dto.toDoMain(dto))
+    			.collect(Collectors.toList());
+    	
+    	service.salvarHorarioAtendimento(horarios);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @GetMapping("/buscarHorarioAtendimento/{id}")
+    public ResponseEntity<List<HorarioAtendimentoDTO>> buscarHorarioAtendimentoPorFuncionario(@PathVariable("id") int id) {
+    	
+    	
+    	var horarios = service.buscarHorarioAtendimentoPorFuncionario(id);
+    	var horariosDTO = horarios.stream()
+    			.map(horario -> horario.toDTO())
+    			 .collect(Collectors.toList());
+
+        return new ResponseEntity<List<HorarioAtendimentoDTO>>(horariosDTO,HttpStatus.OK);
+
+        
+
+    }
+
 
 }

@@ -2,7 +2,7 @@ package com.mybarber.api.domain.entity;
 
 
 import org.modelmapper.ModelMapper;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.mybarber.api.api.dto.usuario.UsuarioDTO;
@@ -19,6 +19,8 @@ public class Usuario {
     private boolean ativo;
 
     private Perfil perfil;
+    
+    private String email;
 
     public int getId() {
         return id;
@@ -43,7 +45,7 @@ public class Usuario {
 
     public void setSenha(String senha) {
         if (senha != null) {
-            //this.senha = new BCryptPasswordEncoder().encode(senha);
+            this.senha = new BCryptPasswordEncoder().encode(senha);
         } else {
             this.senha = senha;
         }
@@ -69,15 +71,22 @@ public class Usuario {
 
     public Usuario() {
     }
+    
+    public Usuario(String email) {
+		this.email = email;
+	}
+    
+    public Usuario(int id, String email) {
+    	this.id = id;
+		this.email = email;
+	}
 
-
-    public Usuario(int id, String login,
-                   String senha, boolean ativo, Perfil perfil) {
+	public Usuario(int id, String login, boolean ativo, Perfil perfil,String email) {
         this.id = id;
         this.login = login;
-        this.senha = senha;
         this.ativo = ativo;
         this.perfil = perfil;
+        this.email = email;
     }
 
 
@@ -115,4 +124,12 @@ public class Usuario {
         return modelMapper.map(usuarioDTO, Usuario.class);
 
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

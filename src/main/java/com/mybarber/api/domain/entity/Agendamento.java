@@ -17,11 +17,11 @@ public abstract class Agendamento {
 	private LocalDateTime dataHorarioFim;
 	private String observacao;
 	private Double valor;
+	protected SituacaoAgendamento status;
 	private Cliente cliente;
 	private Funcionario funcionario;
-	private Barbearia barbearia;
 	private List<Servico> servicos;
-	protected SituacaoAgendamento status;
+	
 	
 	
 	public LocalDateTime getDataHorarioInicio() {
@@ -69,12 +69,7 @@ public abstract class Agendamento {
 	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
-	public Barbearia getBarbearia() {
-		return barbearia;
-	}
-	public void setBarbearia(Barbearia barbearia) {
-		this.barbearia = barbearia;
-	}
+
 	public Agendamento() {
 	}
 	public int getId() {

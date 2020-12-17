@@ -1,10 +1,12 @@
 package com.mybarber.api.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.mybarber.api.api.util.ConverterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,41 +19,54 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mybarber.api.api.facade.ServicoFacade;
+import com.mybarber.api.domain.entity.Barbearia;
+import com.mybarber.api.domain.entity.Servico;
+import com.mybarber.api.domain.service.ServicoService;
 import com.mybarber.api.api.dto.servico.ServicoDTO;
+import com.mybarber.api.api.dto.servico.ServicoInput;
 
 @RestController
 @RequestMapping("api/servicos")
 public class ServicoController {
 
 	@Autowired
-	private ServicoFacade facade;
+	private ServicoService service;
 
-	@PostMapping("cadastrar")
-	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO, HttpServletRequest request) {
+	@PostMapping
+	public ResponseEntity<Void> salvar(@Valid @RequestBody ServicoDTO servicoDTO) {
 
-		facade.salvar(servicoDTO, request);
+		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
+		
+		service.salvar(servico);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("listar")
-	public ResponseEntity<List<ServicoDTO>> listar(HttpServletRequest request) {
+	@GetMapping("{idBarbearia}")
+	public ResponseEntity<List<ServicoDTO>> listarAtivos(@PathVariable("idBarbearia") int idBarbearia) {
 
-		return new ResponseEntity<List<ServicoDTO>>(facade.listar(request), HttpStatus.OK);
+		
+		var servicos = service.listarAtivos(idBarbearia);
+		var servicosDTO = servicos.stream()
+				           .map(doMain -> (ServicoDTO) ConverterDTO.toDTO(doMain, ServicoDTO.class))
+				           .collect(Collectors.toList());
+		
+		return new ResponseEntity <List<ServicoDTO>>(servicosDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("editar")
-	public ResponseEntity<Void> editar(@Valid @RequestBody ServicoDTO servicoDTO) {
+	@PutMapping
+	public ResponseEntity<Void> editar(@Valid @RequestBody ServicoInput servicoDTO) {
 
-		facade.editar(servicoDTO);
+		var servico = (Servico) ConverterDTO.toDoMain(servicoDTO, Servico.class);
+		service.atualizar(servico);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
-	@DeleteMapping("deletar/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") int id) {
+	@PutMapping("desativar/{id}")
+	public ResponseEntity<Void> desativar(@PathVariable("id") int id) {
 
-		facade.excluir(id);
+		service.desativar(id);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+
 
 }

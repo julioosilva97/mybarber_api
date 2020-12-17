@@ -2,32 +2,27 @@ package com.mybarber.api.api.dto.servico;
 
 import java.time.LocalTime;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mybarber.api.api.dto.promocao.PromocaoDTO;
+import com.mybarber.api.domain.entity.Promocao;
 
-import com.mybarber.api.api.util.FlexibleFloatDeserializer;
-
-//RM = represetation Model
-
+/**
+ * @author Victor
+ *
+ */
 public class ServicoDTO {
 	
 	 private int id;
-	 
-	@NotBlank
-	@Size(min = 3,max = 60)
 	private String descricao;
-	
-	@NotNull
-    @JsonDeserialize(using = FlexibleFloatDeserializer.class)
-	@JsonProperty("valor")
 	private float valor;
-    
-	@NotNull
+	@JsonFormat(pattern = "HH:mm")
 	private LocalTime tempo;
+    @NotNull
+    private Long idBarbearia;
+    
+   private PromocaoDTO promocao;
 	
 	public String getDescricao() {
 		return descricao;
@@ -48,12 +43,25 @@ public class ServicoDTO {
 		this.tempo = tempo;
 	}
 	
-	
+	public Long getIdBarbearia() {
+		return idBarbearia;
+	}
+	public void setIdBarbearia(Long idBarbearia) {
+		this.idBarbearia = idBarbearia;
+	}
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	
+	public PromocaoDTO getPromocao() {
+		return promocao;
+	}
+	public void setPromocao(PromocaoDTO promocao) {
+		this.promocao = promocao;
 	}
 	public ServicoDTO() {
 	}

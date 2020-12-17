@@ -7,15 +7,16 @@ import com.mybarber.api.domain.entity.Cliente;
 
 public interface ClienteService {
 
-	public void cadastrar(Cliente cliente, Barbearia barbearia);
+    void cadastrar(Cliente cliente, int idBarbearia);
 
-	public Cliente buscarPorid(int id);
+    Cliente buscarPorid(int id);
 
-	public void editar(Cliente cliente);
+    void editar(Cliente cliente);
 
-	public void excluir(int id);
+    void excluir(int id, int idBarbearia);
 
-	public List<Cliente> listar(Barbearia barbearia);
-	public boolean verificarEmail(String email);
+    List<Cliente> listar(int idBarbearia);
+
+    List<Cliente> autoCompleteNome(String nome);
 
 }

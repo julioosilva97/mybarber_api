@@ -23,22 +23,11 @@ public class ClienteDAOImpl implements ClienteDAO {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
-	String salvar = "INSERT INTO cliente(nome, telefone, email, data_nascimento) VALUES (?, ?, ?, ?)";
-	
-	String buscarPorid = "select * from cliente where id = ?";
-	
-	String editar = """
-			UPDATE cliente SET  nome=?, telefone=?, email=?, data_nascimento=? WHERE id = ?
-			""";
-	
-	String listar = "select c.* from cliente c inner join cliente_barbearia cb on cb.id_cliente = c.id where cb.id_barbearia = ?";
-	
-	String excluir = "delete from cliente where id = ?";
-	
-	
 	
 	@Override
-	public void cadastrar(Cliente cliente) {
+	public void cadastrar(Cliente cliente,int idBarbearia) {
+		
+		String salvar = "INSERT INTO cliente(nome, telefone, data_nascimento) VALUES (?, ?, ?)";
 		
 		try {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,8 +39,7 @@ public class ClienteDAOImpl implements ClienteDAO {
 					PreparedStatement ps = con.prepareStatement(salvar, new String[] { "id" });
 					ps.setString(1, cliente.getNome());
 					ps.setString(2, cliente.getTelefone());
-					ps.setString(3, cliente.getEmail());
-					ps.setObject(4, cliente.getDataNascimento());
+					ps.setObject(3, cliente.getDataNascimento());
 					
 					return ps;
 				}
@@ -59,6 +47,17 @@ public class ClienteDAOImpl implements ClienteDAO {
 			
 			int idCliente = keyHolder.getKey().intValue();
 			cliente.setId(idCliente);
+			
+			if(idBarbearia!=0) {
+				
+				String salvarClientaBarbearia = "insert into cliente_barbearia values (?,?)";
+				jdbcTemplate.update(salvarClientaBarbearia,cliente.getId(),idBarbearia);
+			}
+			
+           var salvarGerenciarUsuario = "insert into gerenciar_usuario(id_usuario, id_cliente) values (?,?)";
+			
+			jdbcTemplate.update(salvarGerenciarUsuario,cliente.getUsuario().getId(),cliente.getId());
+			
 		}catch (Exception e) {
 			throw e ;
 		}
@@ -67,47 +66,101 @@ public class ClienteDAOImpl implements ClienteDAO {
 
 	@Override
 	public Cliente buscarPorid(int id) {
+		
+		String buscarPorid = """
+				select c.* , u.email, u.id id_usuario
+				from cliente c 
+				inner join cliente_barbearia cb on cb.id_cliente = c.id 
+				inner join gerenciar_usuario gu on gu.id_cliente = c.id
+				inner join usuario u on u.id = gu.id_usuario
+                where c.id = ?
+				""";
+		
 		return jdbcTemplate.queryForObject(buscarPorid, new Object[] { id }, (rs, rowNum) ->
-		new Cliente(rs.getInt("id"),rs.getString("nome"),rs.getString("telefone"),rs.getString("email"),rs.getDate("data_nascimento").toLocalDate() ,
+		new Cliente(rs.getInt("id"),rs.getString("nome"),rs.getString("telefone"),rs.getDate("data_nascimento").toLocalDate() ,
 				new Endereco(),
-				new Usuario()
+				new Usuario(rs.getInt("id_usuario"),rs.getString("email"))
 				));
 	}
 
 	@Override
 	public void editar(Cliente cliente) {
 		
-		jdbcTemplate.update(editar, cliente.getNome(), cliente.getTelefone(),cliente.getEmail(), cliente.getDataNascimento(),cliente.getId());	
+		String editar = """
+				UPDATE cliente SET nome=?, telefone=?, data_nascimento=? WHERE id = ?
+				""";
+		
+		
+		jdbcTemplate.update(editar, cliente.getNome(), cliente.getTelefone(), cliente.getDataNascimento(),cliente.getId());	
 		
 	}
 
 	@Override
 	public void excluir(int id) {
-		jdbcTemplate.update(excluir, id);	
+		
+		String excluirClienteBarbearia = "delete from CLIENTE_BARBEARIA WHERE ID_CLIENTE  = ? ";
+		jdbcTemplate.update(excluirClienteBarbearia, id);	
+
+		//só poder excluir quando for ele mesmo, mudar isso depois 
+		//String excluir = "delete from cliente where id = ?";
+		//jdbcTemplate.update(excluir, id);	
 		
 	}
 
 	@Override
-	public List<Cliente> listar(Barbearia barbearia) {
-		return jdbcTemplate.query(listar,  new Object[] { barbearia.getId() },
-				(rs, rowNum) ->
+	public List<Cliente> listar(int idBarbearia) {
+		
+		String listar = """
+				select c.* , u.email
+				from cliente c 
+				inner join cliente_barbearia cb on cb.id_cliente = c.id 
+				inner join gerenciar_usuario gu on gu.id_cliente = c.id
+				inner join usuario u on u.id = gu.id_usuario
+                where cb.id_barbearia = ?""";
+		
+		
+ 
+		return jdbcTemplate.query(listar,  new Object[] { idBarbearia },
+				(rs, rowNum) -> 
+		
 		new Cliente(rs.getInt("id"), 
 				rs.getString("nome"), 
 				rs.getString("telefone"),
-				rs.getString("email"),
 				rs.getDate("data_nascimento").toLocalDate(),
 				new Endereco(),
-				new Usuario()
-				) ) ;
+				new Usuario(rs.getString("email"))
+				)  ) ;
 	}
 
 	@Override
-	public boolean verificarEmail(String email) {
+	public int countPorBarbearia(int idBarbearia) {
 		
-		String verificarEmail = "SELECT EXISTS(SELECT FROM cliente WHERE email = ?)";
+		String countPorBarbearia = """
+				select count(*) from cliente_barbearia where id_barbearia = ?""";
 		
+		return jdbcTemplate.queryForObject(countPorBarbearia,new Object[] { idBarbearia },int.class);
 		
-		return jdbcTemplate.queryForObject( verificarEmail , new Object[] { email }, Boolean.class);
+	}
+
+	@Override
+	public List<Cliente> autoCompleteNome(String nome) {
+		
+		String autoCompleteNome = """
+				select c.* , u.email
+				from cliente c 
+				inner join cliente_barbearia cb on cb.id_cliente = c.id 
+				inner join gerenciar_usuario gu on gu.id_cliente = c.id
+				inner join usuario u on u.id = gu.id_usuario
+                where c.nome LIKE ? 
+                limit 10""";
+
+ 
+		return jdbcTemplate.query(autoCompleteNome,  new Object[] {"%" + nome +"%"},
+				(rs, rowNum) -> 
+		
+		new Cliente(rs.getInt("id"), 
+				rs.getString("nome")
+				) ) ;
 	}
 
 }
