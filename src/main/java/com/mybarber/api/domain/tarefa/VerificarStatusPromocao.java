@@ -20,7 +20,7 @@ public class VerificarStatusPromocao {
 	
 	private static final String TIME_ZONE = "America/Sao_Paulo";
 
-	
+
 	@Scheduled(cron = "0 00 00 * * *",zone = TIME_ZONE)
 	//@Scheduled(fixedDelay = 1000)
 	@Transactional

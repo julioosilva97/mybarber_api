@@ -1,9 +1,9 @@
 package com.mybarber.api.api.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.mybarber.api.domain.entity.Endereco;
-import com.sun.istack.NotNull;
 
 public class BarbeariaInput {
 

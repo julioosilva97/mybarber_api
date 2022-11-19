@@ -26,7 +26,6 @@ public class NotificarAgendamento {
 	
 	@Autowired
     private EnviarEmail enviarEmail;
-    
     @Scheduled(fixedDelay = 1000)
     @Transactional
     public void notificarClientes() {
